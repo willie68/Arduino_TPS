@@ -1,6 +1,15 @@
 /*
   entering the programming mode
 */
+
+#define BLINK_DELAY 250
+#define SHOW_DELAY 500
+#define KEY_DELAY 250
+
+enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
+
+PROGRAMMING_MODE prgMode;
+
 void programMode() {
   // checking if advance programmer board connected?
 #ifdef SPS_ENHANCEMENT
@@ -10,118 +19,65 @@ void programMode() {
   else {
 #endif
     dbgOutLn("PrgMode");
+    blinkAll();
+    prgMode = ADDRESS;
     addr = 0;
     do {
+      blinkD1();
       dbgOut("Adr:");
       dbgOutLn(addr);
       // LoNibble Adresse anzeigen
       doPort(addr);
-      delay(300);
-      lighting();
+      delay(SHOW_DELAY);
+
+      blinkD2();
       // HiNibble Adresse anzeigen
       data = (addr & 0xf0) >> 4;                                  //Adresse anzeigen
       doPort(data);
-      delay(300);
-      lighting();
+      delay(SHOW_DELAY);
 
       byte Eebyte = EEPROM.read(addr);
       data = Eebyte & 15;
       com = Eebyte >> 4;
-      dbgOutLn('commando eingeben');
-      doPort(com); //Befehl anzeigen
-      digitalWrite(PWM_1, HIGH);
+
+      blinkD3();
+      prgMode = COMMAND;
+      dbgOutLn("com");
+      doPort(com); //show command
+
       do {
+        if (digitalRead(SW_SEL) == 0) {
+          delay(KEY_DELAY);
+          com += 1;
+          com = com & 0x0F;
+          doPort(com);
+        }
       }
-      while (digitalRead(SW_SEL) == 1); // S2 = 1
+      while (digitalRead(SW_PRG) == 1);
       delay(DEBOUNCE);
 
-      prog = 1;                                            //Phase 1: Befehl anzeigen
+      blinkD4();
+      prgMode = DATA;
+      dbgOutLn("dat");
+      doPort(data); //show data
+
       do {
-        dbgOut("C:");
-        dbgOut(com);
-        dbgOut(", D:");
-        dbgOut(data);
-        dbgOut(", P:");
-        dbgOutLn(prog);
-
-        if (digitalRead(SW_PRG) == 0) {
-          if (prog == 1) {
-            prog = 2;
-            com = 15;
-          }
-          if (prog == 2) {                                   //Phase 2: Befehl verändert
-            com = com + 1;
-            com = com & 15;
-            doPort(com);
-            digitalWrite(PWM_1, HIGH);
-          }
-          if (prog == 3) {                                   //Phase 3: Befehl unverändert, Daten ändern
-            prog = 5;
-            data = 15;
-          }
-          if (prog == 4) {                                   //Phase 4: Befehl und Daten geändert
-            prog = 5;
-            data = 15;
-          }
-          if (prog == 5) {                                   //Phase 5: Daten verändert
-            data += 1;
-            data = data & 15;
-            doPort(data);
-            digitalWrite(PWM_1, LOW);
-          }
-          delay(DEBOUNCE);
-          do {
-          }
-          while (digitalRead(SW_PRG) == 1);
-          delay(DEBOUNCE);
-        }
-
         if (digitalRead(SW_SEL) == 0) {
-          if (prog == 3) {
-            prog = 7;          //nur angezeigt, nicht verändert
-          }
-          if (prog == 4) {
-            doPort(255 - data);
-            digitalWrite(PWM_1, LOW);
-            prog = 6;
-          }
-          if (prog == 2) {
-            doPort(data);             // Portd = Dat Or &HF0
-            digitalWrite(PWM_1, LOW);
-            prog = 4;
-          }
-          if (prog == 6) {                                    //nur Kommando wurde verändert
-            data = data & 15;
-            Eebyte = com * 16;
-            Eebyte = Eebyte + data;
-            EEPROM.write(addr, Eebyte); //           Writeeeprom Eebyte , Addr
-            doPort(0x0F);
-            delay(600);
-            addr += 1;
-            prog = 0;
-          }
-          if (prog == 5) {                                     //Daten wurden verändert
-            data = data & 15;
-            Eebyte = com * 16;
-            Eebyte = Eebyte + data;
-            EEPROM.write(addr, Eebyte); //           Writeeeprom Eebyte , Addr
-            doPort(0xF0);
-            delay(600);
-            addr += 1;
-            prog = 0;
-          }
-          if (prog == 7) {
-            addr += 1;
-            prog = 0;
-          }
-          delay(DEBOUNCE);
-          do {
-          }
-          while (digitalRead(SW_SEL) == 0);
-          delay(DEBOUNCE);
+          delay(KEY_DELAY);
+          data += 1;
+          data = data & 0x0F;
+          doPort(data);
         }
       }
-      while (prog != 0);
+      while (digitalRead(SW_PRG) == 1); // S2 = 1
+      delay(DEBOUNCE);
+      
+      byte newValue = (com << 4) + data;
+      if (newValue != Eebyte) {
+        EEPROM.write(addr, newValue); //           Writeeeprom Eebyte , Addr
+        blinkAll();
+      }
+      addr += 1;
     }
     while (true);
 #ifdef SPS_ENHANCEMENT
@@ -129,7 +85,42 @@ void programMode() {
 #endif
 }
 
-void lighting() {
+void blinkAll() {
+  blinkNull();
   doPort(0x0F);
-  delay(200);
+  delay(BLINK_DELAY);
 }
+
+void blinkD1() {
+  blinkNull();
+  doPort(0x01);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD2() {
+  blinkNull();
+  doPort(0x02);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD3() {
+  blinkNull();
+  doPort(0x04);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD4() {
+  blinkNull();
+  doPort(0x08);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkNull() {
+  doPort(0x00);
+  delay(BLINK_DELAY);
+}
+
