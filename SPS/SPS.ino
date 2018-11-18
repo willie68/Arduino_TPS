@@ -281,6 +281,11 @@ void setup() {
   if (digitalRead(SW_PRG) == 0) {
     programMode();
   }
+#ifdef SPS_ENHANCEMENT
+  if (digitalRead(SW_SEL) == 0) {
+    serialPrg();
+  }
+#endif
 }
 
 void doReset() {
