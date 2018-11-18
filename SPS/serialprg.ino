@@ -6,7 +6,8 @@ void serialPrg() {
   bool endOfPrg = false;
 
   addr = 0;
-  Serial.begin(9600);
+  Serial.end();
+  Serial.begin(57600);
   Serial.println("serPrgStart");
   while (!endOfPrg) {
     while (Serial.available() > 0) {
@@ -15,30 +16,42 @@ void serialPrg() {
       char myChar = Serial.read();
       if (myChar == 'd') {
         for (byte i = 0; i < 8; i++) {
-          value = readHexValue;
-          myChar = readHexValue;
-          value = value * 16 + hexToByte(myChar);
-          EEPROM.write(addr, value);
-          addr++;
+          char c;
+          while (!Serial.available()) {
+          }
+          do {
+            c = Serial.read();
+          } while (!(((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'F'))));
+          value = hexToByte(c);
+
+          while (!Serial.available()) {
+          }
+          do {
+            c = Serial.read();
+          } while (!(((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'F'))));
+
+          value = value * 16 + hexToByte(c);
+          EEPROM.write(addr + i, value);
         }
-        Serial.println("w");
+        Serial.print("w:");
+        for (byte i = 0; i < 8; i++) {
+          value = EEPROM.read(addr + i);;
+          Serial.print(value, HEX);
+          if (i < 7) {
+            Serial.print(",");
+          }
+        }
+        Serial.println();
+        addr = addr + 8;
       }
       if (myChar == '*') {
         endOfPrg = true;
       }
     }
-    Serial.println("end");
-    Serial.end();
-    doReset();
   }
-}
-
-byte readHexValue() {
-  char c;
-  do {
-    c = Serial.read();
-  } while (!((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'F')));
-  return hexToByte(c);
+  Serial.println("end");
+  Serial.end();
+  doReset();
 }
 
 byte hexToByte (char c) {
