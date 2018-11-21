@@ -69,7 +69,7 @@
 #define SPS_TONE
 #endif
 
-#ifdef __AVR_ATinyx4__
+#ifdef __AVR_ATtiny84__
 #define SPS_ENHANCEMENT
 #define SPS_SERVO
 #endif
@@ -127,7 +127,7 @@ const byte DIGIT_CLOCK = 13;
 #endif
 #endif
 
-#ifdef __AVR_ATtinyX4__
+#ifdef __AVR_ATtiny84__
 // ATTiny84 Hardware
 const byte Dout_0 = 6;
 const byte Dout_1 = 5;
@@ -271,7 +271,7 @@ void setup() {
 #endif
 
   // Serielle Schnittstelle einstellen
-#ifndef __AVR_ATtinyX4__
+#ifndef __AVR_ATtiny84__
   initDebug();
 #endif
 

@@ -1,4 +1,10 @@
+#ifdef __AVR_ATtiny84__
+#define BAUDRATE 9600
+#endif
 
+#ifdef __AVR_ATmega328P__
+#define BAUDRATE 57600
+#endif
 
 void serialPrg() {
   int value1, value2, value3, value4;
@@ -7,7 +13,7 @@ void serialPrg() {
 
   addr = 0;
   Serial.end();
-  Serial.begin(57600);
+  Serial.begin(BAUDRATE);
   Serial.println("serPrgStart");
   while (!endOfPrg) {
     while (Serial.available() > 0) {
