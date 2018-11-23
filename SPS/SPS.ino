@@ -72,6 +72,7 @@
 #ifdef __AVR_ATtiny84__
 #define SPS_ENHANCEMENT
 #define SPS_SERVO
+//#define SPS_TONE
 #endif
 
 #include <debug.h>
@@ -281,7 +282,6 @@ void setup() {
     programMode();
   }
 #ifdef SPS_ENHANCEMENT
-  serialPrg();
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
@@ -1024,12 +1024,14 @@ void doByte(byte data) {
       }
       break;
 #endif
+#ifdef __AVR_ATmega328P__
     case 13:
       digitalWrite(LED_BUILTIN, 0);
       break;
     case 14:
       digitalWrite(LED_BUILTIN, 1);
       break;
+#endif
   }
 #endif
 }

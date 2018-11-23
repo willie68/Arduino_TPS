@@ -7,12 +7,10 @@
 #endif
 
 void serialPrg() {
-  //int value1, value2, value3, value4;
   byte value;
   bool endOfPrg = false;
   bool endOfFile = false;
   byte data[32];
-  char tmp[16];
   word readAddress;
   int crc, readcrc;
   byte count;
@@ -21,7 +19,7 @@ void serialPrg() {
   addr = 0;
   Serial.end();
   Serial.begin(BAUDRATE);
-  Serial.println("serPrgStart");
+  Serial.println();
   Serial.println("waiting for command:");
   Serial.println("w: write HEX file, r: read EPPROM, e: end");
   while (!endOfPrg) {
@@ -125,14 +123,14 @@ void serialPrg() {
       if (myChar == 'r') {
         // write eeprom as hexfile to receiver
         Serial.println("EEPROM data:");
-        byte checksum = 0;
+        int checksum = 0;
         for (int addr = 0; addr <= E2END; addr++) {
           value = EEPROM.read(addr);
-          if ((addr % 16) == 0) {
+          if ((addr % 8) == 0) {
             printCheckSum(checksum);
             checksum = 0;
-            Serial.print(":10");
-            checksum += 0x10;
+            Serial.print(":08");
+            checksum += 0x08;
             printHex16(addr);
             checksum += (addr >> 8);
             checksum += (addr & 0x00FF);
@@ -161,20 +159,29 @@ char getNextChar() {
   }
   return  Serial.read();
 }
-void printCheckSum(byte checksum) {
+
+void printCheckSum(int value) {
+  int checksum = value & 0xFF;
+  checksum = (checksum ^ 0xFF) + 1;
   printHex8(checksum);
   Serial.println();
 }
 
 void printHex8(int num) {
-  char tmp[16];
-  sprintf(tmp, "%.2X", num);
+  char tmp[3];
+  tmp[0] = nibbleToHex(num >> 4);
+  tmp[1] = nibbleToHex(num);
+  tmp[2] = 0x00;
   Serial.print(tmp);
 }
 
 void printHex16(int num) {
-  char tmp[16];
-  sprintf(tmp, "%.4X", num);
+  char tmp[5];
+  tmp[0] = nibbleToHex(num >> 12);
+  tmp[1] = nibbleToHex(num >> 8);
+  tmp[2] = nibbleToHex(num >> 4);
+  tmp[3] = nibbleToHex(num);
+  tmp[4] = 0x00;
   Serial.print(tmp);
 }
 
@@ -184,5 +191,15 @@ byte hexToByte (char c) {
   }
   if ( (c >= 'A') && (c <= 'F') ) {
     return (c - 'A') + 10;
+  }
+}
+
+byte nibbleToHex (byte value) {
+  byte c = value & 0x0F;
+  if ( (c >= 0) && (c <= 9) ) {
+    return c + '0';
+  }
+  if ( (c >= 10) && (c <= 15) ) {
+    return (c + 'A') - 10;
   }
 }
