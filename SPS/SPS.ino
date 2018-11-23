@@ -62,7 +62,7 @@
 
 #ifdef __AVR_ATmega328P__
 #define debug
-#define SPS_USE_DISPLAY
+//#define SPS_USE_DISPLAY
 #define SPS_RECEIVER
 #define SPS_ENHANCEMENT
 #define SPS_SERVO
@@ -275,13 +275,13 @@ void setup() {
   initDebug();
 #endif
 
-  //  writeProgram();
   doReset();
 
   if (digitalRead(SW_PRG) == 0) {
     programMode();
   }
 #ifdef SPS_ENHANCEMENT
+  serialPrg();
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
@@ -1024,6 +1024,12 @@ void doByte(byte data) {
       }
       break;
 #endif
+    case 13:
+      digitalWrite(LED_BUILTIN, 0);
+      break;
+    case 14:
+      digitalWrite(LED_BUILTIN, 1);
+      break;
   }
 #endif
 }
