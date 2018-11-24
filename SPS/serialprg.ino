@@ -28,7 +28,7 @@ void serialPrg() {
       char myChar = Serial.read();
       if (myChar == 'w') {
         // hexfile is comming to programm
-        Serial.println("waitin");
+        Serial.println("ready");
         addr = 0;
         do {
           for (byte i = 0; i < 8; i++) {

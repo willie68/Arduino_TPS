@@ -282,9 +282,11 @@ void setup() {
     programMode();
   }
 #ifdef SPS_ENHANCEMENT
+  pinMode(LED_BUILTIN, OUTPUT);
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
+  
 #endif
 }
 
