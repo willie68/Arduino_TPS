@@ -61,8 +61,8 @@
 #endif
 
 #ifdef __AVR_ATmega328P__
-#define debug
-//#define SPS_USE_DISPLAY
+//#define debug
+#define SPS_USE_DISPLAY
 #define SPS_RECEIVER
 #define SPS_ENHANCEMENT
 #define SPS_SERVO
