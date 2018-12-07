@@ -1,3 +1,8 @@
+#ifdef SPS_SERIAL_PRG
+#ifdef __AVR_ATtiny861__
+#define BAUDRATE 9600
+#endif
+
 #ifdef __AVR_ATtiny84__
 #define BAUDRATE 9600
 #endif
@@ -203,3 +208,4 @@ byte nibbleToHex (byte value) {
     return (c + 'A') - 10;
   }
 }
+#endif

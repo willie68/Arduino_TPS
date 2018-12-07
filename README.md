@@ -2,10 +2,13 @@
 
 A TPS Variant for the arduino with some major enhancments.
 **Version 0.10**
+  7.12.2018
+  - new define for serial programming
+
   18.11.2018 WKLA
   - new standard programming mode
-  i added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
-  the new one has a nicer interface, as you now always know where you are.
+  I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
+  The new one has a nicer interface, as you now always know where you are.
   Starting with PRG pushed after Reset.
   as a result, all LEDs will shortly blink
   now you are in programming mode.

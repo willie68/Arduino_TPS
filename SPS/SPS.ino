@@ -1,9 +1,12 @@
 /*
   SPS System mit dem Arduino.
   Version 0.10
+  7.12.2018
+  - new define for serial programming
+  
   18.11.2018 WKLA
   - new standard programming mode
-  i added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
+  I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
   the new one has a nicer interface, as you now always know where you are.
   Starting with PRG pushed after Reset.
   as a result, all LEDs will shortly blink
@@ -25,7 +28,6 @@
   * 
   * To leave the programming simply push reset.
   
-
   Version 0.9
   18.11.2018 WKLA
   - BUGs entfernt. Release.
@@ -54,7 +56,24 @@
   - neue Register e,f
 */
 
+/*
+ * HEre are the defines used in this software to control special parts of the implementation
+ * #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
+ * #define SPS_RECEIVER: using a RC receiver input
+ * #define SPS_ENHANCEMENT: all of the other enhancments
+ * #define SPS_SERVO: using servo outputs
+ * #define SPS_TONE: using a tone output
+ * #define SPS_SERIAL_PRG: activates the serial programming feature
+ */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
+
+#ifdef __AVR_ATtiny861__
+#define SPS_RCRECEIVER
+#define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
+//#define SPS_SERVO
+#define SPS_TONE
+#endif
 
 #ifdef __AVR_ATtiny4313__
 #define SPS_RCRECEIVER
@@ -65,12 +84,14 @@
 #define SPS_USE_DISPLAY
 #define SPS_RECEIVER
 #define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
 #define SPS_SERVO
 #define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
 #define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
 #define SPS_SERVO
 //#define SPS_TONE
 #endif
@@ -109,6 +130,7 @@ const byte ADC_0 = 0; //(15)
 const byte ADC_1 = 1; //(16)
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 18;
 const byte RC_1 = 19;
@@ -163,6 +185,36 @@ const byte DIGIT_CLOCK = 5;
 #endif
 
 #ifdef __AVR_ATtiny4313__
+// ATTiny4313 Hardware
+const byte Dout_0 = 0;
+const byte Dout_1 = 1;
+const byte Dout_2 = 2;
+const byte Dout_3 = 3;
+
+const byte Din_0 = 4;
+const byte Din_1 = 5;
+const byte Din_2 = 6;
+const byte Din_3 = 7;
+const byte ADC_0 = 13;
+const byte ADC_1 = 14;
+const byte PWM_1 = 11;
+const byte PWM_2 = 12;
+
+#ifdef SPS_RCRECEIVER
+const byte RC_0 = 15;
+const byte RC_1 = 16;
+#endif
+
+#ifdef SPS_SERVO
+const byte SERVO_1 = 11;
+const byte SERVO_2 = 12;
+#endif
+
+const byte SW_PRG = 9;
+const byte SW_SEL = 8;
+#endif
+
+#ifdef __AVR_ATtiny861__
 // ATTiny4313 Hardware
 const byte Dout_0 = 0;
 const byte Dout_1 = 1;
@@ -283,10 +335,11 @@ void setup() {
   }
 #ifdef SPS_ENHANCEMENT
   pinMode(LED_BUILTIN, OUTPUT);
+#endif
+#ifdef SPS_SERIAL_PRG
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
-  
 #endif
 }
 
