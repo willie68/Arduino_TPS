@@ -33,6 +33,7 @@ void serialPrg() {
       char myChar = Serial.read();
       if (myChar == 'w') {
         // hexfile is comming to programm
+        endOfFile = false;
         Serial.println("ready");
         addr = 0;
         do {
@@ -43,18 +44,22 @@ void serialPrg() {
             c = getNextChar();
           } while (!(c == ':'));
 
+#ifdef debug
           Serial.print(".");
-
+#endif
           // read counter
           c = getNextChar();
           count = hexToByte(c) << 4;
           c = getNextChar();
           count += hexToByte(c);
+#ifdef debug
           printHex8(count);
+#endif
 
           crc = count;
+#ifdef debug
           Serial.print(".");
-
+#endif
           // address
           c = getNextChar();
           readAddress = hexToByte(c) << 12;
@@ -65,22 +70,30 @@ void serialPrg() {
           c = getNextChar();
           readAddress += hexToByte(c);
 
+#ifdef debug
           printHex16(readAddress);
+#endif
 
           crc += readAddress >> 8;
           crc += readAddress & 0x00FF;
+#ifdef debug
           Serial.print(".");
+#endif
 
           // reading data type
           c = getNextChar();
           type = hexToByte(c) << 4;
           c = getNextChar();
           type += hexToByte(c);
+#ifdef debug
           printHex8(type);
+#endif
 
           crc += type;
 
+#ifdef debug
           Serial.print(".");
+#endif
 
           if (type == 0x01) {
             endOfFile = true;
@@ -92,9 +105,12 @@ void serialPrg() {
             value = hexToByte(c) << 4;
             c = getNextChar();
             value += hexToByte(c);
-            printHex8(value);
 
+#ifdef debug
+            printHex8(value);
             Serial.print(".");
+#endif
+
             data[x] = value;
             crc += value;
           }
@@ -103,12 +119,19 @@ void serialPrg() {
           readcrc = hexToByte(c) << 4;
           c = getNextChar();
           readcrc += hexToByte(c);
+
+#ifdef debug
           printHex8(readcrc);
+          Serial.print(".");
+#endif
+          
 
           crc += readcrc;
           // check CRC
           value = crc & 0x00FF;
+#ifdef debug
           printHex8(value);
+#endif
 
           if (value == 0) {
             Serial.print("ok");
@@ -117,7 +140,7 @@ void serialPrg() {
               EEPROM.write(readAddress + x, data[x]);
             }
           } else {
-            Serial.println("CRC Error");
+            Serial.println(", CRC Error");
             endOfFile = true;
           }
 
