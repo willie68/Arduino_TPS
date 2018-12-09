@@ -1,6 +1,33 @@
 # ArduinoSPS
 
 A TPS Variant for the arduino with some major enhancments.
+**Version 0.10**
+  7.12.2018
+  - new define for serial programming
+
+  18.11.2018 WKLA
+  - new standard programming mode
+  I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
+  The new one has a nicer interface, as you now always know where you are.
+  Starting with PRG pushed after Reset.
+  as a result, all LEDs will shortly blink
+  now you are in programming mode.
+  * the D1 LED will blink
+  * the higher nibble of the address will be shown
+  * the D2 LED will blink
+  * the lower nibble of the address will be shown
+  * the D3 LED will blink
+  * the command part (high nibble) will be shown
+  * with SEL you can step thru all commands
+  * PRG will save the command
+  * the D4 LED will blink 
+  * the data part (low nibble) will be shown
+  * with SEL you can step thru all datas
+  * PRG will save the data
+  * if the new value has been changed, all LEDs will flash as the byte will be written to the EEPROM
+  * address will be increased and now it will start with blinking of the D1 LED
+  * 
+  * To leave the programming simply push reset.
 
 **Version 0.9**
   18.11.2018 WKLA
