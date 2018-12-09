@@ -25,6 +25,12 @@ void serialPrg() {
   Serial.end();
   Serial.begin(BAUDRATE);
   Serial.println();
+#ifdef __AVR_ATtiny84__
+  Serial.println("TinySPS");
+#endif
+#ifdef __AVR_ATmega328P__
+  Serial.println("ArduinoSPS");
+#endif
   Serial.println("waiting for command:");
   Serial.println("w: write HEX file, r: read EPPROM, e: end");
   while (!endOfPrg) {
