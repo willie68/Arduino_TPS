@@ -1,7 +1,11 @@
 # ArduinoSPS
 
 A TPS Variant for the arduino with some major enhancments.
+
 **Version 0.10**
+  9.12.2018
+  - Release
+  
   7.12.2018
   - new define for serial programming
 
