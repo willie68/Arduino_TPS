@@ -1,6 +1,12 @@
 # ArduinoSPS
 
-A TPS Variant for the arduino with some major enhancments.
+A TPS Variant for the Arduino and some other options with some major enhancments.
+
+For more information and description see 
+http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
+
+And there is now a print book at amazon 
+https://www.amazon.com/dp/1731232535
 
 **Version 0.10**
   9.12.2018
