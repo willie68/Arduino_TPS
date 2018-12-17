@@ -19,10 +19,12 @@ void programMode() {
   else {
 #endif
     dbgOutLn("PrgMode");
-    blinkAll();
+    // light up all LEDs
+    doPort(0x08);
     while (digitalRead(SW_PRG) == 0) {
       // waiting for PRG to release
     }
+    blinkAll();
     prgMode = ADDRESS;
     addr = 0;
     do {
