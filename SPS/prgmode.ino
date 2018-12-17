@@ -20,6 +20,9 @@ void programMode() {
 #endif
     dbgOutLn("PrgMode");
     blinkAll();
+    while (digitalRead(SW_PRG) == 0) {
+      // waiting for PRG to release
+    }
     prgMode = ADDRESS;
     addr = 0;
     do {
@@ -123,4 +126,3 @@ void blinkNull() {
   doPort(0x00);
   delay(BLINK_DELAY);
 }
-
