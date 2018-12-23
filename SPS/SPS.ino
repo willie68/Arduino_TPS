@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.11
+  17.12.2018
+  - adding Shift left and shift right to register A
+  
   Version 0.10
   7.12.2018
   - new define for serial programming
@@ -832,6 +836,12 @@ void doCalc(byte data) {
       break;
     case 13:
       a = b - a;
+      break;
+    case 14:
+      a = a >> 1;
+      break;
+    case 15:
+      a = a << 1;
       break;
 #endif
     default:
