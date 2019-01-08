@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.11
+  07.01.2018
+  - programming: 1/2 duty cycle for 0 values in address display
+
   Version 0.10
   7.12.2018
   - new define for serial programming
