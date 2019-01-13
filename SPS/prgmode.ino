@@ -2,8 +2,8 @@
   entering the programming mode
 */
 
-#define BLINK_DELAY 250
-#define SHOW_DELAY 500
+#define BLINK_DELAY 500
+#define SHOW_DELAY 1000
 #define KEY_DELAY 250
 
 enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
@@ -32,12 +32,14 @@ void programMode() {
       dbgOut("Adr:");
       dbgOutLn(addr);
       // LoNibble Adresse anzeigen
-      doDimPort(addr);
+      doPort(addr);
+      delay(SHOW_DELAY);
 
       blinkD2();
       // HiNibble Adresse anzeigen
       data = (addr & 0xf0) >> 4;                                  //Adresse anzeigen
-      doDimPort(data);
+      doPort(data);
+      delay(SHOW_DELAY);
 
       byte Eebyte = EEPROM.read(addr);
       data = Eebyte & 15;
@@ -74,7 +76,7 @@ void programMode() {
       }
       while (digitalRead(SW_PRG) == 1); // S2 = 1
       delay(DEBOUNCE);
-
+      
       byte newValue = (com << 4) + data;
       if (newValue != Eebyte) {
         EEPROM.write(addr, newValue); //           Writeeeprom Eebyte , Addr
@@ -125,31 +127,4 @@ void blinkD4() {
 void blinkNull() {
   doPort(0x00);
   delay(BLINK_DELAY);
-}
-
-void doDimPort(byte data) {
-  long value = millis() + SHOW_DELAY;
-  do {
-    // on part
-    digitalWrite(Dout_0, 1);
-    digitalWrite(Dout_1, 1);
-    digitalWrite(Dout_2, 1);
-    digitalWrite(Dout_3, 1);
-    delay(5);
-
-    // off part
-    if ((data & 0x01) == 0) {
-      digitalWrite(Dout_0, 0);
-    }
-    if ((data & 0x02) == 0) {
-      digitalWrite(Dout_1, 0);
-    }
-    if ((data & 0x04) == 0) {
-      digitalWrite(Dout_2, 0);
-    }
-    if ((data & 0x08) == 0) {
-      digitalWrite(Dout_3, 0);
-    }
-    delay(5);
-  } while (value < millis());
 }
