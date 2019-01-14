@@ -1,17 +1,20 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.12
+  11.01.2018
+  - some refactoring
+  
+  07.01.2018
+  - programming: 1/2 duty cycle for 0 values in address display
+
   Version 0.11
   17.12.2018
   - adding Shift left and shift right to register A
-  
-  Version 0.11
-  07.01.2018
-  - programming: 1/2 duty cycle for 0 values in address display
 
   Version 0.10
   7.12.2018
   - new define for serial programming
-  
+
   18.11.2018 WKLA
   - new standard programming mode
   I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
@@ -19,23 +22,23 @@
   Starting with PRG pushed after Reset.
   as a result, all LEDs will shortly blink
   now you are in programming mode.
-  * the D1 LED will blink
-  * the higher nibble of the address will be shown
-  * the D2 LED will blink
-  * the lower nibble of the address will be shown
-  * the D3 LED will blink
-  * the command part (high nibble) will be shown
-  * with SEL you can step thru all commands
-  * PRG will save the command
-  * the D4 LED will blink 
-  * the data part (low nibble) will be shown
-  * with SEL you can step thru all datas
-  * PRG will save the data
-  * if the new value has been changed, all LEDs will flash as the byte will be written to the EEPROM
-  * address will be increased and now it will start with blinking of the D1 LED
-  * 
-  * To leave the programming simply push reset.
-  
+    the D1 LED will blink
+    the higher nibble of the address will be shown
+    the D2 LED will blink
+    the lower nibble of the address will be shown
+    the D3 LED will blink
+    the command part (high nibble) will be shown
+    with SEL you can step thru all commands
+    PRG will save the command
+    the D4 LED will blink
+    the data part (low nibble) will be shown
+    with SEL you can step thru all datas
+    PRG will save the data
+    if the new value has been changed, all LEDs will flash as the byte will be written to the EEPROM
+    address will be increased and now it will start with blinking of the D1 LED
+
+    To leave the programming simply push reset.
+
   Version 0.9
   18.11.2018 WKLA
   - BUGs entfernt. Release.
@@ -65,16 +68,18 @@
 */
 
 /*
- * HEre are the defines used in this software to control special parts of the implementation
- * #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
- * #define SPS_RECEIVER: using a RC receiver input
- * #define SPS_ENHANCEMENT: all of the other enhancments
- * #define SPS_SERVO: using servo outputs
- * #define SPS_TONE: using a tone output
- * #define SPS_SERIAL_PRG: activates the serial programming feature
- */
+   Here are the defines used in this software to control special parts of the implementation
+   #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
+   #define SPS_RECEIVER: using a RC receiver input
+   #define SPS_ENHANCEMENT: all of the other enhancments
+   #define SPS_SERVO: using servo outputs
+   #define SPS_TONE: using a tone output
+   #define SPS_SERIAL_PRG: activates the serial programming feature
+*/
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
+//#define debug
 
+// defining different hardware platforms
 #ifdef __AVR_ATtiny861__
 #define SPS_RCRECEIVER
 #define SPS_ENHANCEMENT
@@ -88,7 +93,6 @@
 #endif
 
 #ifdef __AVR_ATmega328P__
-//#define debug
 #define SPS_USE_DISPLAY
 #define SPS_RECEIVER
 #define SPS_ENHANCEMENT
@@ -104,6 +108,7 @@
 //#define SPS_TONE
 #endif
 
+// libraries
 #include <debug.h>
 #include <makros.h>
 #include <EEPROM.h>
@@ -121,138 +126,9 @@
 #include "notes.h"
 #endif
 
-// Hardwareanbindung
-#ifdef __AVR_ATmega328P__
-// Arduino Hardware
-const byte Din_0 = 0;
-const byte Din_1 = 1;
-const byte Din_2 = 2;
-const byte Din_3 = 3;
+#include "hardware.h"
 
-const byte Dout_0 = 4;
-const byte Dout_1 = 5;
-const byte Dout_2 = 6;
-const byte Dout_3 = 7;
-
-const byte ADC_0 = 0; //(15)
-const byte ADC_1 = 1; //(16)
-const byte PWM_1 = 9;
-const byte PWM_2 = 10;
-
-#ifdef SPS_RCRECEIVER
-const byte RC_0 = 18;
-const byte RC_1 = 19;
-#endif
-
-#ifdef SPS_SERVO
-const byte SERVO_1 = 9;
-const byte SERVO_2 = 10;
-#endif
-
-const byte SW_PRG = 8;
-const byte SW_SEL = 11;
-
-#ifdef SPS_USE_DISPLAY
-const byte DIGIT_DATA_IO = 12;
-const byte DIGIT_CLOCK = 13;
-#endif
-#endif
-
-#ifdef __AVR_ATtiny84__
-// ATTiny84 Hardware
-const byte Dout_0 = 6;
-const byte Dout_1 = 5;
-const byte Dout_2 = 4;
-const byte Dout_3 = 1;
-
-const byte Din_0 = 10;
-const byte Din_1 = 9;
-const byte Din_2 = 8;
-const byte Din_3 = 7;
-const byte ADC_0 = 0;
-const byte ADC_1 = 1;
-const byte PWM_1 = 2;
-const byte PWM_2 = 3;
-#ifdef SPS_RCRECEIVER
-const byte RC_0 = 10;
-const byte RC_1 = 9;
-#endif
-
-#ifdef SPS_SERVO
-const byte SERVO_1 = 2;
-const byte SERVO_2 = 3;
-#endif
-
-const byte SW_PRG = 0;
-const byte SW_SEL = 8;
-
-#ifdef SPS_USE_DISPLAY
-const byte DIGIT_DATA_IO = 4;
-const byte DIGIT_CLOCK = 5;
-#endif
-#endif
-
-#ifdef __AVR_ATtiny4313__
-// ATTiny4313 Hardware
-const byte Dout_0 = 0;
-const byte Dout_1 = 1;
-const byte Dout_2 = 2;
-const byte Dout_3 = 3;
-
-const byte Din_0 = 4;
-const byte Din_1 = 5;
-const byte Din_2 = 6;
-const byte Din_3 = 7;
-const byte ADC_0 = 13;
-const byte ADC_1 = 14;
-const byte PWM_1 = 11;
-const byte PWM_2 = 12;
-
-#ifdef SPS_RCRECEIVER
-const byte RC_0 = 15;
-const byte RC_1 = 16;
-#endif
-
-#ifdef SPS_SERVO
-const byte SERVO_1 = 11;
-const byte SERVO_2 = 12;
-#endif
-
-const byte SW_PRG = 9;
-const byte SW_SEL = 8;
-#endif
-
-#ifdef __AVR_ATtiny861__
-// ATTiny4313 Hardware
-const byte Dout_0 = 0;
-const byte Dout_1 = 1;
-const byte Dout_2 = 2;
-const byte Dout_3 = 3;
-
-const byte Din_0 = 4;
-const byte Din_1 = 5;
-const byte Din_2 = 6;
-const byte Din_3 = 7;
-const byte ADC_0 = 13;
-const byte ADC_1 = 14;
-const byte PWM_1 = 11;
-const byte PWM_2 = 12;
-
-#ifdef SPS_RCRECEIVER
-const byte RC_0 = 15;
-const byte RC_1 = 16;
-#endif
-
-#ifdef SPS_SERVO
-const byte SERVO_1 = 11;
-const byte SERVO_2 = 12;
-#endif
-
-const byte SW_PRG = 9;
-const byte SW_SEL = 8;
-#endif
-
-// Befehle
+// Commands
 const byte PORT = 0x10;
 const byte DELAY = 0x20;
 const byte JUMP_BACK = 0x30;
@@ -276,8 +152,15 @@ const byte DEBOUNCE = 100;
 const byte subCnt = 7;
 word subs[subCnt];
 
+// the actual address of the program
 word addr;
+// page register
 word page;
+// defining register
+byte a, b, c, d;
+#ifdef SPS_ENHANCEMENT
+byte e, f;
+#endif
 
 #ifdef SPS_ENHANCEMENT
 const byte SAVE_CNT = 16;
@@ -294,12 +177,6 @@ byte stackCnt;
 #endif
 
 unsigned long tmpValue;
-
-byte a, b, c, d;
-
-#ifdef SPS_ENHANCEMENT
-byte e, f;
-#endif
 
 #ifdef SPS_SERVO
 Servo servo1;
@@ -344,6 +221,7 @@ void setup() {
 #ifdef SPS_ENHANCEMENT
   pinMode(LED_BUILTIN, OUTPUT);
 #endif
+
 #ifdef SPS_SERIAL_PRG
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
@@ -449,26 +327,7 @@ void loop() {
   byte cmd = (value & 0xF0);
   byte data = (value & 0x0F);
 
-  dbgOut2(addr, HEX);
-  dbgOut(":");
-  dbgOut2(value, HEX);
-  dbgOut(",");
-  dbgOut2(cmd, HEX);
-  dbgOut(",");
-  dbgOut2(data, HEX);
-  dbgOut(",a:");
-  dbgOut2(a, HEX);
-  dbgOut(",");
-  dbgOut2(b, HEX);
-  dbgOut(",");
-  dbgOut2(c, HEX);
-  dbgOut(",");
-  dbgOut2(d, HEX);
-  dbgOut(",");
-  dbgOut2(e, HEX);
-  dbgOut(",");
-  dbgOut2(f, HEX);
-  dbgOutLn();
+  debugOutputRegister();
 
   addr = addr + 1;
   switch (cmd) {
@@ -523,6 +382,14 @@ void loop() {
   if (addr > E2END) {
     doReset();
   }
+}
+
+void debugOutputRegister() {
+  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(value, HEX); dbgOut(",");
+  dbgOut2(cmd, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
+  dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
+  dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
+  dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); dbgOutLn();
 }
 
 /*
@@ -898,7 +765,7 @@ void doDCount(byte data) {
 }
 
 /*
-  simple comdition = true skip next command
+  simple condition = true, skip next command
 */
 void doSkipIf(byte data) {
   bool skip = false;
@@ -1061,7 +928,7 @@ void doByte(byte data) {
     case 6:
       if (servo1.attached()) {
         dbgOut("Srv1:");
-        tmpValue = map(a,0, 255,0,180);
+        tmpValue = map(a, 0, 255, 0, 180);
         dbgOutLn(tmpValue);
         servo1.write(tmpValue);
       }
@@ -1069,7 +936,7 @@ void doByte(byte data) {
     case 7:
       if (servo2.attached()) {
         dbgOut("Srv2:");
-        tmpValue = map(a,0, 255,0,180);
+        tmpValue = map(a, 0, 255, 0, 180);
         dbgOutLn(tmpValue);
         servo2.write(tmpValue);
       }
