@@ -204,6 +204,9 @@ void setup() {
   pinMode(SW_PRG, INPUT_PULLUP);
   pinMode(SW_SEL, INPUT_PULLUP);
 
+  digitalWrite(Dout_0, 1);
+  delay(1000);
+  digitalWrite(Dout_0, 0);
 #ifdef SPS_USE_DISPLAY
   initDisplay();
 #endif
