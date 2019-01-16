@@ -61,7 +61,7 @@
 */
 
 /*
- * HEre are the defines used in this software to control special parts of the implementation
+ * Here are the defines used in this software to control special parts of the implementation
  * #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
  * #define SPS_RECEIVER: using a RC receiver input
  * #define SPS_ENHANCEMENT: all of the other enhancments
