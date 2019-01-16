@@ -2,8 +2,8 @@
   entering the programming mode
 */
 
-#define BLINK_DELAY 250
-#define SHOW_DELAY 500
+#define BLINK_DELAY 500
+#define SHOW_DELAY 1000
 #define KEY_DELAY 250
 
 enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
