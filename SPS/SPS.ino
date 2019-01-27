@@ -1,6 +1,8 @@
 /*
   SPS System mit dem Arduino.
   Version 0.12
+  27.01.2019
+  - adding demo program,
   11.01.2018
   - some refactoring
   
@@ -216,6 +218,7 @@ void setup() {
   initDebug();
 #endif
 
+  prgDemoPrg();
   doReset();
 
   if (digitalRead(SW_PRG) == 0) {
