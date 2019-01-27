@@ -5,6 +5,7 @@
 #define BLINK_DELAY 500
 #define SHOW_DELAY 1000
 #define KEY_DELAY 250
+#define ADDR_LOOP 50
 
 const byte demoPrg[] = { 0x4F, 0x59, 0x1F, 0x29, 0x10, 0x29, 0x5A, 0x40,
                          0x59, 0x64, 0x54, 0x29, 0x4F, 0x59, 0x10, 0xCD,
@@ -22,7 +23,7 @@ void prgDemoPrg() {
   if (value == 0xFF) {
     value = EEPROM.read(1);
     if (value == 0xFF) {
-      for (byte i = 0; i < sizeof(demoPrg);i++) {
+      for (byte i = 0; i < sizeof(demoPrg); i++) {
         EEPROM.write(i, demoPrg[i]);
       }
     }
@@ -51,14 +52,14 @@ void programMode() {
       dbgOut("Adr:");
       dbgOutLn(addr);
       // LoNibble Adresse anzeigen
-      doPort(addr);
-      delay(SHOW_DELAY);
+      doAddr(addr);
+      //delay(SHOW_DELAY);
 
       blinkD2();
       // HiNibble Adresse anzeigen
       data = (addr & 0xf0) >> 4;                                  //Adresse anzeigen
-      doPort(data);
-      delay(SHOW_DELAY);
+      doAddr(data);
+      //delay(SHOW_DELAY);
 
       byte Eebyte = EEPROM.read(addr);
       data = Eebyte & 15;
@@ -146,4 +147,13 @@ void blinkD4() {
 void blinkNull() {
   doPort(0x00);
   delay(BLINK_DELAY);
+}
+
+void doAddr(byte value) {
+  for (byte i = ADDR_LOOP; i > 0; i--) {
+    doPort(value);
+    delay(19);
+    doPort(0x0F);
+    delay(1);
+  }
 }

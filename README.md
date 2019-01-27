@@ -7,6 +7,20 @@ http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 
 And there is now a print book at amazon 
 https://www.amazon.com/dp/1731232535
+**Version 0.12**
+  27.01.2019
+  - Release
+  - automatically adding demo program to new mcu
+  11.01.2018
+  - some refactoring
+  
+  07.01.2018
+  - programming: 1/2 duty cycle for 0 values in address display
+
+**Version 0.11**
+  17.12.2018
+  - adding Shift left and shift right to register A
+
 
 **Version 0.10**
   9.12.2018
