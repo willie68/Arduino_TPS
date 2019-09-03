@@ -391,8 +391,8 @@ void loop() {
 }
 
 void debugOutputRegister() {
-  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(value, HEX); dbgOut(",");
-  dbgOut2(cmd, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
+  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(prog, HEX); dbgOut(",");
+  dbgOut2(com, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
   dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
   dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
   dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); dbgOutLn();
