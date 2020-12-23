@@ -2,8 +2,8 @@
   entering the programming mode
 */
 
-#define BLINK_DELAY 250
-#define SHOW_DELAY 500
+#define BLINK_DELAY 500
+#define SHOW_DELAY 1000
 #define KEY_DELAY 250
 
 enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
@@ -19,6 +19,11 @@ void programMode() {
   else {
 #endif
     dbgOutLn("PrgMode");
+    // light up all LEDs
+    doPort(0x08);
+    while (digitalRead(SW_PRG) == 0) {
+      // waiting for PRG to release
+    }
     blinkAll();
     prgMode = ADDRESS;
     addr = 0;
@@ -123,4 +128,3 @@ void blinkNull() {
   doPort(0x00);
   delay(BLINK_DELAY);
 }
-
