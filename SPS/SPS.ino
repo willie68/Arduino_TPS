@@ -1,6 +1,8 @@
 /*
   SPS System mit dem Arduino.
   Version 0.12
+  27.01.2019
+  - adding demo program,
   11.01.2018
   - some refactoring
   
@@ -216,6 +218,7 @@ void setup() {
   initDebug();
 #endif
 
+  prgDemoPrg();
   doReset();
 
   if (digitalRead(SW_PRG) == 0) {
@@ -388,8 +391,8 @@ void loop() {
 }
 
 void debugOutputRegister() {
-  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(value, HEX); dbgOut(",");
-  dbgOut2(cmd, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
+  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(prog, HEX); dbgOut(",");
+  dbgOut2(com, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
   dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
   dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
   dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); dbgOutLn();
