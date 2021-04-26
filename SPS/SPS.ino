@@ -82,6 +82,22 @@
 //#define debug
 
 // defining different hardware platforms
+#ifdef __AVR_ATmega328P__
+//#define SPS_USE_DISPLAY
+//#define SPS_RECEIVER
+//#define SPS_ENHANCEMENT
+//#define SPS_SERIAL_PRG
+//#define SPS_SERVO
+//#define SPS_TONE
+#endif
+
+#ifdef __AVR_ATtiny84__
+#define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
+#define SPS_SERVO
+//#define SPS_TONE
+#endif
+
 #ifdef __AVR_ATtiny861__
 #define SPS_RCRECEIVER
 #define SPS_ENHANCEMENT
@@ -92,22 +108,6 @@
 
 #ifdef __AVR_ATtiny4313__
 #define SPS_RCRECEIVER
-#endif
-
-#ifdef __AVR_ATmega328P__
-#define SPS_USE_DISPLAY
-#define SPS_RECEIVER
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-#define SPS_TONE
-#endif
-
-#ifdef __AVR_ATtiny84__
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-//#define SPS_TONE
 #endif
 
 // libraries
