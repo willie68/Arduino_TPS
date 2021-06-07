@@ -19,12 +19,12 @@ enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
 PROGRAMMING_MODE prgMode;
 
 void prgDemoPrg() {
-  byte value = EEPROM.read(0);
+  byte value = readbyte(0);
   if (value == 0xFF) {
-    value = EEPROM.read(1);
+    value = readbyte(1);
     if (value == 0xFF) {
       for (byte i = 0; i < sizeof(demoPrg); i++) {
-        EEPROM.write(i, demoPrg[i]);
+        writebyte(i, demoPrg[i]);
       }
     }
   }
@@ -61,7 +61,7 @@ void programMode() {
       doAddr(data);
       //delay(SHOW_DELAY);
 
-      byte Eebyte = EEPROM.read(addr);
+      byte Eebyte = readbyte(addr);
       data = Eebyte & 15;
       com = Eebyte >> 4;
 
@@ -99,7 +99,7 @@ void programMode() {
 
       byte newValue = (com << 4) + data;
       if (newValue != Eebyte) {
-        EEPROM.write(addr, newValue); //           Writeeeprom Eebyte , Addr
+        writebyte(addr, newValue); //           Writeeeprom Eebyte , Addr
         blinkAll();
       }
       addr += 1;
