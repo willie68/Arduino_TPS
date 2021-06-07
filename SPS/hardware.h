@@ -129,3 +129,39 @@ const byte SERVO_2 = 12;
 const byte SW_PRG = 9;
 const byte SW_SEL = 8;
 #endif
+
+#ifdef _MICROBIT_V2_
+// Microbit V2 Hardware
+const byte Din_0 = 0;
+const byte Din_1 = 1;
+const byte Din_2 = 2;
+const byte Din_3 = 3;
+
+const byte Dout_0 = 4;
+const byte Dout_1 = 5;
+const byte Dout_2 = 6;
+const byte Dout_3 = 7;
+
+const byte ADC_0 = 0; //(15)
+const byte ADC_1 = 1; //(16)
+const byte PWM_1 = 9;
+const byte PWM_2 = 10;
+
+#ifdef SPS_RCRECEIVER
+const byte RC_0 = 18;
+const byte RC_1 = 19;
+#endif
+
+#ifdef SPS_SERVO
+const byte SERVO_1 = 9;
+const byte SERVO_2 = 10;
+#endif
+
+const byte SW_PRG = 8;
+const byte SW_SEL = 11;
+
+#ifdef SPS_USE_DISPLAY
+const byte DIGIT_DATA_IO = 12;
+const byte DIGIT_CLOCK = 13;
+#endif
+#endif

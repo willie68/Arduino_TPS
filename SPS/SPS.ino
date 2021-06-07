@@ -1,5 +1,13 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.12.2
+  07.06.2021
+  - bug with servo in 4-bit mode, evaluate the full 8 bit.
+
+  Version 0.12.1
+  03.09.2019
+  - changing the variable names in debug mode
+  
   Version 0.12
   27.01.2019
   - adding demo program,
@@ -113,8 +121,7 @@
 // libraries
 #include <debug.h>
 #include <makros.h>
-#include <EEPROM.h>
-#include <avr/eeprom.h>
+#include "EEPROM_mbv2.h"
 
 #ifdef SPS_SERVO
 #include <Servo.h>
@@ -267,8 +274,8 @@ void doReset() {
 void readProgram() {
   dbgOutLn("Read program");
   word addr = 0;
-  for ( addr = 0; addr <= E2END; addr++) {
-    byte value = EEPROM.read(addr);
+  for ( addr = 0; addr <= STORESIZE; addr++) {
+    byte value = readbyte(addr);
 
 #ifdef debug
     dbgOut2(value, HEX);
@@ -329,7 +336,7 @@ void readProgram() {
   main loop
 */
 void loop() {
-  byte value = EEPROM.read(addr);
+  byte value = readbyte(addr);
   byte cmd = (value & 0xF0);
   byte data = (value & 0x0F);
 
@@ -385,7 +392,7 @@ void loop() {
     default:
       ;
   }
-  if (addr > E2END) {
+  if (addr > STORESIZE) {
     doReset();
   }
 }
@@ -629,7 +636,7 @@ void doIsA(byte data) {
 #ifdef SPS_SERVO
     case 11:
       if (servo1.attached()) {
-        tmpValue = (a * 10) + 10;
+        tmpValue = ((a & 0x0f) * 10) + 10;
         dbgOut("Srv1:");
         dbgOutLn(tmpValue);
         servo1.write(tmpValue);
@@ -637,7 +644,7 @@ void doIsA(byte data) {
       break;
     case 12:
       if (servo2.attached()) {
-        tmpValue = (a * 10) + 10;
+        tmpValue = ((a & 0x0f) * 10) + 10;
         dbgOut("Srv2:");
         dbgOutLn(tmpValue);
         servo2.write(tmpValue);

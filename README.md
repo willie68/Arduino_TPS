@@ -8,8 +8,14 @@ http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 And there is now a print book at amazon 
 https://www.amazon.com/dp/1731232535
 
+**Version 0.12.2**
+  07.06.2021
+
+  - bug with servo in 4-bit mode, evaluate the full 8 bit.
+
 **Version 0.12.1**
   03.09.2019
+
   - changing the variable names in debug mode
   - release
 
@@ -17,9 +23,9 @@ https://www.amazon.com/dp/1731232535
   27.01.2019
   - Release
   - automatically adding demo program to new mcu
-  11.01.2018
+    11.01.2018
   - some refactoring
-  
+
   07.01.2018
   - programming: 1/2 duty cycle for 0 values in address display
 
@@ -31,17 +37,17 @@ https://www.amazon.com/dp/1731232535
 **Version 0.10**
   9.12.2018
   - Release
-  
+
   7.12.2018
   - new define for serial programming
 
   18.11.2018 WKLA
   - new standard programming mode
-  I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
-  The new one has a nicer interface, as you now always know where you are.
-  Starting with PRG pushed after Reset.
-  as a result, all LEDs will shortly blink
-  now you are in programming mode.
+    I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
+    The new one has a nicer interface, as you now always know where you are.
+    Starting with PRG pushed after Reset.
+    as a result, all LEDs will shortly blink
+    now you are in programming mode.
   * the D1 LED will blink
   * the higher nibble of the address will be shown
   * the D2 LED will blink
@@ -62,7 +68,7 @@ https://www.amazon.com/dp/1731232535
 **Version 0.9**
   18.11.2018 WKLA
   * BUGs entfernt. Release.
-  10.11.2018 WKLA
+    10.11.2018 WKLA
   * Implementierung Tone Befehl
 
 **Version 0.8**
@@ -80,7 +86,7 @@ https://www.amazon.com/dp/1731232535
   * es können bis zu 6 Unterroutinen definiert werden und diese direkt angesprungen werden.
   * neben return gibt's auch einen restart
   * 2 Servoausgänge für übliche RC Servos. (10° Auflösung in Nibble Modus, <1° Auflösung im Bytemodus)
-  ACHTUNG: Servo und PWM Ausgänge sind nicht mischbar und können auch nicht gleichzeitig benutzt werden.
+    ACHTUNG: Servo und PWM Ausgänge sind nicht mischbar und können auch nicht gleichzeitig benutzt werden.
   * 2 RC Eingänge (16 Schritte auflösung im nibble Modus, Mitte 8, 255 Schritte im Byte Modus)
   * fkt. auch mit einem ATTiny84 (44 ist leider auf GRund der Programmgröße nicht mehr für den erweiterten Befehlssatz möglich)
   * call stack von bis zu 16 Unterfunktionen
