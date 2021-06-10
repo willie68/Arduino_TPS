@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.12.3
+  10.06.2021
+  - adding auto programming feature for the SPS Emulator
+  
   Version 0.12.2
   07.06.2021
   - bug with servo in 4-bit mode, evaluate the full 8 bit.
@@ -93,10 +97,10 @@
 #ifdef __AVR_ATmega328P__
 //#define SPS_USE_DISPLAY
 //#define SPS_RECEIVER
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-#define SPS_TONE
+//#define SPS_ENHANCEMENT
+//#define SPS_SERIAL_PRG
+//#define SPS_SERVO
+//#define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -279,13 +283,9 @@ void readProgram() {
     byte value = readbyte(addr);
 
 #ifdef debug
-    dbgOut2(value, HEX);
-    if (((addr + 1) % 16) == 0) {
-      dbgOutLn();
-    }
-    else {
-      dbgOut(",");
-    }
+    dbgOutLn();
+    dbgOut2(addr, HEX);
+    dbgOut(": ");
 #endif
 
     if (value == 0xFF) {
@@ -295,10 +295,8 @@ void readProgram() {
     byte cmd = (value & 0xF0);
     byte data = (value & 0x0F);
 
-    dbgOut("(");
-    dbgOut2(cmd, HEX);
+    dbgOut2(cmd>>4, HEX);
     dbgOut2(data, HEX);
-    dbgOut(")");
 
     if (cmd == CALL_SUB) {
       if (data >= 8) {
@@ -309,22 +307,22 @@ void readProgram() {
 #ifdef SPS_SERVO
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
-        dbgOutLn("attach Srv1");
+        dbgOutLn(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
       if (!servo1.attached()) {
-        dbgOutLn("attach Srv1");
+        dbgOutLn(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == IS_A) && (data == 0x0C)) {
       if (!servo2.attached()) {
-        dbgOutLn("attach Srv2");
+        dbgOutLn(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
       if (!servo2.attached()) {
-        dbgOutLn("attach Srv2");
+        dbgOutLn(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     }
