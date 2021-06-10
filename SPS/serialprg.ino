@@ -11,6 +11,26 @@
 #define BAUDRATE 9600
 #endif
 
+void initSerialPrg() {
+  Serial.end();
+  Serial.begin(BAUDRATE);  
+  Serial.println();
+}
+
+void sendHeader() {
+#ifdef __AVR_ATtiny84__
+  Serial.println("TinySPS");
+#endif
+#ifdef __AVR_ATmega328P__
+  Serial.println("ArduinoSPS");
+#endif
+  Serial.print("max prg size:");
+  Serial.print(STORESIZE, HEX);
+  Serial.println();
+  Serial.println("waiting for command:");
+  Serial.println("w: write HEX file, r: read EPPROM, e: end");  
+}
+
 void serialPrg() {
   byte value;
   bool endOfPrg = false;
@@ -22,17 +42,7 @@ void serialPrg() {
   byte type;
 
   addr = 0;
-  Serial.end();
-  Serial.begin(BAUDRATE);
-  Serial.println();
-#ifdef __AVR_ATtiny84__
-  Serial.println("TinySPS");
-#endif
-#ifdef __AVR_ATmega328P__
-  Serial.println("ArduinoSPS");
-#endif
-  Serial.println("waiting for command:");
-  Serial.println("w: write HEX file, r: read EPPROM, e: end");
+  sendHeader();
   while (!endOfPrg) {
     while (Serial.available() > 0) {
       // look for the next valid integer in the incoming serial stream:
@@ -181,11 +191,12 @@ void serialPrg() {
         // end of programm
         endOfPrg = true;
       }
+      if (myChar == 'h') {
+        sendHeader();
+      }
     }
   }
   Serial.println("end");
-  Serial.end();
-  doReset();
 }
 
 char getNextChar() {

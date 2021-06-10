@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.12.3
+  10.06.2021
+  - adding auto programming feature for the SPS Emulator
+  
   Version 0.12.2
   07.06.2021
   - bug with servo in 4-bit mode, evaluate the full 8 bit.
@@ -7,13 +11,13 @@
   Version 0.12.1
   03.09.2019
   - changing the variable names in debug mode
-  
+
   Version 0.12
   27.01.2019
   - adding demo program,
   11.01.2018
   - some refactoring
-  
+
   07.01.2018
   - programming: 1/2 duty cycle for 0 values in address display
 
@@ -78,16 +82,16 @@
 */
 
 /*
- * Here are the defines used in this software to control special parts of the implementation
- * #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
- * #define SPS_RECEIVER: using a RC receiver input
- * #define SPS_ENHANCEMENT: all of the other enhancments
- * #define SPS_SERVO: using servo outputs
- * #define SPS_TONE: using a tone output
- * #define SPS_SERIAL_PRG: activates the serial programming feature
- */
+   Here are the defines used in this software to control special parts of the implementation
+   #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
+   #define SPS_RECEIVER: using a RC receiver input
+   #define SPS_ENHANCEMENT: all of the other enhancments
+   #define SPS_SERVO: using servo outputs
+   #define SPS_TONE: using a tone output
+   #define SPS_SERIAL_PRG: activates the serial programming feature
+*/
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-//#define debug
+#define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
@@ -236,6 +240,7 @@ void setup() {
 #endif
 
 #ifdef SPS_SERIAL_PRG
+  initSerialPrg();
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
@@ -278,13 +283,9 @@ void readProgram() {
     byte value = readbyte(addr);
 
 #ifdef debug
-    dbgOut2(value, HEX);
-    if (((addr + 1) % 16) == 0) {
-      dbgOutLn();
-    }
-    else {
-      dbgOut(",");
-    }
+    dbgOutLn();
+    dbgOut2(addr, HEX);
+    dbgOut(": ");
 #endif
 
     if (value == 0xFF) {
@@ -294,10 +295,8 @@ void readProgram() {
     byte cmd = (value & 0xF0);
     byte data = (value & 0x0F);
 
-    dbgOut("(");
-    dbgOut2(cmd, HEX);
+    dbgOut2(cmd>>4, HEX);
     dbgOut2(data, HEX);
-    dbgOut(")");
 
     if (cmd == CALL_SUB) {
       if (data >= 8) {
@@ -308,22 +307,22 @@ void readProgram() {
 #ifdef SPS_SERVO
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
-        dbgOutLn("attach Srv1");
+        dbgOutLn(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
       if (!servo1.attached()) {
-        dbgOutLn("attach Srv1");
+        dbgOutLn(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == IS_A) && (data == 0x0C)) {
       if (!servo2.attached()) {
-        dbgOutLn("attach Srv2");
+        dbgOutLn(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
       if (!servo2.attached()) {
-        dbgOutLn("attach Srv2");
+        dbgOutLn(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     }
@@ -336,6 +335,18 @@ void readProgram() {
   main loop
 */
 void loop() {
+#ifdef SPS_SERIAL_PRG
+  if (Serial.available() > 0) {
+    while (Serial.available() > 0) {
+      char myChar = Serial.read();
+      if (myChar == 'p') {
+        serialPrg();
+        Serial.println("end of inline programming");
+        doReset();
+      }
+    }
+  }
+#endif
   byte value = readbyte(addr);
   byte cmd = (value & 0xF0);
   byte data = (value & 0x0F);
