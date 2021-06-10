@@ -11,6 +11,12 @@
 #define BAUDRATE 9600
 #endif
 
+void initSerialPrg() {
+  Serial.end();
+  Serial.begin(BAUDRATE);  
+  Serial.println();
+}
+
 void serialPrg() {
   byte value;
   bool endOfPrg = false;
@@ -22,9 +28,6 @@ void serialPrg() {
   byte type;
 
   addr = 0;
-  Serial.end();
-  Serial.begin(BAUDRATE);
-  Serial.println();
 #ifdef __AVR_ATtiny84__
   Serial.println("TinySPS");
 #endif
@@ -184,8 +187,6 @@ void serialPrg() {
     }
   }
   Serial.println("end");
-  Serial.end();
-  doReset();
 }
 
 char getNextChar() {

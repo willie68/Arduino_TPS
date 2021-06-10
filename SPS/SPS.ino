@@ -7,13 +7,13 @@
   Version 0.12.1
   03.09.2019
   - changing the variable names in debug mode
-  
+
   Version 0.12
   27.01.2019
   - adding demo program,
   11.01.2018
   - some refactoring
-  
+
   07.01.2018
   - programming: 1/2 duty cycle for 0 values in address display
 
@@ -78,25 +78,25 @@
 */
 
 /*
- * Here are the defines used in this software to control special parts of the implementation
- * #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
- * #define SPS_RECEIVER: using a RC receiver input
- * #define SPS_ENHANCEMENT: all of the other enhancments
- * #define SPS_SERVO: using servo outputs
- * #define SPS_TONE: using a tone output
- * #define SPS_SERIAL_PRG: activates the serial programming feature
- */
+   Here are the defines used in this software to control special parts of the implementation
+   #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
+   #define SPS_RECEIVER: using a RC receiver input
+   #define SPS_ENHANCEMENT: all of the other enhancments
+   #define SPS_SERVO: using servo outputs
+   #define SPS_TONE: using a tone output
+   #define SPS_SERIAL_PRG: activates the serial programming feature
+*/
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-//#define debug
+#define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
 //#define SPS_USE_DISPLAY
 //#define SPS_RECEIVER
-//#define SPS_ENHANCEMENT
-//#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-//#define SPS_TONE
+#define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
+#define SPS_SERVO
+#define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -236,6 +236,7 @@ void setup() {
 #endif
 
 #ifdef SPS_SERIAL_PRG
+  initSerialPrg();
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
   }
@@ -336,6 +337,18 @@ void readProgram() {
   main loop
 */
 void loop() {
+#ifdef SPS_SERIAL_PRG
+  if (Serial.available() > 0) {
+    while (Serial.available() > 0) {
+      char myChar = Serial.read();
+      if (myChar == 'p') {
+        serialPrg();
+        Serial.println("end of inline programming");
+        doReset();
+      }
+    }
+  }
+#endif
   byte value = readbyte(addr);
   byte cmd = (value & 0xF0);
   byte data = (value & 0x0F);
