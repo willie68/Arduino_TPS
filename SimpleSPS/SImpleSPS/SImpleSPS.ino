@@ -390,7 +390,7 @@ void doCalc(byte data) {
       a = a ^ b;
       break;
     case 10:
-      a = !a;
+      a = ~a;
       break;
     default:
       break;

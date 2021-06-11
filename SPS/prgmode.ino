@@ -63,19 +63,19 @@ void programMode() {
 
       byte Eebyte = readbyte(addr);
       data = Eebyte & 15;
-      com = Eebyte >> 4;
+      cmd = Eebyte >> 4;
 
       blinkD3();
       prgMode = COMMAND;
-      dbgOutLn("com");
-      doPort(com); //show command
+      dbgOutLn("cmd");
+      doPort(cmd); //show command
 
       do {
         if (digitalRead(SW_SEL) == 0) {
           delay(KEY_DELAY);
-          com += 1;
-          com = com & 0x0F;
-          doPort(com);
+          cmd += 1;
+          cmd = cmd & 0x0F;
+          doPort(cmd);
         }
       }
       while (digitalRead(SW_PRG) == 1);
@@ -97,7 +97,7 @@ void programMode() {
       while (digitalRead(SW_PRG) == 1); // S2 = 1
       delay(DEBOUNCE);
 
-      byte newValue = (com << 4) + data;
+      byte newValue = (cmd << 4) + data;
       if (newValue != Eebyte) {
         writebyte(addr, newValue); //           Writeeeprom Eebyte , Addr
         blinkAll();

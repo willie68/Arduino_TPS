@@ -8,12 +8,20 @@ http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 And there is now a print book at amazon 
 https://www.amazon.com/dp/1731232535
 
+**Version 0.12.4**
+  11.06.2021
+
+  - bug: pop not working
+  - bug: a = not a not working
+
 **Version 0.12.3**
   10.06.2021
+
   - adding auto programming feature for the SPS Emulator
 
 **Version 0.12.2**
   07.06.2021
+
   - bug with servo in 4-bit mode, evaluate the full 8 bit.
 
 **Version 0.12.1**
