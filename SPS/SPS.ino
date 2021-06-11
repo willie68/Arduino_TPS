@@ -91,16 +91,16 @@
    #define SPS_SERIAL_PRG: activates the serial programming feature
 */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-#define debug
+//#define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
 //#define SPS_USE_DISPLAY
 //#define SPS_RECEIVER
-//#define SPS_ENHANCEMENT
-//#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-//#define SPS_TONE
+#define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
+#define SPS_SERVO
+#define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -196,9 +196,8 @@ Servo servo1;
 Servo servo2;
 #endif
 
-byte prog = 0;
 byte data = 0;
-byte com = 0;
+byte cmd = 0;
 
 void setup() {
   pinMode(Dout_0, OUTPUT);
@@ -270,6 +269,10 @@ void doReset() {
 #ifdef SPS_ENHANCEMENT
   e = 0;
   f = 0;
+  stackCnt = 0;
+  for (int i = 0; i < SAVE_CNT; i++) {
+    stack[i] = 0;
+  }
 #endif
 }
 
@@ -302,27 +305,29 @@ void readProgram() {
       if (data >= 8) {
         data = data - 8;
         subs[data] = addr + 1;
+        dbgOut(", sub def ");
+        dbgOut(data);
       }
     }
 #ifdef SPS_SERVO
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
-        dbgOutLn(": attach Srv1");
+        dbgOut(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
       if (!servo1.attached()) {
-        dbgOutLn(": attach Srv1");
+        dbgOut(": attach Srv1");
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == IS_A) && (data == 0x0C)) {
       if (!servo2.attached()) {
-        dbgOutLn(": attach Srv2");
+        dbgOut(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
       if (!servo2.attached()) {
-        dbgOutLn(": attach Srv2");
+        dbgOut(": attach Srv2");
         servo2.attach(SERVO_2);
       }
     }
@@ -348,8 +353,8 @@ void loop() {
   }
 #endif
   byte value = readbyte(addr);
-  byte cmd = (value & 0xF0);
-  byte data = (value & 0x0F);
+  cmd = (value & 0xF0);
+  data = (value & 0x0F);
 
   debugOutputRegister();
 
@@ -409,11 +414,17 @@ void loop() {
 }
 
 void debugOutputRegister() {
-  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(prog, HEX); dbgOut(",");
-  dbgOut2(com, HEX); dbgOut(","); dbgOut2(data, HEX); dbgOut(",a:");
-  dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
+  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(cmd>>4, HEX); dbgOut(","); dbgOut2(data, HEX); 
+  dbgOut(",reg:"); dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
   dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
-  dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); dbgOutLn();
+#ifdef SPS_ENHANCEMENT
+  dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); 
+  dbgOut(", s:"); dbgOut2(stackCnt, HEX); dbgOut(":");
+  for (int i = 0; i < SAVE_CNT; i++) {
+    dbgOut2(stack[i],HEX);dbgOut(",");
+  }
+#endif
+  dbgOutLn();
 }
 
 /*
@@ -577,7 +588,7 @@ void doAIs(byte data) {
       dbgOutLn(a);
       break;
 #endif
-#ifdef SPS_ENHANCMENT
+#ifdef SPS_ENHANCEMENT
     case 13:
       a = e;
       break;
@@ -585,6 +596,8 @@ void doAIs(byte data) {
       a = f;
       break;
     case 15:
+      dbgOut("pop ");
+      dbgOutLn(stackCnt);
       if (stackCnt > 0) {
         stackCnt -= 1;
         a = stack[stackCnt];
@@ -670,6 +683,8 @@ void doIsA(byte data) {
       f = a;
       break;
     case 15:
+      dbgOut("push ");
+      dbgOutLn(stackCnt);
       if (stackCnt < SAVE_CNT) {
         stack[stackCnt] = a;
         stackCnt += 1;
@@ -720,7 +735,7 @@ void doCalc(byte data) {
       a = a ^ b;
       break;
     case 10:
-      a = !a;
+      a = ~a;
       break;
 #ifdef SPS_ENHANCEMENT
     case 11:
@@ -760,7 +775,7 @@ void doPage(byte data) {
 void doJump(byte data) {
 #ifdef debug
   dbgOut("J");
-  dbgOut2(page, HEX);
+  dbgOut2(page>>4, HEX);
   dbgOutLn2(data, HEX);
 #endif
   addr = page + data;
