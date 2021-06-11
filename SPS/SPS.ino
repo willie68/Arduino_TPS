@@ -3,6 +3,7 @@
   Version 0.12.4
   10.06.2021
   - bug: pop not working
+  - bug: a = not a not working
 
   Version 0.12.3
   10.06.2021
