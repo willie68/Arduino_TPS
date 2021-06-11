@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.12.4
+  10.06.2021
+  - bug: pop not working
+
   Version 0.12.3
   10.06.2021
   - adding auto programming feature for the SPS Emulator
