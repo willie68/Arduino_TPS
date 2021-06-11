@@ -11,52 +11,52 @@ https://www.amazon.com/dp/1731232535
 **Version 0.12.4**
   11.06.2021
 
-  - bug: pop not working
-  - bug: a = not a not working
+  * bug: pop not working
+  * bug: a = not a not working
 
 **Version 0.12.3**
   10.06.2021
 
-  - adding auto programming feature for the SPS Emulator
+  * adding auto programming feature for the SPS Emulator
 
 **Version 0.12.2**
   07.06.2021
 
-  - bug with servo in 4-bit mode, evaluate the full 8 bit.
+  * bug with servo in 4-bit mode, evaluate the full 8 bit.
 
 **Version 0.12.1**
   03.09.2019
 
-  - changing the variable names in debug mode
-  - release
+  * changing the variable names in debug mode
+  * release
 
 **Version 0.12**
   27.01.2019
-  - Release
+  * Release
 
-  - automatically adding demo program to new mcu
+  * automatically adding demo program to new mcu
 
   11.01.2018
 
-  - some refactoring
+  * some refactoring
 
   07.01.2018
-  - programming: 1/2 duty cycle for 0 values in address display
+  * programming: 1/2 duty cycle for 0 values in address display
 
 **Version 0.11**
   17.12.2018
-  - adding Shift left and shift right to register A
+  * adding Shift left and shift right to register A
 
 
 **Version 0.10**
   9.12.2018
-  - Release
+  * Release
 
   7.12.2018
-  - new define for serial programming
+  * new define for serial programming
 
   18.11.2018 WKLA
-  - new standard programming mode
+  * new standard programming mode
     I added a new programming mode for the default programming, because i thing the old one was a little bit clumsy.
     The new one has a nicer interface, as you now always know where you are.
     Starting with PRG pushed after Reset.
