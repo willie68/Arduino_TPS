@@ -102,10 +102,10 @@
 #ifdef __AVR_ATmega328P__
 //#define SPS_USE_DISPLAY
 //#define SPS_RECEIVER
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-#define SPS_TONE
+//#define SPS_ENHANCEMENT
+//#define SPS_SERIAL_PRG
+//#define SPS_SERVO
+//#define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
