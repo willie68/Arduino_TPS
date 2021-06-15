@@ -1,5 +1,9 @@
 /*
   SPS System mit dem Arduino.
+  Version 0.13.0
+  15.06.2021
+  - fea: ESP32 implementation
+  
   Version 0.12.4
   10.06.2021
   - bug: pop not working
