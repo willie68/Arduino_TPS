@@ -96,7 +96,7 @@
    #define SPS_SERIAL_PRG: activates the serial programming feature
 */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-//#define debug
+#define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
@@ -104,6 +104,15 @@
 //#define SPS_RECEIVER
 //#define SPS_ENHANCEMENT
 //#define SPS_SERIAL_PRG
+//#define SPS_SERVO
+//#define SPS_TONE
+#endif
+
+#ifdef ESP32
+//#define SPS_USE_DISPLAY
+//#define SPS_RECEIVER
+#define SPS_ENHANCEMENT
+#define SPS_SERIAL_PRG
 //#define SPS_SERVO
 //#define SPS_TONE
 #endif
@@ -128,9 +137,9 @@
 #endif
 
 // libraries
-#include <debug.h>
-#include <makros.h>
-#include "EEPROM_mbv2.h"
+#include "debug.h"
+#include "makros.h"
+#include "EEPROM_store.h"
 
 #ifdef SPS_SERVO
 #include <Servo.h>
@@ -142,6 +151,10 @@
 
 #ifdef SPS_TONE
 #include "notes.h"
+#endif
+
+#ifdef ESP32
+#include <analogWrite.h>
 #endif
 
 #include "hardware.h"

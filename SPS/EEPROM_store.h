@@ -29,8 +29,43 @@ void writebyte(int addr, byte value) {
 
 void store() {
 }
+#endif
 
-#else
+#ifdef ESP32
+#include <EEPROM.h>
+
+const int STORESIZE = 1024;
+byte program[STORESIZE];
+bool loaded = false;
+
+void load() {
+  EEPROM.begin(STORESIZE);
+  EEPROM.readBytes(0, program, STORESIZE);
+  loaded = true;
+}
+
+byte readbyte(int addr) {
+  if (!loaded) {
+    load();
+  }
+  if ((addr >=0) && (addr < STORESIZE)) {
+    return program[addr];
+  }
+  return 0xFF;
+}
+
+void writebyte(int addr, byte value) { 
+  if ((addr >=0) && (addr < STORESIZE)) {
+    program[addr] = value;
+  }
+}
+
+void store() {
+  EEPROM.writeBytes(0, program, STORESIZE);
+}
+#endif
+
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__) 
 
 #include <EEPROM.h>
 #include <avr/eeprom.h>

@@ -165,3 +165,40 @@ const byte DIGIT_DATA_IO = 12;
 const byte DIGIT_CLOCK = 13;
 #endif
 #endif
+
+
+#ifdef ESP32
+// ESP 32 Hardware
+const byte Din_0 = 26;
+const byte Din_1 = 18;
+const byte Din_2 = 19;
+const byte Din_3 = 23;
+
+const byte Dout_0 = 22;
+const byte Dout_1 = 21;
+const byte Dout_2 = 17;
+const byte Dout_3 = 16;
+
+const byte ADC_0 = 36; 
+const byte ADC_1 = 39; 
+const byte PWM_1 = 27;
+const byte PWM_2 = 25;
+
+#ifdef SPS_RCRECEIVER
+const byte RC_0 = 34;
+const byte RC_1 = 35;
+#endif
+
+#ifdef SPS_SERVO
+const byte SERVO_1 = 27;
+const byte SERVO_2 = 25;
+#endif
+
+const byte SW_PRG = 13;
+const byte SW_SEL = 12;
+
+#ifdef SPS_USE_DISPLAY
+const byte DIGIT_DATA_IO = 32;
+const byte DIGIT_CLOCK = 33;
+#endif
+#endif
