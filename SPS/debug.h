@@ -35,7 +35,7 @@ Serial.println(S);
 #define dbgOutLn2(S,P) \
 Serial.println(S,P); 
 #define initDebug() \
-  Serial.begin(115200); \
+  Serial.begin(9600); \
   Serial.flush(); \
   delay(100);
 #else

@@ -21,6 +21,7 @@ PROGRAMMING_MODE prgMode;
 void prgDemoPrg() {
   byte value = readbyte(0);
   if (value == 0xFF) {
+    dbgOutLn("recreate demo program");
     value = readbyte(1);
     if (value == 0xFF) {
       for (byte i = 0; i < sizeof(demoPrg); i++) {

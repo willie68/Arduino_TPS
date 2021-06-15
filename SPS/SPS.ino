@@ -8,7 +8,7 @@
   Version 0.12.3
   10.06.2021
   - adding auto programming feature for the SPS Emulator
-  
+
   Version 0.12.2
   07.06.2021
   - bug with servo in 4-bit mode, evaluate the full 8 bit.
@@ -109,8 +109,7 @@
 #endif
 
 #ifdef ESP32
-//#define SPS_USE_DISPLAY
-//#define SPS_RECEIVER
+//#define SPS_RECEIVER (not implementted yet)
 #define SPS_ENHANCEMENT
 #define SPS_SERIAL_PRG
 //#define SPS_SERVO
@@ -141,8 +140,17 @@
 #include "makros.h"
 #include "EEPROM_store.h"
 
+#ifdef ESP32
+//#include <analogWrite.h>
+#include <ESP32Servo.h>
+#endif
+
+
 #ifdef SPS_SERVO
+
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__)
 #include <Servo.h>
+#endif
 #endif
 
 #ifdef SPS_ENHANCEMENT
@@ -151,10 +159,9 @@
 
 #ifdef SPS_TONE
 #include "notes.h"
-#endif
-
 #ifdef ESP32
-#include <analogWrite.h>
+#include <ESP32Tone.h>
+#endif
 #endif
 
 #include "hardware.h"
@@ -218,25 +225,32 @@ byte data = 0;
 byte cmd = 0;
 
 void setup() {
-  pinMode(Dout_0, OUTPUT);
   pinMode(Dout_1, OUTPUT);
   pinMode(Dout_2, OUTPUT);
   pinMode(Dout_3, OUTPUT);
+  pinMode(Dout_4, OUTPUT);
 
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
 
-  pinMode(Din_0, INPUT_PULLUP);
   pinMode(Din_1, INPUT_PULLUP);
   pinMode(Din_2, INPUT_PULLUP);
   pinMode(Din_3, INPUT_PULLUP);
+  pinMode(Din_4, INPUT_PULLUP);
 
   pinMode(SW_PRG, INPUT_PULLUP);
   pinMode(SW_SEL, INPUT_PULLUP);
 
-  digitalWrite(Dout_0, 1);
+#ifdef ESP32
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
+#endif
+
+  digitalWrite(Dout_1, 1);
   delay(1000);
-  digitalWrite(Dout_0, 0);
+  digitalWrite(Dout_1, 0);
 #ifdef SPS_USE_DISPLAY
   initDisplay();
 #endif
@@ -309,15 +323,16 @@ void readProgram() {
     dbgOut(": ");
 #endif
 
+    byte cmd = (value & 0xF0);
+    byte data = (value & 0x0F);
+
+    dbgOut2(cmd >> 4, HEX);
+    dbgOut2(data, HEX);
+
     if (value == 0xFF) {
       // ende des Programms
       break;
     }
-    byte cmd = (value & 0xF0);
-    byte data = (value & 0x0F);
-
-    dbgOut2(cmd>>4, HEX);
-    dbgOut2(data, HEX);
 
     if (cmd == CALL_SUB) {
       if (data >= 8) {
@@ -331,21 +346,33 @@ void readProgram() {
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
+#ifdef ESP32
+        servo1.setPeriodHertz(50);
+#endif
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
+#ifdef ESP32
+        servo1.setPeriodHertz(50);
+#endif
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == IS_A) && (data == 0x0C)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
+#ifdef ESP32
+        servo2.setPeriodHertz(50);
+#endif
         servo2.attach(SERVO_2);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
+#ifdef ESP32
+        servo2.setPeriodHertz(50);
+#endif
         servo2.attach(SERVO_2);
       }
     }
@@ -432,14 +459,14 @@ void loop() {
 }
 
 void debugOutputRegister() {
-  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(cmd>>4, HEX); dbgOut(","); dbgOut2(data, HEX); 
+  dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(cmd >> 4, HEX); dbgOut(","); dbgOut2(data, HEX);
   dbgOut(",reg:"); dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
   dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
 #ifdef SPS_ENHANCEMENT
-  dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX); 
+  dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX);
   dbgOut(", s:"); dbgOut2(stackCnt, HEX); dbgOut(":");
   for (int i = 0; i < SAVE_CNT; i++) {
-    dbgOut2(stack[i],HEX);dbgOut(",");
+    dbgOut2(stack[i], HEX); dbgOut(",");
   }
 #endif
   dbgOutLn();
@@ -449,10 +476,10 @@ void debugOutputRegister() {
   output to port
 */
 void doPort(byte data) {
-  digitalWrite(Dout_0, (data & 0x01) > 0);
-  digitalWrite(Dout_1, (data & 0x02) > 0);
-  digitalWrite(Dout_2, (data & 0x04) > 0);
-  digitalWrite(Dout_3, (data & 0x08) > 0);
+  digitalWrite(Dout_1, (data & 0x01) > 0);
+  digitalWrite(Dout_2, (data & 0x02) > 0);
+  digitalWrite(Dout_3, (data & 0x04) > 0);
+  digitalWrite(Dout_4, (data & 0x08) > 0);
 }
 
 /*
@@ -545,28 +572,28 @@ void doAIs(byte data) {
       a = d;
       break;
     case 4:
-      a = digitalRead(Din_0) + (digitalRead(Din_1) << 1) + (digitalRead(Din_2) << 2) + (digitalRead(Din_3) << 3);
+      a = digitalRead(Din_1) + (digitalRead(Din_2) << 1) + (digitalRead(Din_3) << 2) + (digitalRead(Din_4) << 3);
       break;
     case 5:
-      a = digitalRead(Din_0);
-      break;
-    case 6:
       a = digitalRead(Din_1);
       break;
-    case 7:
+    case 6:
       a = digitalRead(Din_2);
       break;
-    case 8:
+    case 7:
       a = digitalRead(Din_3);
+      break;
+    case 8:
+      a = digitalRead(Din_4);
       break;
 #ifndef __AVR_ATtiny4313__
     case 9:
-      tmpValue = analogRead(ADC_0);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      tmpValue = getAnalog(ADC_0);
+      a = tmpValue >> 4; //(Umrechnen auf 4 bit)
       break;
     case 10:
-      tmpValue = analogRead(ADC_1);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      tmpValue = getAnalog(ADC_1);
+      a = tmpValue >> 4; //(Umrechnen auf 4 bit)
       break;
 #else
     case 9:
@@ -652,25 +679,25 @@ void doIsA(byte data) {
       doPort(a);
       break;
     case 5:
-      digitalWrite(Dout_0, (a & 0x01) > 0);
-      break;
-    case 6:
       digitalWrite(Dout_1, (a & 0x01) > 0);
       break;
-    case 7:
+    case 6:
       digitalWrite(Dout_2, (a & 0x01) > 0);
       break;
-    case 8:
+    case 7:
       digitalWrite(Dout_3, (a & 0x01) > 0);
       break;
+    case 8:
+      digitalWrite(Dout_4, (a & 0x01) > 0);
+      break;
     case 9:
-      tmpValue = a * 16;
+      tmpValue = (a & 0x0f) * 16;
       dbgOut("PWM1:");
       dbgOutLn(tmpValue);
       analogWrite(PWM_1, tmpValue);
       break;
     case 10:
-      tmpValue = a * 16;
+      tmpValue = (a & 0x0f) * 16;
       dbgOut("PWM2:");
       dbgOutLn(tmpValue);
       analogWrite(PWM_2, tmpValue);
@@ -775,6 +802,7 @@ void doCalc(byte data) {
     default:
       break;
   }
+  a = a & 0xFF; 
 #ifndef SPS_ENHANCEMENT
   a = a & 15;
 #endif
@@ -793,7 +821,7 @@ void doPage(byte data) {
 void doJump(byte data) {
 #ifdef debug
   dbgOut("J");
-  dbgOut2(page>>4, HEX);
+  dbgOut2(page >> 4, HEX);
   dbgOutLn2(data, HEX);
 #endif
   addr = page + data;
@@ -842,28 +870,28 @@ void doSkipIf(byte data) {
       skip = (a == b);
       break;
     case 4:
-      skip = digitalRead(Din_0);
-      break;
-    case 5:
       skip = digitalRead(Din_1);
       break;
-    case 6:
+    case 5:
       skip = digitalRead(Din_2);
       break;
-    case 7:
+    case 6:
       skip = digitalRead(Din_3);
       break;
-    case 8:
-      skip = !digitalRead(Din_0);
+    case 7:
+      skip = digitalRead(Din_4);
       break;
-    case 9:
+    case 8:
       skip = !digitalRead(Din_1);
       break;
-    case 10:
+    case 9:
       skip = !digitalRead(Din_2);
       break;
-    case 11:
+    case 10:
       skip = !digitalRead(Din_3);
+      break;
+    case 11:
+      skip = !digitalRead(Din_4);
       break;
     case 12:
       skip = !digitalRead(SW_PRG);
@@ -932,12 +960,10 @@ void doByte(byte data) {
   dbgOut("B ");
   switch (data) {
     case 0:
-      tmpValue = analogRead(ADC_0);
-      a = tmpValue >> 2; //(Umrechnen auf 8 bit)
+      a = getAnalog(ADC_0);
       break;
     case 1:
-      tmpValue = analogRead(ADC_1);
-      a = tmpValue >> 2; //(Umrechnen auf 8 bit)
+      a = getAnalog(ADC_1);
       break;
 #ifdef SPS_RCRECEIVER
     case 2:
