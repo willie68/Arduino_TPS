@@ -8,6 +8,11 @@ http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 And there is now a print book at amazon 
 https://www.amazon.com/dp/1731232535
 
+
+**Version 0.13.0**
+  16.06.2021
+  * feature: ESP32 implementation: https://wkla.no-ip.biz/ArduinoWiki/doku.php?id=arduino:arduinosps:esp32
+
 **Version 0.12.4**
   11.06.2021
 
