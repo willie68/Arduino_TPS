@@ -1,13 +1,5 @@
 #ifdef SPS_SERIAL_PRG
-#ifdef __AVR_ATtiny861__
-#define BAUDRATE 9600
-#endif
-
-#ifdef __AVR_ATtiny84__
-#define BAUDRATE 9600
-#endif
-
-#ifdef __AVR_ATmega328P__
+#if defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATmega328P__) || defined(ESP32)
 #define BAUDRATE 9600
 #endif
 
@@ -153,7 +145,7 @@ void serialPrg() {
             Serial.print("ok");
             // adding value to EEPROM
             for (byte x = 0; x < count; x++) {
-              EEPROM.write(readAddress + x, data[x]);
+              writebyte(readAddress + x, data[x]);
             }
           } else {
             Serial.println(", CRC Error");
@@ -163,13 +155,14 @@ void serialPrg() {
           Serial.println();
         } while (!(endOfFile));
         Serial.println("endOfFile");
+        store();
       }
       if (myChar == 'r') {
         // write eeprom as hexfile to receiver
         Serial.println("EEPROM data:");
         int checksum = 0;
-        for (int addr = 0; addr <= E2END; addr++) {
-          value = EEPROM.read(addr);
+        for (int addr = 0; addr <= STORESIZE; addr++) {
+          value = readbyte(addr);
           if ((addr % 8) == 0) {
             printCheckSum(checksum);
             checksum = 0;
