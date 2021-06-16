@@ -21,6 +21,7 @@ PROGRAMMING_MODE prgMode;
 void prgDemoPrg() {
   byte value = readbyte(0);
   if (value == 0xFF) {
+    dbgOutLn("recreate demo program");
     value = readbyte(1);
     if (value == 0xFF) {
       for (byte i = 0; i < sizeof(demoPrg); i++) {
@@ -80,7 +81,10 @@ void programMode() {
       }
       while (digitalRead(SW_PRG) == 1);
       delay(DEBOUNCE);
-
+      if (digitalRead(SW_SEL) == 0) {
+        break;
+      }
+      
       blinkD4();
       prgMode = DATA;
       dbgOutLn("dat");
@@ -96,6 +100,9 @@ void programMode() {
       }
       while (digitalRead(SW_PRG) == 1); // S2 = 1
       delay(DEBOUNCE);
+      if (digitalRead(SW_SEL) == 0) {
+        break;
+      }
 
       byte newValue = (cmd << 4) + data;
       if (newValue != Eebyte) {
@@ -108,6 +115,8 @@ void programMode() {
 #ifdef SPS_ENHANCEMENT
   }
 #endif
+  dbgOutLn("save program data");
+  store();
 }
 
 void blinkAll() {

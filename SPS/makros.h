@@ -1,5 +1,5 @@
 /*
-  debug3.h - Definition von 2 Debugfunktionen - Version 0.1
+  makros.cpp - Ein paar nützliche Makros - Version 0.2
   Copyright (c) 2012 Wilfried Klaas.  All right reserved.
 
   This library is free software; you can redistribute it and/or
@@ -17,29 +17,25 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-// Zum aktivieren der Debug Funktion bitte den Define VOR dem #include "debug.h" in die Hauptdatei eintragen.
-//#define debug
+#ifndef swap
+#define swap(x,y,T) { T TMP_SWAP = x; x = y; y = TMP_SWAP; }
+#endif 
 
-#ifdef debug
-#define dbgOut(S) \
-Serial3.print(S); 
-#define dbgOut2(S,P) \
-Serial3.print(S,P); 
-#define dbgOutLn(S) \
-Serial3.println(S); 
-#define dbgOutLn2(S,P) \
-Serial3.println(S,P); 
-#define initDebug() \
-  Serial3.begin(57600); \
-  Serial3.flush(); \
-  delay(100);
-#else
-#define dbgOut(S)
-#define dbgOut2(S,P)
-#define dbgOutLn(S)
-#define dbgOutLn2(S,P)
-#define initDebug()
+#ifndef between
+#define between(a,x,y) ((a >=x) && (a <= y))
 #endif
 
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
 
+#ifndef ELEMENTS
+#define ELEMENTS(x)    (sizeof(x) / sizeof(x[0]))
+#endif
+
+#ifndef FILLARRAY
+#define FILLARRAY(a,n) a[0]=n, memcpy( ((char*)a)+sizeof(a[0]), a, sizeof(a)-sizeof(a[0]) );
+#endif
