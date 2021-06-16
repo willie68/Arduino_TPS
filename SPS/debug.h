@@ -23,9 +23,9 @@
 #include <Arduino.h>
 #include <inttypes.h>
 #ifndef debug_lib
-
 #define debug_lib
-#ifdef debug
+
+#if defined(debug) && !defined(__AVR_ATtiny84__)
 #define dbgOut(S) \
 Serial.print(S); 
 #define dbgOut2(S,P) \
@@ -44,6 +44,7 @@ Serial.println(S,P);
 #define dbgOutLn(S)
 #define dbgOutLn2(S,P)
 #define initDebug()
+
 #endif
 
 /* 

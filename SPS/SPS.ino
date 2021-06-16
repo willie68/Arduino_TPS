@@ -3,7 +3,7 @@
   Version 0.13.0
   15.06.2021
   - fea: ESP32 implementation
-  
+
   Version 0.12.4
   10.06.2021
   - bug: pop not working
@@ -106,18 +106,18 @@
 #ifdef __AVR_ATmega328P__
 //#define SPS_USE_DISPLAY
 //#define SPS_RECEIVER
-//#define SPS_ENHANCEMENT
+#define SPS_ENHANCEMENT
 //#define SPS_SERIAL_PRG
 //#define SPS_SERVO
-//#define SPS_TONE
+#define SPS_TONE
 #endif
 
 #ifdef ESP32
 //#define SPS_RECEIVER (not implementted yet)
 #define SPS_ENHANCEMENT
 #define SPS_SERIAL_PRG
-//#define SPS_SERVO
-//#define SPS_TONE
+#define SPS_SERVO
+#define SPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -145,13 +145,13 @@
 #include "EEPROM_store.h"
 
 #ifdef ESP32
-//#include <analogWrite.h>
 #include <ESP32Servo.h>
+#ifdef SPS_TONE
+#include <ESP32Tone.h>
+#endif
 #endif
 
-
 #ifdef SPS_SERVO
-
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__)
 #include <Servo.h>
 #endif
@@ -163,9 +163,6 @@
 
 #ifdef SPS_TONE
 #include "notes.h"
-#ifdef ESP32
-#include <ESP32Tone.h>
-#endif
 #endif
 
 #include "hardware.h"
@@ -245,12 +242,7 @@ void setup() {
   pinMode(SW_PRG, INPUT_PULLUP);
   pinMode(SW_SEL, INPUT_PULLUP);
 
-#ifdef ESP32
-  ESP32PWM::allocateTimer(0);
-  ESP32PWM::allocateTimer(1);
-  ESP32PWM::allocateTimer(2);
-  ESP32PWM::allocateTimer(3);
-#endif
+  initHardware();
 
   digitalWrite(Dout_1, 1);
   delay(1000);
@@ -260,9 +252,7 @@ void setup() {
 #endif
 
   // Serielle Schnittstelle einstellen
-#ifndef __AVR_ATtiny84__
   initDebug();
-#endif
 
   prgDemoPrg();
   doReset();
@@ -350,33 +340,21 @@ void readProgram() {
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
-#ifdef ESP32
-        servo1.setPeriodHertz(50);
-#endif
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
-#ifdef ESP32
-        servo1.setPeriodHertz(50);
-#endif
         servo1.attach(SERVO_1);
       }
     } else if ((cmd == IS_A) && (data == 0x0C)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
-#ifdef ESP32
-        servo2.setPeriodHertz(50);
-#endif
         servo2.attach(SERVO_2);
       }
     } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
-#ifdef ESP32
-        servo2.setPeriodHertz(50);
-#endif
         servo2.attach(SERVO_2);
       }
     }
@@ -806,7 +784,7 @@ void doCalc(byte data) {
     default:
       break;
   }
-  a = a & 0xFF; 
+  a = a & 0xFF;
 #ifndef SPS_ENHANCEMENT
   a = a & 15;
 #endif
@@ -1033,16 +1011,16 @@ void doByte(byte data) {
     case 8:
       if (a == 0) {
         dbgOutLn("Tone off");
-        noTone(PWM_2);
+        noTone(TONE_OUT);
       } else {
         if (between(a, MIDI_START, MIDI_START + MIDI_NOTES)) {
-          word frequenz = pgm_read_word(a - MIDI_START + midiNoteToFreq);
+          word frequenz = getFrequency(a);
           dbgOut("Tone on: midi ");
           dbgOut2(a, DEC);
           dbgOut(", ");
           dbgOut2(frequenz, DEC);
           dbgOutLn("Hz");
-          tone(PWM_2, frequenz);
+          tone(TONE_OUT, frequenz);
         }
       }
       break;

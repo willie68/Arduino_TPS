@@ -17,6 +17,10 @@ const byte ADC_1 = 1; //(16)
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
 
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 18;
 const byte RC_1 = 19;
@@ -34,7 +38,10 @@ const byte SW_SEL = 11;
 const byte DIGIT_DATA_IO = 12;
 const byte DIGIT_CLOCK = 13;
 #endif
+
 #define getAnalog(pin) (analogRead(pin) >> 2)
+#define initHardware()
+
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -52,6 +59,11 @@ const byte ADC_0 = 0;
 const byte ADC_1 = 1;
 const byte PWM_1 = 2;
 const byte PWM_2 = 3;
+
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 10;
 const byte RC_1 = 9;
@@ -69,7 +81,10 @@ const byte SW_SEL = 8;
 const byte DIGIT_DATA_IO = 4;
 const byte DIGIT_CLOCK = 5;
 #endif
+
 #define getAnalog(pin) (analogRead(pin) >> 2)
+#define initHardware()
+
 #endif
 
 #ifdef __AVR_ATtiny4313__
@@ -88,6 +103,10 @@ const byte ADC_1 = 14;
 const byte PWM_1 = 11;
 const byte PWM_2 = 12;
 
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 15;
 const byte RC_1 = 16;
@@ -102,6 +121,8 @@ const byte SW_PRG = 9;
 const byte SW_SEL = 8;
 
 #define getAnalog(pin) (analogRead(pin) >> 2)
+#define initHardware()
+
 #endif
 
 #ifdef __AVR_ATtiny861__
@@ -120,6 +141,10 @@ const byte ADC_1 = 14;
 const byte PWM_1 = 11;
 const byte PWM_2 = 12;
 
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 15;
 const byte RC_1 = 16;
@@ -134,6 +159,8 @@ const byte SW_PRG = 9;
 const byte SW_SEL = 8;
 
 #define getAnalog(pin) (analogRead(pin) >> 2)
+#define initHardware()
+
 #endif
 
 #ifdef _MICROBIT_V2_
@@ -153,6 +180,10 @@ const byte ADC_1 = 1; //(16)
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
 
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
+
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 18;
 const byte RC_1 = 19;
@@ -170,11 +201,17 @@ const byte SW_SEL = 11;
 const byte DIGIT_DATA_IO = 12;
 const byte DIGIT_CLOCK = 13;
 #endif
+
 #define getAnalog(pin) (analogRead(pin) >> 2)
+#define initHardware()
+
 #endif
 
 
 #ifdef ESP32
+
+#include "esp32.h"
+
 // ESP32 Hardware
 const byte Din_1 = 26;
 const byte Din_2 = 18;
@@ -190,6 +227,10 @@ const byte ADC_0 = 36;
 const byte ADC_1 = 39; 
 const byte PWM_1 = 27;
 const byte PWM_2 = 25;
+
+#ifdef SPS_TONE
+const byte TONE_OUT = PWM_2;
+#endif
 
 #ifdef SPS_RCRECEIVER
 const byte RC_0 = 34;
@@ -210,4 +251,5 @@ const byte DIGIT_CLOCK = 33;
 #endif
 
 #define getAnalog(pin) (analogRead(pin) >> 4)
+#define initHardware() initESP32()
 #endif

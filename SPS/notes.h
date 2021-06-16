@@ -21,6 +21,8 @@ const PROGMEM unsigned int midiNoteToFreq[MIDI_NOTES] =
   2217, 2349, 2489, 2637, 2794, 2960, 3136, 3322, 3520, 3729, 3951,
   4186 //C8
 };
+
+#define getFrequency(n) (pgm_read_word(n - MIDI_START + midiNoteToFreq))
 #endif
 
 #ifdef ESP32
@@ -40,4 +42,5 @@ const unsigned int midiNoteToFreq[MIDI_NOTES] =
   2217, 2349, 2489, 2637, 2794, 2960, 3136, 3322, 3520, 3729, 3951,
   4186 //C8
 };
+#define getFrequency(n) (midiNoteToFreq[n-MIDI_START])
 #endif
