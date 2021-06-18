@@ -1,12 +1,12 @@
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 #include <TM1637Display.h>
 #endif
 
-#ifndef SPS_USE_DISPLAY
+#ifndef TPS_USE_DISPLAY
 void advancePrg() {}
 #endif
 
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 TM1637Display display(DIGIT_CLOCK, DIGIT_DATA_IO);
 byte displayValues[4];
 

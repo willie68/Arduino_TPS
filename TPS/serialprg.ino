@@ -1,4 +1,4 @@
-#ifdef SPS_SERIAL_PRG
+#ifdef TPS_SERIAL_PRG
 #if defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATmega328P__) || defined(ESP32)
 #define BAUDRATE 9600
 #endif
@@ -11,10 +11,10 @@ void initSerialPrg() {
 
 void sendHeader() {
 #ifdef __AVR_ATtiny84__
-  Serial.println("TinySPS");
+  Serial.println("Tiny_TPS");
 #endif
 #ifdef __AVR_ATmega328P__
-  Serial.println("ArduinoSPS");
+  Serial.println("Arduino_TPS");
 #endif
   Serial.print("max prg size:");
   Serial.print(STORESIZE, HEX);
