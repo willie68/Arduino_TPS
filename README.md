@@ -1,6 +1,6 @@
-# ArduinoSPS
+# Arduino_TPS
 
-A TPS Variant for the Arduino and some other options with some major enhancments.
+A TPS Variant for the Arduino and some other options with some major enhancements.
 
 For more information and description see 
 http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
