@@ -33,7 +33,7 @@ void prgDemoPrg() {
 
 void programMode() {
   // checking if advance programmer board connected?
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   if (digitalRead(SW_SEL) == 0) {
     advancePrg();
   }
@@ -112,7 +112,7 @@ void programMode() {
       addr += 1;
     }
     while (true);
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   }
 #endif
   dbgOutLn("save program data");

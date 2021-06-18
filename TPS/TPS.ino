@@ -1,6 +1,6 @@
 
 /*
-  SPS System mit dem Arduino.
+  TPS System mit dem Arduino.
   Version 0.13.0
   16.06.2021
   - fea: ESP32 implementation
@@ -93,51 +93,51 @@
 
 /*
    Here are the defines used in this software to control special parts of the implementation
-   #define SPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
-   #define SPS_RECEIVER: using a RC receiver input
-   #define SPS_ENHANCEMENT: all of the other enhancments
-   #define SPS_SERVO: using servo outputs
-   #define SPS_TONE: using a tone output
-   #define SPS_SERIAL_PRG: activates the serial programming feature
+   #define TPS_USE_DISPLAY: using a external TM1637 Display for displaying address and data at one time
+   #define TPS_RCRECEIVER: using a RC receiver input
+   #define TPS_ENHANCEMENT: all of the other enhancments
+   #define TPS_SERVO: using servo outputs
+   #define TPS_TONE: using a tone output
+   #define TPS_SERIAL_PRG: activates the serial programming feature
 */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
 #define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
-//#define SPS_USE_DISPLAY
-//#define SPS_RECEIVER
-#define SPS_ENHANCEMENT
-//#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-#define SPS_TONE
+//#define TPS_USE_DISPLAY
+//#define TPS_RCRECEIVER
+#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
+//#define TPS_SERVO
+#define TPS_TONE
 #endif
 
 #ifdef ESP32
-//#define SPS_RECEIVER (not implementted yet)
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-#define SPS_TONE
+//#define TPS_RCRECEIVER (not implementted yet)
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
+#define TPS_SERVO
+#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-#define SPS_SERVO
-//#define SPS_TONE
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
+#define TPS_SERVO
+//#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny861__
-#define SPS_RCRECEIVER
-#define SPS_ENHANCEMENT
-#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-#define SPS_TONE
+#define TPS_RCRECEIVER
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
+//#define TPS_SERVO
+#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny4313__
-#define SPS_RCRECEIVER
+#define TPS_RCRECEIVER
 #endif
 
 // libraries
@@ -147,22 +147,22 @@
 
 #ifdef ESP32
 #include <ESP32Servo.h>
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 #include <ESP32Tone.h>
 #endif
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 #if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__)
 #include <Servo.h>
 #endif
 #endif
 
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
 #include <avdweb_Switch.h>
 #endif
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 #include "notes.h"
 #endif
 
@@ -198,11 +198,11 @@ word addr;
 word page;
 // defining register
 byte a, b, c, d;
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
 byte e, f;
 #endif
 
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
 const byte SAVE_CNT = 16;
 #else
 const byte SAVE_CNT = 1;
@@ -211,14 +211,14 @@ const byte SAVE_CNT = 1;
 word saveaddr[SAVE_CNT];
 byte saveCnt;
 
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
 byte stack[SAVE_CNT];
 byte stackCnt;
 #endif
 
 unsigned long tmpValue;
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 Servo servo1;
 Servo servo2;
 #endif
@@ -248,7 +248,7 @@ void setup() {
   digitalWrite(Dout_1, 1);
   delay(1000);
   digitalWrite(Dout_1, 0);
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
   initDisplay();
 #endif
 
@@ -261,11 +261,11 @@ void setup() {
   if (digitalRead(SW_PRG) == 0) {
     programMode();
   }
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   pinMode(LED_BUILTIN, OUTPUT);
 #endif
 
-#ifdef SPS_SERIAL_PRG
+#ifdef TPS_SERIAL_PRG
   initSerialPrg();
   if (digitalRead(SW_SEL) == 0) {
     serialPrg();
@@ -275,7 +275,7 @@ void setup() {
 
 void doReset() {
   dbgOutLn("Reset");
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
   servo1.detach();
   servo2.detach();
 #endif
@@ -293,7 +293,7 @@ void doReset() {
   b = 0;
   c = 0;
   d = 0;
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   e = 0;
   f = 0;
   stackCnt = 0;
@@ -337,7 +337,7 @@ void readProgram() {
         dbgOut(data);
       }
     }
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
     if ((cmd == IS_A) && (data == 0x0B)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
@@ -368,7 +368,7 @@ void readProgram() {
   main loop
 */
 void loop() {
-#ifdef SPS_SERIAL_PRG
+#ifdef TPS_SERIAL_PRG
   if (Serial.available() > 0) {
     while (Serial.available() > 0) {
       char myChar = Serial.read();
@@ -445,7 +445,7 @@ void debugOutputRegister() {
   dbgOut2(addr, HEX); dbgOut(":"); dbgOut2(cmd >> 4, HEX); dbgOut(","); dbgOut2(data, HEX);
   dbgOut(",reg:"); dbgOut2(a, HEX); dbgOut(","); dbgOut2(b, HEX); dbgOut(",");
   dbgOut2(c, HEX); dbgOut(","); dbgOut2(d, HEX); dbgOut(",");
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   dbgOut2(e, HEX); dbgOut(","); dbgOut2(f, HEX);
   dbgOut(", s:"); dbgOut2(stackCnt, HEX); dbgOut(":");
   for (int i = 0; i < SAVE_CNT; i++) {
@@ -586,7 +586,7 @@ void doAIs(byte data) {
       a = digitalRead(ADC_1);
       break;
 #endif
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
     case 11:
       tmpValue = pulseIn(RC_0, HIGH, 100000);
       if (tmpValue < 1000) {
@@ -616,7 +616,7 @@ void doAIs(byte data) {
       dbgOutLn(a);
       break;
 #endif
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
     case 13:
       a = e;
       break;
@@ -644,7 +644,7 @@ void doAIs(byte data) {
 */
 void doIsA(byte data) {
   switch (data) {
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
     case 0:
       swap(a, b, byte);
       break;
@@ -685,7 +685,7 @@ void doIsA(byte data) {
       dbgOutLn(tmpValue);
       analogWrite(PWM_2, tmpValue);
       break;
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
     case 11:
       if (servo1.attached()) {
         tmpValue = ((a & 0x0f) * 10) + 10;
@@ -703,7 +703,7 @@ void doIsA(byte data) {
       }
       break;
 #endif
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
     case 13:
       e = a;
       break;
@@ -765,7 +765,7 @@ void doCalc(byte data) {
     case 10:
       a = ~a;
       break;
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
     case 11:
       a = a % b;
       break;
@@ -786,7 +786,7 @@ void doCalc(byte data) {
       break;
   }
   a = a & 0xFF;
-#ifndef SPS_ENHANCEMENT
+#ifndef TPS_ENHANCEMENT
   a = a & 15;
 #endif
 }
@@ -838,7 +838,7 @@ void doDCount(byte data) {
 void doSkipIf(byte data) {
   bool skip = false;
   switch (data) {
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
     case 0:
       skip = (a == 0);
       break;
@@ -920,7 +920,7 @@ void doCallSub(byte data) {
     dbgOutLn(addr);
     return;
   }
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   if (data <= 7) {
     // call subroutine number
     doCall(addr);
@@ -939,7 +939,7 @@ void doCallSub(byte data) {
   calling a byte methods
 */
 void doByte(byte data) {
-#ifdef SPS_ENHANCEMENT
+#ifdef TPS_ENHANCEMENT
   dbgOut("B ");
   switch (data) {
     case 0:
@@ -948,7 +948,7 @@ void doByte(byte data) {
     case 1:
       a = getAnalog(ADC_1);
       break;
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
     case 2:
       tmpValue = pulseIn(RC_0, HIGH, 100000);
       if (tmpValue < 1000) {
@@ -990,7 +990,7 @@ void doByte(byte data) {
       dbgOutLn(a);
       analogWrite(PWM_2, a);
       break;
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
     case 6:
       if (servo1.attached()) {
         dbgOut("Srv1:");
@@ -1008,7 +1008,7 @@ void doByte(byte data) {
       }
       break;
 #endif
-#ifdef SPS_TONE
+#ifdef TPS_TONE
     case 8:
       if (a == 0) {
         dbgOutLn("Tone off");

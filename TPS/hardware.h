@@ -17,16 +17,16 @@ const byte ADC_1 = 1; //(16)
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 18;
 const byte RC_1 = 19;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 9;
 const byte SERVO_2 = 10;
 #endif
@@ -34,7 +34,7 @@ const byte SERVO_2 = 10;
 const byte SW_PRG = 8;
 const byte SW_SEL = 11;
 
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 const byte DIGIT_DATA_IO = 12;
 const byte DIGIT_CLOCK = 13;
 #endif
@@ -60,16 +60,16 @@ const byte ADC_1 = 1;
 const byte PWM_1 = 2;
 const byte PWM_2 = 3;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 10;
 const byte RC_1 = 9;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 2;
 const byte SERVO_2 = 3;
 #endif
@@ -77,7 +77,7 @@ const byte SERVO_2 = 3;
 const byte SW_PRG = 0;
 const byte SW_SEL = 8;
 
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 const byte DIGIT_DATA_IO = 4;
 const byte DIGIT_CLOCK = 5;
 #endif
@@ -103,16 +103,16 @@ const byte ADC_1 = 14;
 const byte PWM_1 = 11;
 const byte PWM_2 = 12;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 15;
 const byte RC_1 = 16;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 11;
 const byte SERVO_2 = 12;
 #endif
@@ -141,16 +141,16 @@ const byte ADC_1 = 14;
 const byte PWM_1 = 11;
 const byte PWM_2 = 12;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 15;
 const byte RC_1 = 16;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 11;
 const byte SERVO_2 = 12;
 #endif
@@ -180,16 +180,16 @@ const byte ADC_1 = 1; //(16)
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 18;
 const byte RC_1 = 19;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 9;
 const byte SERVO_2 = 10;
 #endif
@@ -197,7 +197,7 @@ const byte SERVO_2 = 10;
 const byte SW_PRG = 8;
 const byte SW_SEL = 11;
 
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 const byte DIGIT_DATA_IO = 12;
 const byte DIGIT_CLOCK = 13;
 #endif
@@ -228,16 +228,16 @@ const byte ADC_1 = 39;
 const byte PWM_1 = 27;
 const byte PWM_2 = 25;
 
-#ifdef SPS_TONE
+#ifdef TPS_TONE
 const byte TONE_OUT = PWM_2;
 #endif
 
-#ifdef SPS_RCRECEIVER
+#ifdef TPS_RCRECEIVER
 const byte RC_0 = 34;
 const byte RC_1 = 35;
 #endif
 
-#ifdef SPS_SERVO
+#ifdef TPS_SERVO
 const byte SERVO_1 = 27; //14
 const byte SERVO_2 = 25; //32
 #endif
@@ -245,7 +245,7 @@ const byte SERVO_2 = 25; //32
 const byte SW_PRG = 13;
 const byte SW_SEL = 12;
 
-#ifdef SPS_USE_DISPLAY
+#ifdef TPS_USE_DISPLAY
 const byte DIGIT_DATA_IO = 32;
 const byte DIGIT_CLOCK = 33;
 #endif
