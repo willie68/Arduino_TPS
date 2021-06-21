@@ -8,9 +8,12 @@ http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 And there is now a print book at amazon 
 https://www.amazon.com/dp/1731232535
 
+**---- 18.06.2021 -----**
+Renaming the project from ArduinoSPS to Arduino_TPS
 
 **Version 0.13.0**
   16.06.2021
+
   * feature: ESP32 implementation: https://wkla.no-ip.biz/ArduinoWiki/doku.php?id=arduino:arduinosps:esp32
 
 **Version 0.12.4**
