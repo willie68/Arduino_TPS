@@ -5,8 +5,11 @@ A TPS Variant for the Arduino and some other options with some major enhancement
 For more information and description see 
 http://www.rcarduino.de/doku.php?id=en:arduino:arduinosps
 
-And there is now a print book at amazon 
+And there is now a print book for this version at amazon 
 https://www.amazon.com/dp/1731232535
+
+No Hardware – No Problem. Get started on paper. The new book explains the 40 examples and more 
+https://www.amazon.co.uk/gp/product/B08MN15NMQ/ref=dbs_a_def_rwt_bibl_vppi_i24
 
 **---- 18.06.2021 -----**
 Renaming the project from ArduinoSPS to Arduino_TPS
