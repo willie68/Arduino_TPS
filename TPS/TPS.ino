@@ -1,6 +1,15 @@
-
 /*
   TPS System mit dem Arduino.
+  27.06.2021
+  - making this compile with arduino cli
+  
+  18.06.2021
+  - fea: renaming everything to tps. 
+
+  Version 0.13.0
+  16.06.2021
+  - fea: ESP32 implementation
+
   Version 0.13.0
   16.06.2021
   - fea: ESP32 implementation
@@ -107,37 +116,37 @@
 #ifdef __AVR_ATmega328P__
 //#define TPS_USE_DISPLAY
 //#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
+//#define TPS_ENHANCEMENT
 //#define TPS_SERIAL_PRG
 //#define TPS_SERVO
-#define TPS_TONE
+//#define TPS_TONE
 #endif
 
 #ifdef ESP32
 //#define TPS_RCRECEIVER (not implementted yet)
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
-#define TPS_SERVO
-#define TPS_TONE
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
+//#define TPS_SERVO
+//#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
-#define TPS_SERVO
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
+//#define TPS_SERVO
 //#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny861__
-#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
+//#define TPS_RCRECEIVER
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
 //#define TPS_SERVO
-#define TPS_TONE
+//#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny4313__
-#define TPS_RCRECEIVER
+//#define TPS_RCRECEIVER
 #endif
 
 // libraries

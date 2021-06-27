@@ -1,5 +1,5 @@
 #ifdef TPS_USE_DISPLAY
-#include <TM1637Display.h>
+#include "TM1637Display.h"
 #endif
 
 #ifndef TPS_USE_DISPLAY
@@ -150,8 +150,8 @@ void showAddress(word addr, byte Eebyte) {
   displayValues[0] = display.encodeDigit(addr >> 4);
   displayValues[1] = display.encodeDigit(addr & 15);
 
-  data = Eebyte & 15;
-  com = Eebyte >> 4;
+  byte data = Eebyte & 15;
+  byte com = Eebyte >> 4;
 
   displayValues[2] = display.encodeDigit(com);
   displayValues[3] = display.encodeDigit(data);
