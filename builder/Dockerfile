@@ -33,11 +33,15 @@ ENV PATH="/home/arduinocli/cli:${PATH}"
 # Install AVR core
 RUN arduino-cli config init
 RUN arduino-cli config add board_manager.additional_urls https://dl.espressif.com/dl/package_esp32_index.json
+RUN arduino-cli config add board_manager.additional_urls http://drazzy.com/package_drazzy.com_index.json
 
 RUN arduino-cli core update-index
+
 RUN arduino-cli core download esp32:esp32
+RUN arduino-cli core download ATTinyCore:avr
 RUN arduino-cli core install arduino:avr
 RUN arduino-cli core install esp32:esp32
+RUN arduino-cli core install ATTinyCore:avr
 
 # install needed libraries
 RUN arduino-cli lib install switch

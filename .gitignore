@@ -30,3 +30,6 @@
 
 
 *.hex
+*.bin
+**/build
+*.log
