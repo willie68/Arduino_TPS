@@ -1,4 +1,4 @@
-TPS_VERSION="0.13.1"
+TPS_VERSION="0.13.11"
 export TPS_VERSION
 echo start building attiny tps
 rm -f /home/arduinocli/Arduino_TPS/dest/*
