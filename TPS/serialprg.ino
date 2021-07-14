@@ -3,6 +3,8 @@
 #define BAUDRATE 9600
 #endif
 
+#include "version.h"
+
 void initSerialPrg() {
   Serial.end();
   Serial.begin(BAUDRATE);  
@@ -11,11 +13,12 @@ void initSerialPrg() {
 
 void sendHeader() {
 #ifdef __AVR_ATtiny84__
-  Serial.println("Tiny_TPS");
+  Serial.print("Tiny_TPS ");
 #endif
 #ifdef __AVR_ATmega328P__
-  Serial.println("Arduino_TPS");
+  Serial.print("Arduino_TPS ");
 #endif
+  Serial.println(TPS_VERSION);
   Serial.print("max prg size:");
   Serial.print(STORESIZE, HEX);
   Serial.println();
