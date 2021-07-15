@@ -209,7 +209,9 @@ const byte DIGIT_CLOCK = 13;
 
 
 #ifdef ESP32
-
+#ifdef ARDUINO_ESP32_DEV
+  #define LED_BUILTIN 2
+#endif
 #include "esp32.h"
 
 // ESP32 Hardware
