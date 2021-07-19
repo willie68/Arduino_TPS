@@ -1,5 +1,6 @@
-TPS_VERSION="0.13.12"
+TPS_VERSION="0.13.25"
 export TPS_VERSION
+
 echo start building attiny tps
 rm -f /home/arduinocli/Arduino_TPS/dest/*
 arduino-cli compile --clean -e -b ATTinyCore:avr:attinyx4 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DTPS_ENHANCEMENT -DTPS_SERVO -DTPS_SERIAL_PRG "
@@ -60,6 +61,7 @@ cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.bin /home/arduinocli/Arduino_TPS/de
 arduino-cli compile --clean -e -b esp32:esp32:d1_mini32 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DESP32 -DTPS_ENHANCEMENT -DTPS_SERVO -DTPS_TONE -DTPS_SERIAL_PRG"
 cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.hex /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.ESP32.D1.ENHANCEMENT.SERVO.TONE.SERIAL_PRG.bin
 
+echo start building arduino esp32 dev module
 arduino-cli compile --clean -e -b esp32:esp32:esp32 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DESP32"
 cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.bin /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.ESP32.DEV.bin
 
@@ -73,4 +75,17 @@ rm -f /home/arduinocli/Arduino_TPS/dest/TPS.ino.*
 mkdir -p /home/arduinocli/Arduino_TPS/dest/esp32
 cp /home/arduinocli/Arduino_TPS/dest/*.bin /home/arduinocli/Arduino_TPS/dest/esp32/
 rm -f /home/arduinocli/Arduino_TPS/dest/TPS.*
+
+
+
+
+
+
+
+
+
+
+
+
+
 

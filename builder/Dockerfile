@@ -60,8 +60,11 @@ RUN git checkout develop
 COPY --chown=arduino:arduinocli ./build_tps.sh ./builder/build_tps.sh
 RUN chmod u+x ./builder/build_tps.sh
 
+COPY --chown=arduino:arduinocli ./git_pull.sh ./builder/git_pull.sh
+RUN chmod u+x ./builder/git_pull.sh
+
 ## Task compile versions
 WORKDIR /home/arduinocli/Arduino_TPS/TPS
 RUN mkdir -p /home/arduinocli/Arduino_TPS/dest
 
-RUN ../builder/build_tps.sh
+RUN ../builder/git_pull.sh
