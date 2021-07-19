@@ -50,21 +50,14 @@ RUN arduino-cli lib install ESP32Servo
 
 ## Task: get source files
 WORKDIR /home/arduinocli
-RUN git clone https://github.com/willie68/Arduino_TPS.git
-
-## Task switch to right branch
+## RUN git clone https://github.com/willie68/Arduino_TPS.git
+RUN mkdir -p /home/arduinocli/Arduino_TPS
+COPY --chown=arduino:arduinocli  ./ ./Arduino_TPS
 WORKDIR /home/arduinocli/Arduino_TPS/
-RUN git pull
-RUN git checkout develop
-
-COPY --chown=arduino:arduinocli ./build_tps.sh ./builder/build_tps.sh
 RUN chmod u+x ./builder/build_tps.sh
-
-COPY --chown=arduino:arduinocli ./git_pull.sh ./builder/git_pull.sh
-RUN chmod u+x ./builder/git_pull.sh
 
 ## Task compile versions
 WORKDIR /home/arduinocli/Arduino_TPS/TPS
 RUN mkdir -p /home/arduinocli/Arduino_TPS/dest
 
-RUN ../builder/git_pull.sh
+RUN ../builder/build_tps.sh

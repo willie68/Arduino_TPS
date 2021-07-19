@@ -124,10 +124,10 @@
 
 #ifdef ESP32
 //#define TPS_RCRECEIVER (not implementted yet)
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
-#define TPS_SERVO
-#define TPS_TONE
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
+//#define TPS_SERVO
+//#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -218,7 +218,7 @@ const byte SAVE_CNT = 1;
 #endif
 
 word saveaddr[SAVE_CNT];
-byte saveCnt;
+int saveCnt;
 
 #ifdef TPS_ENHANCEMENT
 byte stack[SAVE_CNT];

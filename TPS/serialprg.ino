@@ -233,6 +233,7 @@ byte hexToByte (char c) {
   if ( (c >= 'A') && (c <= 'F') ) {
     return (c - 'A') + 10;
   }
+  return 0;
 }
 
 byte nibbleToHex (byte value) {
@@ -243,5 +244,6 @@ byte nibbleToHex (byte value) {
   if ( (c >= 10) && (c <= 15) ) {
     return (c + 'A') - 10;
   }
+  return '0';
 }
 #endif
