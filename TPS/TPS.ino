@@ -110,7 +110,7 @@
    #define TPS_SERIAL_PRG: activates the serial programming feature
 */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-#define debug
+//#define debug
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
@@ -318,6 +318,8 @@ void doReset() {
 void readProgram() {
   dbgOutLn("Read program");
   word addr = 0;
+  byte cmd = 0;
+  byte data1 =0;
   for ( addr = 0; addr <= STORESIZE; addr++) {
     byte value = readbyte(addr);
 
@@ -327,42 +329,48 @@ void readProgram() {
     dbgOut(": ");
 #endif
 
-    byte cmd = (value & 0xF0);
-    byte data = (value & 0x0F);
+    cmd = (value & 0xF0);
+    data1 = (value & 0x0F);
 
+#ifdef debug1
     dbgOut2(cmd >> 4, HEX);
-    dbgOut2(data, HEX);
+    dbgOut2(data1, HEX);
+#endif
 
     if (value == 0xFF) {
       // ende des Programms
+#ifdef debug
+      dbgOutLn();
+      dbgOutLn("end of program");
+#endif
       break;
     }
 
     if (cmd == CALL_SUB) {
-      if (data >= 8) {
-        data = data - 8;
-        subs[data] = addr + 1;
+      if (data1 >= 8) {
+        data1 = data1 - 8;
+        subs[data1] = addr + 1;
         dbgOut(", sub def ");
-        dbgOut(data);
+        dbgOut(data1);
       }
     }
 #ifdef TPS_SERVO
-    if ((cmd == IS_A) && (data == 0x0B)) {
+    if ((cmd == IS_A) && (data1 == 0x0B)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
         servo1.attach(SERVO_1);
       }
-    } else if ((cmd == CMD_BYTE) && (data == 0x06)) {
+    } else if ((cmd == CMD_BYTE) && (data1 == 0x06)) {
       if (!servo1.attached()) {
         dbgOut(": attach Srv1");
         servo1.attach(SERVO_1);
       }
-    } else if ((cmd == IS_A) && (data == 0x0C)) {
+    } else if ((cmd == IS_A) && (data1 == 0x0C)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
         servo2.attach(SERVO_2);
       }
-    } else if ((cmd == CMD_BYTE) && (data == 0x07)) {
+    } else if ((cmd == CMD_BYTE) && (data1 == 0x07)) {
       if (!servo2.attached()) {
         dbgOut(": attach Srv2");
         servo2.attach(SERVO_2);
@@ -727,7 +735,7 @@ void doIsA(byte data) {
         stackCnt += 1;
       }
       else {
-        for (int i = 1; i <= SAVE_CNT; i++) {
+        for (int i = 1; i < SAVE_CNT; i++) {
           stack[i - 1] = stack[i];
         }
         stack[stackCnt] = a;
