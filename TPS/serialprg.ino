@@ -238,12 +238,9 @@ byte hexToByte (char c) {
 
 byte nibbleToHex (byte value) {
   byte c = value & 0x0F;
-  if ( (c >= 0) && (c <= 9) ) {
+  if (c <= 9) {
     return c + '0';
   }
-  if ( (c >= 10) && (c <= 15) ) {
     return (c + 'A') - 10;
-  }
-  return '0';
 }
 #endif

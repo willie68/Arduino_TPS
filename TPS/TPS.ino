@@ -124,10 +124,10 @@
 
 #ifdef ESP32
 //#define TPS_RCRECEIVER (not implementted yet)
-//#define TPS_ENHANCEMENT
-//#define TPS_SERIAL_PRG
-//#define TPS_SERVO
-//#define TPS_TONE
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
+#define TPS_SERVO
+#define TPS_TONE
 #endif
 
 #ifdef __AVR_ATtiny84__
@@ -738,7 +738,7 @@ void doIsA(byte data) {
         for (int i = 1; i < SAVE_CNT; i++) {
           stack[i - 1] = stack[i];
         }
-        stack[stackCnt] = a;
+        stack[SAVE_CNT-1] = a;
       }
       break;
 #endif
