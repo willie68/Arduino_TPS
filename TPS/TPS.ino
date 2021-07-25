@@ -147,6 +147,7 @@
 
 #ifdef __AVR_ATtiny4313__
 //#define TPS_RCRECEIVER
+#define TPS_ENHANCEMENT
 #endif
 
 // libraries
