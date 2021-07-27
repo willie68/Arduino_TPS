@@ -1,4 +1,4 @@
-TPS_VERSION="0.13.34"
+TPS_VERSION="0.13.35"
 export TPS_VERSION
 
 echo start building attiny tps
@@ -17,10 +17,12 @@ arduino-cli compile --clean -e -b ATTinyCore:avr:attinyx4 --output-dir /home/ard
 cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.hex /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.TINY.hex
 
 echo start building attiny 4313 tps
-rm -f /home/arduinocli/Arduino_TPS/dest/*
+echo TPS.$TPS_VERSION.TINY43 >>log.$TPS_VERSION.log
+arduino-cli compile --clean -e -b ATTinyCore:avr:attinyx313:chip=4313 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=" >>log.$TPS_VERSION.log 2>&1
+cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.hex /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.TINY43.hex
 
 echo TPS.$TPS_VERSION.TINY43.ENHANCEMENT >>log.$TPS_VERSION.log
-arduino-cli compile --clean -e -b ATTinyCore:avr:attiny4313 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DTPS_ENHANCEMENT " >>log.$TPS_VERSION.log 2>&1
+arduino-cli compile --clean -e -b ATTinyCore:avr:attinyx313:chip=4313 --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DTPS_ENHANCEMENT " >>log.$TPS_VERSION.log 2>&1
 cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.hex /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.TINY43.ENHANCEMENT.hex
 
 rm -f /home/arduinocli/Arduino_TPS/dest/TPS.ino.*
