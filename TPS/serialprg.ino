@@ -1,6 +1,8 @@
 #ifdef TPS_SERIAL_PRG
 #if defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATmega328P__) || defined(ESP32)
 #define BAUDRATE 9600
+#else
+#error "not implemetned yet: Maybe no serial port for programming available"
 #endif
 
 #include "version.h"

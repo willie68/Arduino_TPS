@@ -146,8 +146,10 @@
 #endif
 
 #ifdef __AVR_ATtiny4313__
+// because of the limited memory only 2 of this three options are available. 
 //#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
+//#define TPS_ENHANCEMENT
+//#define TPS_TONE
 #endif
 
 // libraries
