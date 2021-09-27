@@ -28,5 +28,4 @@
 *.out
 *.app
 
-
-*.hex
+**/build

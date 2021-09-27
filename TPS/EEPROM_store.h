@@ -43,8 +43,20 @@ void load() {
   EEPROM.begin(STORESIZE);
   word readed = EEPROM.readBytes(0, program, STORESIZE);
   dbgOut("read:");
-  dbgOut2(readed, HEX);
+  dbgOut(readed);
   dbgOutLn(" bytes");
+#ifdef debug1
+  for(int i = 0; i < STORESIZE; i++) {
+    if ((i % 16) == 0) {
+      dbgOutLn();
+      dbgOut2(i, HEX);
+      dbgOut(": ");
+    }
+    dbgOut2(program[i], HEX);
+    dbgOut(", ");
+  }
+  dbgOutLn();
+#endif
   loaded = true;
 }
 

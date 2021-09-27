@@ -1,0 +1,3 @@
+SPS Assembler
+- directriven enthalten noch sps: 
+    .arduinosps, .tinysps
