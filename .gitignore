@@ -28,8 +28,4 @@
 *.out
 *.app
 
-
-*.hex
-*.bin
 **/build
-*.log

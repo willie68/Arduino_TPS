@@ -5,6 +5,7 @@ rd /s /q dest_bck
 xcopy /s /v /e dest\*  dest_bck\
 rd /s /q dest
 
+md dest
 docker build ./ -t arduino-tps-builder 
 docker run --name arduino-tps-builder arduino-tps-builder bash
 docker cp arduino-tps-builder:/home/arduinocli/Arduino_TPS/dest/ ./

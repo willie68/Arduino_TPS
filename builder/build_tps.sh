@@ -1,4 +1,4 @@
-TPS_VERSION="0.13.35"
+TPS_VERSION="0.13.39"
 export TPS_VERSION
 
 echo start building attiny tps

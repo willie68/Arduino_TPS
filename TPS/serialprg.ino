@@ -9,7 +9,7 @@
 
 void initSerialPrg() {
   Serial.end();
-  Serial.begin(BAUDRATE);  
+  Serial.begin(BAUDRATE);
   Serial.println();
 }
 
@@ -25,7 +25,8 @@ void sendHeader() {
   Serial.print(STORESIZE, HEX);
   Serial.println();
   Serial.println("waiting for command:");
-  Serial.println("w: write HEX file, r: read EPPROM, e: end");  
+  Serial.println("w: write HEX file, r: read EPPROM, e: end");
+  Serial.println("i: get inputs, o: write to output, a#: get analog in from #, p#: set pwm #, b: get button state");
 }
 
 void serialPrg() {
@@ -44,7 +45,7 @@ void serialPrg() {
     while (Serial.available() > 0) {
       // look for the next valid integer in the incoming serial stream:
       char myChar = Serial.read();
-      if (myChar == 'w') {
+      if ((myChar == 'W') || (myChar == 'w')) {
         // hexfile is comming to programm
         endOfFile = false;
         Serial.println("ready");
@@ -137,7 +138,7 @@ void serialPrg() {
           printHex8(readcrc);
           Serial.print(".");
 #endif
-          
+
 
           crc += readcrc;
           // check CRC
@@ -162,7 +163,7 @@ void serialPrg() {
         Serial.println("endOfFile");
         store();
       }
-      if (myChar == 'r') {
+      if ((myChar == 'R') || (myChar == 'r')) {
         // write eeprom as hexfile to receiver
         Serial.println("EEPROM data:");
         int checksum = 0;
@@ -185,11 +186,59 @@ void serialPrg() {
         // ending
         Serial.println(":00000001FF");
       }
-      if (myChar == 'e') {
+      if ((myChar == 'I') || (myChar == 'i')) {
+        value = digitalRead(Din_1) + (digitalRead(Din_2) << 1) + (digitalRead(Din_3) << 2) + (digitalRead(Din_4) << 3);
+        Serial.print("i:0x");
+        printHex4(value);
+        Serial.println();
+      }
+      if ((myChar == 'O') || (myChar == 'o')) {
+        c = getNextChar();
+        value = hexToByte(c);
+        doPort(value);
+        Serial.print("o:0x");
+        printHex4(value);
+        Serial.println();
+      }
+      if ((myChar == 'A') || (myChar == 'a')) {
+        c = getNextChar();
+        if (c == '1') {
+          Serial.print("a1:0x");
+          value = getAnalog(ADC_0);
+        } else {
+          Serial.print("a2:0x");
+          value = getAnalog(ADC_1);
+        }
+        printHex8(value);
+        Serial.println();
+      }
+      if ((myChar == 'P') || (myChar == 'p')) {
+        c = getNextChar();
+        d = getNextChar();
+        a = getNextChar();
+        b = getNextChar();
+        value = (hexToByte(a) << 4) + hexToByte(b);
+        if (c == '1') {
+          Serial.print("p1:0x");
+          analogWrite(PWM_1, value);
+        } else {
+          Serial.print("p2:0x");
+          analogWrite(PWM_2, value);
+        }
+        printHex8(value);
+        Serial.println();
+      }
+      if ((myChar == 'B') || (myChar == 'b')) {
+        value = digitalRead(SW_PRG) + (digitalRead(SW_SEL) << 1);
+        Serial.print("b:0x");
+        printHex4(value);
+        Serial.println();
+      }
+      if ((myChar == 'E') ||(myChar == 'e')) {
         // end of programm
         endOfPrg = true;
       }
-      if (myChar == 'h') {
+      if ((myChar == 'H') || (myChar == 'h')) {
         sendHeader();
       }
     }
@@ -208,6 +257,13 @@ void printCheckSum(int value) {
   checksum = (checksum ^ 0xFF) + 1;
   printHex8(checksum);
   Serial.println();
+}
+
+void printHex4(int num) {
+  char tmp[2];
+  tmp[0] = nibbleToHex(num);
+  tmp[1] = 0x00;
+  Serial.print(tmp);
 }
 
 void printHex8(int num) {
@@ -235,6 +291,9 @@ byte hexToByte (char c) {
   if ( (c >= 'A') && (c <= 'F') ) {
     return (c - 'A') + 10;
   }
+  if ( (c >= 'a') && (c <= 'f') ) {
+    return (c - 'a') + 10;
+  }
   return 0;
 }
 
@@ -243,6 +302,6 @@ byte nibbleToHex (byte value) {
   if (c <= 9) {
     return c + '0';
   }
-    return (c + 'A') - 10;
+  return (c + 'A') - 10;
 }
 #endif
