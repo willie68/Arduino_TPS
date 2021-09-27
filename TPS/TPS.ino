@@ -1,5 +1,8 @@
 /*
   TPS System mit dem Arduino.
+  27.09.2021
+  - now you can use the TPS as a IO expander from the emulator
+
   27.06.2021
   - making this compile with arduino cli
   
@@ -108,6 +111,7 @@
    #define TPS_SERVO: using servo outputs
    #define TPS_TONE: using a tone output
    #define TPS_SERIAL_PRG: activates the serial programming feature
+
 */
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
 //#define debug
@@ -146,7 +150,10 @@
 #endif
 
 #ifdef __AVR_ATtiny4313__
+// because of the limited memory only 2 of this three options are available. 
 //#define TPS_RCRECEIVER
+//#define TPS_ENHANCEMENT
+//#define TPS_TONE
 #endif
 
 // libraries
