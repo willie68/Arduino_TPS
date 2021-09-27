@@ -26,7 +26,7 @@ void sendHeader() {
   Serial.println();
   Serial.println("waiting for command:");
   Serial.println("w: write HEX file, r: read EPPROM, e: end");
-  Serial.println("i: get inputs, o: write to output, a#: get analog in from #, p#: set pwm #, b: get button state");
+  Serial.println("i: get inputs, o: write to output, a#: get analog in from #, s#: set pwm #, b: get button state");
 }
 
 void serialPrg() {
@@ -212,17 +212,17 @@ void serialPrg() {
         printHex8(value);
         Serial.println();
       }
-      if ((myChar == 'P') || (myChar == 'p')) {
+      if ((myChar == 'S') || (myChar == 's')) {
         c = getNextChar();
         d = getNextChar();
         a = getNextChar();
         b = getNextChar();
         value = (hexToByte(a) << 4) + hexToByte(b);
         if (c == '1') {
-          Serial.print("p1:0x");
+          Serial.print("s1:0x");
           analogWrite(PWM_1, value);
         } else {
-          Serial.print("p2:0x");
+          Serial.print("s2:0x");
           analogWrite(PWM_2, value);
         }
         printHex8(value);
