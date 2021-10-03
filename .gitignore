@@ -29,3 +29,5 @@
 *.app
 
 **/build
+/dest/**
+/dest_bck/**

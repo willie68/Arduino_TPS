@@ -128,8 +128,8 @@
 
 #ifdef ESP32
 //#define TPS_RCRECEIVER (not implementted yet)
-//#define TPS_ENHANCEMENT
-//#define TPS_SERIAL_PRG
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
 //#define TPS_SERVO
 //#define TPS_TONE
 #endif
