@@ -118,7 +118,7 @@
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
-//#define TPS_USE_DISPLAY
+#define TPS_USE_DISPLAY
 //#define TPS_RCRECEIVER
 //#define TPS_ENHANCEMENT
 //#define TPS_SERIAL_PRG
@@ -128,8 +128,8 @@
 
 #ifdef ESP32
 //#define TPS_RCRECEIVER (not implementted yet)
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
 //#define TPS_SERVO
 //#define TPS_TONE
 #endif
@@ -174,7 +174,7 @@
 #endif
 #endif
 
-#ifdef TPS_ENHANCEMENT
+#if defined(TPS_ENHANCEMENT) || defined(TPS_USE_DISPLAY)
 #include <avdweb_Switch.h>
 #endif
 
