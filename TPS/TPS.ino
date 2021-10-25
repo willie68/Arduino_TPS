@@ -1,5 +1,9 @@
 /*
   TPS System mit dem Arduino.
+  Version 0.13.1
+  25.10.2021
+  - bug #3: when the define TPS_USE_DISPLAY is unsed, automatically the lib avdweb_Switch.h is added.
+  
   27.09.2021
   - now you can use the TPS as a IO expander from the emulator
 
