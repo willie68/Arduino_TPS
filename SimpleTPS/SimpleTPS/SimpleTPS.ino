@@ -6,7 +6,28 @@
 #include <EEPROM.h>
 #include <avr/eeprom.h>
 
-#include "hardware.h"
+// defining the hardware connections
+// Inputs
+const byte Din_0 = 0;
+const byte Din_1 = 1;
+const byte Din_2 = 2;
+const byte Din_3 = 3;
+
+// Outputs
+const byte Dout_0 = 4;
+const byte Dout_1 = 5;
+const byte Dout_2 = 6;
+const byte Dout_3 = 7;
+
+// Specials
+const byte ADC_0 = 0; 
+const byte ADC_1 = 1; 
+const byte PWM_1 = 9;
+const byte PWM_2 = 10;
+
+// Buttons
+const byte SW_PRG = 8;
+const byte SW_SEL = 11;
 
 // Commands
 const byte PORT = 0x10;
@@ -22,29 +43,20 @@ const byte C_COUNT = 0xA0;
 const byte D_COUNT = 0xB0;
 const byte SKIP_IF = 0xC0;
 const byte CALL = 0xD0;
-const byte CALL_SUB = 0xE0;
-const byte CMD_BYTE = 0xF0;
+const byte CALL_RTR = 0xE0;
 
-// debouncing with 100ms
+// debouncing the butons with 100ms
 const byte DEBOUNCE = 100;
 
-// the actual address of the program
-word addr;
-// page register
-word page;
-// defining register
+// the registers
 byte a, b, c, d;
+// the actual address pointer of the program
+word addr;
+// the page register
+word page;
 
-const byte SAVE_CNT = 1;
-
-word saveaddr[SAVE_CNT];
-byte saveCnt;
-
-unsigned long tmpValue;
-
-byte prog = 0;
-byte data = 0;
-byte com = 0;
+// sub routine calls needs some memory for the address to jump back
+word saveaddr;
 
 void setup() {
   pinMode(Dout_0, OUTPUT);
@@ -75,14 +87,17 @@ void setup() {
   }
 }
 
+// reset all
 void doReset() {
   addr = 0;
   page = 0;
-  saveCnt = 0;
   a = 0;
   b = 0;
   c = 0;
   d = 0;
+  doPort(0);
+  analogWrite(PWM_1, 0);
+  analogWrite(PWM_2, 0);
 }
 
 /*
@@ -96,7 +111,6 @@ void loop() {
   // and data
   byte data = (value & 0x0F);
 
-  addr = addr + 1;
   switch (cmd) {
     case PORT:
       doPort(data);
@@ -137,12 +151,13 @@ void loop() {
     case CALL:
       doCall(data);
       break;
-    case CALL_SUB:
-      doCallSub(data);
+    case CALL_RTR:
+      doRtr(data);
       break;
     default:
-      ;
+      doReset();
   }
+  addr = addr + 1;
   if (addr > E2END) {
     doReset();
   }
@@ -220,7 +235,7 @@ void doDelay(byte data) {
   jump relative back
 */
 void doJumpBack(byte data) {
-  addr = addr - data - 1;
+  addr = addr - data;
 }
 
 /*
@@ -231,51 +246,10 @@ void doSetA(byte data) {
 }
 
 /*
-  a = somthing;
-*/
-void doAIs(byte data) {
-  switch (data) {
-    case 1:
-      a = b;
-      break;
-    case 2:
-      a = c;
-      break;
-    case 3:
-      a = d;
-      break;
-    case 4:
-      a = digitalRead(Din_0) + (digitalRead(Din_1) << 1) + (digitalRead(Din_2) << 2) + (digitalRead(Din_3) << 3);
-      break;
-    case 5:
-      a = digitalRead(Din_0);
-      break;
-    case 6:
-      a = digitalRead(Din_1);
-      break;
-    case 7:
-      a = digitalRead(Din_2);
-      break;
-    case 8:
-      a = digitalRead(Din_3);
-      break;
-    case 9:
-      tmpValue = analogRead(ADC_0);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
-      break;
-    case 10:
-      tmpValue = analogRead(ADC_1);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
-      break;
-    default:
-      break;
-  }
-}
-
-/*
   somthing = a;
 */
 void doIsA(byte data) {
+  byte tmpValue;
   switch (data) {
     case 0:
       tmpValue = b;
@@ -320,6 +294,49 @@ void doIsA(byte data) {
 }
 
 /*
+  a = somthing;
+*/
+void doAIs(byte data) {
+  word tmpValue;
+  switch (data) {
+    case 1:
+      a = b;
+      break;
+    case 2:
+      a = c;
+      break;
+    case 3:
+      a = d;
+      break;
+    case 4:
+      a = digitalRead(Din_0) + (digitalRead(Din_1) << 1) + (digitalRead(Din_2) << 2) + (digitalRead(Din_3) << 3);
+      break;
+    case 5:
+      a = digitalRead(Din_0);
+      break;
+    case 6:
+      a = digitalRead(Din_1);
+      break;
+    case 7:
+      a = digitalRead(Din_2);
+      break;
+    case 8:
+      a = digitalRead(Din_3);
+      break;
+    case 9:
+      tmpValue = analogRead(ADC_0);
+      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      break;
+    case 10:
+      tmpValue = analogRead(ADC_1);
+      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      break;
+    default:
+      break;
+  }
+}
+
+/*
   calculations
 */
 void doCalc(byte data) {
@@ -354,6 +371,18 @@ void doCalc(byte data) {
     case 10:
       a = ~a;
       break;
+    case 11:
+      a = a % b;
+      break;
+    case 13:
+      a = b - a ;
+      break;
+    case 14:
+      a = a >> 1;
+      break;
+    case 15:
+      a = a << 1;
+      break;
     default:
       break;
   }
@@ -371,7 +400,7 @@ void doPage(byte data) {
   jump absolute
 */
 void doJump(byte data) {
-  addr = page + data;
+  addr = page + data + 1;
 }
 
 /*
@@ -462,22 +491,15 @@ void doSkipIf(byte data) {
   calling a subroutine
 */
 void doCall(byte data) {
-  saveaddr[saveCnt] = addr;
-  saveCnt++;
+  saveaddr = addr;
   addr = page + data;
 }
 
 /*
   calling a subroutine, calling return and restart
 */
-void doCallSub(byte data) {
+void doRtr(byte data) {
   if (data == 0) {
-    if (saveCnt < 0) {
-      doReset();
-      return;
-    }
-    saveCnt -= 1;
-    addr = saveaddr[saveCnt];
-    return;
+    addr = saveaddr + 1;
   }
 }

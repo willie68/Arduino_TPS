@@ -13,19 +13,20 @@ const byte demoPrg[] = { 0x4F, 0x59, 0x1F, 0x29, 0x10, 0x29, 0x5A, 0x40,
                          0x72, 0x26, 0xC0, 0x35, 0x80, 0x90, 0xFF
                        };
 
-
 enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
+
+byte data = 0;
+byte com = 0;
 
 PROGRAMMING_MODE prgMode;
 
+// just putting this demo program into the eeprom
 void prgDemoPrg() {
+  // only need to program the demo program if there is nothing in the eeprom (value on address 0 is FF)
   byte value = EEPROM.read(0);
   if (value == 0xFF) {
-    value = EEPROM.read(1);
-    if (value == 0xFF) {
-      for (byte i = 0; i < sizeof(demoPrg); i++) {
-        EEPROM.write(i, demoPrg[i]);
-      }
+    for (byte i = 0; i < sizeof(demoPrg); i++) {
+      EEPROM.write(i, demoPrg[i]);
     }
   }
 }
