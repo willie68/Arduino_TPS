@@ -1,19 +1,8 @@
 /*
-  Simple SPS System mit dem Arduino.
+  Simple SPS System with Arduino Uno.
 */
 
-// defining different hardware platforms
-#ifdef __AVR_ATmega328P__
-//#define SPS_USE_DISPLAY
-//#define SPS_RECEIVER
-//#define SPS_ENHANCEMENT
-//#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-//#define SPS_TONE
-#endif
-
 // libraries
-#include <makros.h>
 #include <EEPROM.h>
 #include <avr/eeprom.h>
 
@@ -38,10 +27,6 @@ const byte CMD_BYTE = 0xF0;
 
 // debouncing with 100ms
 const byte DEBOUNCE = 100;
-
-// sub routines
-const byte subCnt = 7;
-word subs[subCnt];
 
 // the actual address of the program
 word addr;
@@ -91,13 +76,6 @@ void setup() {
 }
 
 void doReset() {
-
-  for (int i = 0; i < subCnt; i++) {
-    subs[i] = 0;
-  }
-
-  readProgram();
-
   addr = 0;
   page = 0;
   saveCnt = 0;
@@ -108,35 +86,14 @@ void doReset() {
 }
 
 /*
-  getting all addresses of sub programms
-*/
-void readProgram() {
-  word addr = 0;
-  for ( addr = 0; addr <= E2END; addr++) {
-    byte value = EEPROM.read(addr);
-
-    if (value == 0xFF) {
-      // ende des Programms
-      break;
-    }
-    byte cmd = (value & 0xF0);
-    byte data = (value & 0x0F);
-
-    if (cmd == CALL_SUB) {
-      if (data >= 8) {
-        data = data - 8;
-        subs[data] = addr + 1;
-      }
-    }
-  }
-}
-
-/*
   main loop
 */
 void loop() {
+  // reading from address
   byte value = EEPROM.read(addr);
+  // splitting into command
   byte cmd = (value & 0xF0);
+  // and data
   byte data = (value & 0x0F);
 
   addr = addr + 1;
@@ -153,11 +110,11 @@ void loop() {
     case SET_A:
       doSetA(data);
       break;
-    case A_IS:
-      doAIs(data);
-      break;
     case IS_A:
       doIsA(data);
+      break;
+    case A_IS:
+      doAIs(data);
       break;
     case CALC:
       doCalc(data);
@@ -320,6 +277,11 @@ void doAIs(byte data) {
 */
 void doIsA(byte data) {
   switch (data) {
+    case 0:
+      tmpValue = b;
+      b = a;
+      a = tmpValue;
+      break;
     case 1:
       b = a;
       break;
@@ -440,6 +402,9 @@ void doDCount(byte data) {
 void doSkipIf(byte data) {
   bool skip = false;
   switch (data) {
+    case 0:
+      skip = (a == 0);
+      break;
     case 1:
       skip = (a > b);
       break;
