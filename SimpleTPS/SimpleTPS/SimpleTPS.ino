@@ -2,7 +2,7 @@
   Simple SPS System with Arduino Uno.
 */
 
-// libraries
+// libraries for access to eeprom
 #include <EEPROM.h>
 #include <avr/eeprom.h>
 
@@ -29,10 +29,10 @@ const byte PWM_2 = 10;
 const byte SW_PRG = 8;
 const byte SW_SEL = 11;
 
-// Commands
-const byte PORT = 0x10;
-const byte DELAY = 0x20;
-const byte JUMP_BACK = 0x30;
+// the defined Commands
+const byte PORT = 0x10; // directly output to LEDs
+const byte DELAY = 0x20; // wait just a little bit
+const byte JUMP_BACK = 0x30; // jump back to address
 const byte SET_A = 0x40;
 const byte IS_A = 0x50;
 const byte A_IS = 0x60;
@@ -58,7 +58,9 @@ word page;
 // sub routine calls needs some memory for the address to jump back
 word saveaddr;
 
+// this will be called only once after controller reset
 void setup() {
+  // set all TPS Outputs to output mode
   pinMode(Dout_0, OUTPUT);
   pinMode(Dout_1, OUTPUT);
   pinMode(Dout_2, OUTPUT);
@@ -80,6 +82,7 @@ void setup() {
   digitalWrite(Dout_0, 0);
 
   prgDemoPrg();
+  // reset the program
   doReset();
 
   if (digitalRead(SW_PRG) == 0) {
@@ -89,12 +92,14 @@ void setup() {
 
 // reset all
 void doReset() {
+  // reset address pointer
   addr = 0;
   page = 0;
   a = 0;
   b = 0;
   c = 0;
   d = 0;
+  // all LED off
   doPort(0);
   analogWrite(PWM_1, 0);
   analogWrite(PWM_2, 0);
@@ -111,13 +116,17 @@ void loop() {
   // and data
   byte data = (value & 0x0F);
 
+  // switch to the right method for the command
   switch (cmd) {
+    // the port command
     case PORT:
       doPort(data);
       break;
+    // the delay command
     case DELAY:
       doDelay(data);
       break;
+    // the jump command
     case JUMP_BACK:
       doJumpBack(data);
       break;
@@ -154,10 +163,14 @@ void loop() {
     case CALL_RTR:
       doRtr(data);
       break;
+    // if there is an unkown command, reset the tps
     default:
       doReset();
+      return;
   }
+  // increment address pointer
   addr = addr + 1;
+  // if address is at the end of the eeprom, simply reset the program
   if (addr > E2END) {
     doReset();
   }
