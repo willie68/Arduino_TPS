@@ -33,6 +33,10 @@ void setup() {
   pinMode(Dout_2, OUTPUT);
   pinMode(Dout_3, OUTPUT);
 
+  // buttons inpout with pullup
+  pinMode(SW_PRG, INPUT_PULLUP);
+  pinMode(SW_SEL, INPUT_PULLUP);
+
   // program the demo program
   prgDemoPrg();
 

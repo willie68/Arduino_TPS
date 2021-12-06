@@ -45,11 +45,9 @@ const byte SKIP_IF = 0xC0; // skip next command if something
 const byte CALL = 0xD0; // call subroutine
 const byte CALL_RTR = 0xE0; // return from subroutine
 
-// debouncing the butons with 100ms
-const byte DEBOUNCE = 100;
-
 // the registers
 byte a, b, c, d;
+
 // the actual address pointer of the program
 word addr;
 // the page register
@@ -75,16 +73,11 @@ void setup() {
   pinMode(Din_1, INPUT_PULLUP);
   pinMode(Din_2, INPUT_PULLUP);
   pinMode(Din_3, INPUT_PULLUP);
-
   // buttons inpout with pullup
   pinMode(SW_PRG, INPUT_PULLUP);
   pinMode(SW_SEL, INPUT_PULLUP);
-
-  digitalWrite(Dout_0, 1);
-  delay(1000);
-  digitalWrite(Dout_0, 0);
-
   prgDemoPrg();
+
   // reset the program
   doReset();
 
@@ -309,7 +302,6 @@ void doIsA(byte data) {
       break;
   }
 }
-
 /*
   a = somthing;
 */
@@ -441,7 +433,6 @@ void doDCount(byte data) {
     doJump(data);
   }
 }
-
 /*
   simple condition = true, skip next command
 */

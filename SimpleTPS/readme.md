@@ -37,6 +37,11 @@ Es gibt ein paar Anpassungen zu Burghards Version.
 
 ## Step 4
 
+Addr High nennt sich in dieser Variante Page.
+
+-  Weil wir genug EEPROM haben ist der Page Bereich auf 16 Seiten ausgedehnt. Macht also ins. 256 Bytes
+-  Beim Skip gibt’s noch den A=0 Befehl.
+
 ## Befehlssatz
 
 In eckigen Klammern stehen jeweils die entsprechenden Mnemonics des [SPS Assemblers](https://wkla.no-ip.biz/ArduinoWiki/doku.php?id=arduino:arduinosps:tpsass).
@@ -100,4 +105,3 @@ Zus. Features in der Arduino_TPS Version:
 
 -  Weil wir genug EEPROM haben ist der Page Bereich auf 16 Seiten ausgedehnt. Macht also ins. 256 Bytes
 -  Beim Skip gibt’s noch den A=0 Befehl.
--  FF bedeutet Programmende. → automatischer Sprung nach 0.
