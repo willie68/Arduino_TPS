@@ -14,21 +14,21 @@ const byte Dout_2 = 6;
 const byte Dout_3 = 7;
 
 // the defined Commands
-const byte PORT = 0x10; // directly output to LEDs
-const byte DELAY = 0x20; // wait just a little bit
-const byte JUMP_BACK = 0x30; // jump back to address
+const byte PORT = 0x10;       // directly output to LEDs
+const byte DELAY = 0x20;      // wait just a little bit
+const byte JUMP_BACK = 0x30;  // jump back to address
 
 // the actual address pointer of the program
 word addr;
 
 // simple blink program
-const byte demoPrg[] = { 
-  0x11, // Dout=1
-  0x29, // 1000ms
-  0x18, // Dout=8
-  0x29, // 1000ms
-  0x34, // Addr = addr -4
-  0xFF  // EoP End of program
+const byte demoPrg[] = {
+  0x11,  // Dout=1
+  0x29,  // 1000ms
+  0x18,  // Dout=8
+  0x29,  // 1000ms
+  0x34,  // Addr = addr -4
+  0xFF   // EoP End of program
 };
 
 // this will be called only once after controller reset

@@ -17,11 +17,23 @@ Hier eine Übersicht über die Ein/Ausgabepins der TPS und deren Entsprechung au
 
 ## Step 1
 
-
+Ist so wie bei Burghard beschrieben.
 
 ## Step 2
 
+Hier ebenso
+
 ## Step 3
+
+Es gibt ein paar Anpassungen zu Burghards Version.
+
+- Es gibt zusätzlich einen zweiten ADC und einen zweiten PWM.
+- Befehl 0x50 SWAP A/B ist hinzugekommen
+- Es gibt neue Berechnungen, 
+  - den Rest einer Division (A= A % B) 
+  - Umgekehrte Subtraktion A = B - A
+  - Recht und Links Shift A = A SHR 1 u. A = A SHL 1 
+    Diese verschieben den Inhalt des Registers A entweder nach links SHL (was  eine Multiplikation mit 2 entspricht) oder nach rechts  (SHR). Das wäre dann eine Division durch 2. 
 
 ## Step 4
 
@@ -58,7 +70,7 @@ Zus. Features in der Arduino_TPS Version:
 -  Es gibt neue Befehle: Swap (0x50)  vertauscht A und B Register
 -  Es gibt neue Berechnungen, 
    - den Rest einer Division (A= A % B) 
-   - Umgekehrte Subtracktion A = B - A
+   - Umgekehrte Subtraktion A = B - A
    - Recht und Links Shift A = A SHR 1 u. A = A SHL 1 
      Diese verschieben den Inhalt des Registers A entweder nach links SHL (was  eine Multiplikation mit 2 entspricht) oder nach rechts  (SHR). Das wäre dann eine Division durch 2. 
 

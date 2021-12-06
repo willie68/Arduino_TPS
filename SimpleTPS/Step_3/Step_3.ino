@@ -37,26 +37,12 @@ const byte SET_A = 0x40; // directly set a value into the A register
 const byte IS_A = 0x50; // put the value of A into another 
 const byte A_IS = 0x60; // put something into A
 const byte CALC = 0x70; // calculations with A
-const byte PAGE = 0x80;
-const byte JUMP = 0x90;
-const byte C_COUNT = 0xA0;
-const byte D_COUNT = 0xB0;
-const byte SKIP_IF = 0xC0;
-const byte CALL = 0xD0;
-const byte CALL_RTR = 0xE0;
-
-// debouncing the butons with 100ms
-const byte DEBOUNCE = 100;
 
 // the registers
 byte a, b, c, d;
+
 // the actual address pointer of the program
 word addr;
-// the page register
-word page;
-
-// sub routine calls needs some memory for the address to jump back
-word saveaddr;
 
 // this will be called only once after controller reset
 void setup() {
@@ -66,25 +52,23 @@ void setup() {
   pinMode(Dout_2, OUTPUT);
   pinMode(Dout_3, OUTPUT);
 
+  // analog output
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
 
+  // digital input with pullup
   pinMode(Din_0, INPUT_PULLUP);
   pinMode(Din_1, INPUT_PULLUP);
   pinMode(Din_2, INPUT_PULLUP);
   pinMode(Din_3, INPUT_PULLUP);
 
-  pinMode(SW_PRG, INPUT_PULLUP);
-  pinMode(SW_SEL, INPUT_PULLUP);
-
-  digitalWrite(Dout_0, 1);
-  delay(1000);
-  digitalWrite(Dout_0, 0);
-
+  // program the demo program
   prgDemoPrg();
+
   // reset the program
   doReset();
 
+// starting the programming mode on startup, if SW_PRG is pressed
   if (digitalRead(SW_PRG) == 0) {
     programMode();
   }
@@ -94,15 +78,8 @@ void setup() {
 void doReset() {
   // reset address pointer
   addr = 0;
-  page = 0;
-  a = 0;
-  b = 0;
-  c = 0;
-  d = 0;
   // all LED off
   doPort(0);
-  analogWrite(PWM_1, 0);
-  analogWrite(PWM_2, 0);
 }
 
 /*
@@ -141,27 +118,6 @@ void loop() {
       break;
     case CALC:
       doCalc(data);
-      break;
-    case PAGE:
-      doPage(data);
-      break;
-    case JUMP:
-      doJump(data);
-      break;
-    case C_COUNT:
-      doCCount(data);
-      break;
-    case D_COUNT:
-      doDCount(data);
-      break;
-    case SKIP_IF:
-      doSkipIf(data);
-      break;
-    case CALL:
-      doCall(data);
-      break;
-    case CALL_RTR:
-      doRtr(data);
       break;
     // if there is an unkown command, reset the tps
     default:
@@ -305,7 +261,6 @@ void doIsA(byte data) {
       break;
   }
 }
-
 /*
   a = somthing;
 */
@@ -400,119 +355,4 @@ void doCalc(byte data) {
       break;
   }
   a = a & 15;
-}
-
-/*
-  setting page
-*/
-void doPage(byte data) {
-  page = data * 16;
-}
-
-/*
-  jump absolute
-*/
-void doJump(byte data) {
-  addr = page + data + 1;
-}
-
-/*
-  counting with c register
-*/
-void doCCount(byte data) {
-  if (c > 0) {
-    c -= 1;
-    c = c & 0x0F;
-    doJump(data);
-  }
-}
-
-/*
-  counting with d register
-*/
-void doDCount(byte data) {
-  if (d > 0) {
-    d -= 1;
-    d = d & 0x0F;
-    doJump(data);
-  }
-}
-
-/*
-  simple condition = true, skip next command
-*/
-void doSkipIf(byte data) {
-  bool skip = false;
-  switch (data) {
-    case 0:
-      skip = (a == 0);
-      break;
-    case 1:
-      skip = (a > b);
-      break;
-    case 2:
-      skip = (a < b);
-      break;
-    case 3:
-      skip = (a == b);
-      break;
-    case 4:
-      skip = digitalRead(Din_0);
-      break;
-    case 5:
-      skip = digitalRead(Din_1);
-      break;
-    case 6:
-      skip = digitalRead(Din_2);
-      break;
-    case 7:
-      skip = digitalRead(Din_3);
-      break;
-    case 8:
-      skip = !digitalRead(Din_0);
-      break;
-    case 9:
-      skip = !digitalRead(Din_1);
-      break;
-    case 10:
-      skip = !digitalRead(Din_2);
-      break;
-    case 11:
-      skip = !digitalRead(Din_3);
-      break;
-    case 12:
-      skip = !digitalRead(SW_PRG);
-      break;
-    case 13:
-      skip = !digitalRead(SW_SEL);
-      break;
-    case 14:
-      skip = digitalRead(SW_PRG);
-      break;
-    case 15:
-      skip = digitalRead(SW_SEL);
-      break;
-    default:
-      break;
-  }
-  if (skip) {
-    addr += 1;
-  }
-}
-
-/*
-  calling a subroutine
-*/
-void doCall(byte data) {
-  saveaddr = addr;
-  addr = page + data;
-}
-
-/*
-  calling a subroutine, calling return and restart
-*/
-void doRtr(byte data) {
-  if (data == 0) {
-    addr = saveaddr + 1;
-  }
 }
