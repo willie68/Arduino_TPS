@@ -245,7 +245,7 @@ void doDelay(byte data) {
   jump relative back
 */
 void doJumpBack(byte data) {
-  addr = addr - data;
+  addr = addr - data - 1;
 }
 
 /*
@@ -409,7 +409,7 @@ void doPage(byte data) {
   jump absolute
 */
 void doJump(byte data) {
-  addr = page + data + 1;
+  addr = page + data - 1;
 }
 
 /*

@@ -167,5 +167,5 @@ void doDelay(byte data) {
   jump relative back
 */
 void doJumpBack(byte data) {
-  addr = addr - data;
+  addr = addr - data - 1;
 }

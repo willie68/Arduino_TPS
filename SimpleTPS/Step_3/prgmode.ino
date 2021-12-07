@@ -2,6 +2,12 @@
   entering the programming mode
 */
 
+#define BLINK_DELAY 500
+#define SHOW_DELAY 1000
+#define KEY_DELAY 250
+#define ADDR_LOOP 50
+#define DEBOUNCE 50
+
 // simple blink program
 const byte demoPrg[] = { 
   0x11, // Dout=1
@@ -11,6 +17,13 @@ const byte demoPrg[] = {
   0x34, // Addr = addr -4
   0xFF  // EoP End of program
 };
+
+enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
+
+byte data = 0;
+byte com = 0;
+
+PROGRAMMING_MODE prgMode;
 
 // just putting this demo program into the eeprom
 void prgDemoPrg() {
@@ -23,109 +36,115 @@ void prgDemoPrg() {
   }
 }
 
-byte data = 0;
-byte com = 0;
-
-byte prgMode;
-
 void programMode() {
-  // waiting for PRG to release
-  prgMode = 0;
+  // checking if advance programmer board connected?
+  doPort(0x08);
+  while (digitalRead(SW_PRG) == 0) {
+    // waiting for PRG to release
+  }
+  blinkAll();
+  prgMode = ADDRESS;
   addr = 0;
   do {
-    // show Low Nibble of Addresse
-    doPort(addr & 0x0F);
-    delay(300);
-    doPort(0);
-    delay(200);
+    blinkD1();
+    // LoNibble Adresse anzeigen
+    doAddr(addr);
+    //delay(SHOW_DELAY);
+
+    blinkD2();
+    // HiNibble Adresse anzeigen
+    data = (addr & 0xf0) >> 4;                                  //Adresse anzeigen
+    doAddr(data);
+    //delay(SHOW_DELAY);
 
     byte Eebyte = EEPROM.read(addr);
     data = Eebyte & 15;
     com = Eebyte >> 4;
-    doPort(com); // show command
-    do {
-    }
-    while (digitalRead(SW_PRG) == 0);
-    delay(50);
-    prgMode = 1; // Phase 1: show command
+
+    blinkD3();
+    prgMode = COMMAND;
+    doPort(com); //show command
 
     do {
       if (digitalRead(SW_SEL) == 0) {
-        if (prgMode == 1) {
-          prgMode = 2;
-          com = 15;
-        }
-        if (prgMode == 2) { // Phase 2: command changed
-          com += 1;
-          com = com & 0x0F;
-          doPort(com);
-        }
-        if (prgMode == 3) { // Phase 3: command not changed, data changed
-          prgMode = 5;
-          data = 15;
-        }
-        if (prgMode == 4) { // phase 4: command and data changed
-          prgMode = 5;
-          data = 15;
-        }
-        if (prgMode == 5) { // phase 5 data changed
-          data += 1;
-          data = data & 0x0F;
-          doPort(data);
-        }
-        delay(50);
-        do {
-        }
-        while (digitalRead(SW_SEL) == 0);
-        delay(50);
-      }
-
-      if (digitalRead(SW_PRG) == 0) {
-        if (prgMode == 3) {
-          prgMode = 7; // only shown not changed
-        }
-        if (prgMode == 1) {
-          doPort(data);
-          prgMode = 3;
-        }
-        if (prgMode == 4) {
-          doPort(data);
-          prgMode = 6;
-        }
-        if (prgMode == 2) {
-          doPort(data);
-          prgMode = 4;
-        }
-        if (prgMode == 6) { // only command changed
-          data = data & 0x0F;
-          Eebyte = (com << 4) + data;
-          EEPROM.write(addr, Eebyte);
-          doPort(0);
-          delay(600);
-          addr += 1;
-          prgMode = 0;
-        }
-        if (prgMode == 5) { // data changed
-          data = data & 0x0F;
-          Eebyte = (com << 4) + data;
-          EEPROM.write(addr, Eebyte);
-          doPort(0);
-          delay(600);
-          addr += 1;
-          prgMode = 0;
-        }
-        if (prgMode == 7) { // only command changed
-          addr += 1;
-          prgMode = 0;
-        }
-        delay(50);
-        do {
-        }
-        while (digitalRead(SW_PRG) == 0);
-        delay(50);
+        delay(KEY_DELAY);
+        com += 1;
+        com = com & 0x0F;
+        doPort(com);
       }
     }
     while (digitalRead(SW_PRG) == 1);
+    delay(DEBOUNCE);
+
+    blinkD4();
+    prgMode = DATA;
+    doPort(data); //show data
+
+    do {
+      if (digitalRead(SW_SEL) == 0) {
+        delay(KEY_DELAY);
+        data += 1;
+        data = data & 0x0F;
+        doPort(data);
+      }
+    }
+    while (digitalRead(SW_PRG) == 1); // S2 = 1
+    delay(DEBOUNCE);
+
+    byte newValue = (com << 4) + data;
+    if (newValue != Eebyte) {
+      EEPROM.write(addr, newValue); //           Writeeeprom Eebyte , Addr
+      blinkAll();
+    }
+    addr += 1;
   }
   while (true);
+}
+
+void blinkAll() {
+  blinkNull();
+  doPort(0x0F);
+  delay(BLINK_DELAY);
+}
+
+void blinkD1() {
+  blinkNull();
+  doPort(0x01);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD2() {
+  blinkNull();
+  doPort(0x02);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD3() {
+  blinkNull();
+  doPort(0x04);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkD4() {
+  blinkNull();
+  doPort(0x08);
+  delay(BLINK_DELAY);
+  blinkNull();
+}
+
+void blinkNull() {
+  doPort(0x00);
+  delay(BLINK_DELAY);
+}
+
+void doAddr(byte value) {
+  for (byte i = ADDR_LOOP; i > 0; i--) {
+    doPort(value);
+    delay(19);
+    doPort(0x0F);
+    delay(1);
+  }
 }
