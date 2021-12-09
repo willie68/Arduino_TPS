@@ -20,30 +20,30 @@ const byte Din_2 = 2;
 const byte Din_3 = 3;
 
 // Specials
-const byte ADC_0 = 0; 
-const byte ADC_1 = 1; 
+const byte ADC_0 = 0;
+const byte ADC_1 = 1;
 const byte PWM_1 = 9;
 const byte PWM_2 = 10;
 
 // Buttons
-const byte SW_PRG = 8;  // (S2)
-const byte SW_SEL = 11; // (S1)
+const byte SW_PRG = 8;   // (S2)
+const byte SW_SEL = 11;  // (S1)
 
 // the defined Commands
-const byte PORT = 0x10; // directly output to LEDs
-const byte DELAY = 0x20; // wait just a little bit
-const byte JUMP_BACK = 0x30; // jump back to address
-const byte SET_A = 0x40; // directly set a value into the A register
-const byte IS_A = 0x50; // put the value of A into another 
-const byte A_IS = 0x60; // put something into A
-const byte CALC = 0x70; // calculations with A
-const byte PAGE = 0x80; // Page register for direct jump
-const byte JUMP = 0x90; // The jump Command
-const byte C_COUNT = 0xA0; // counting C Register
-const byte D_COUNT = 0xB0; // counting D Register
-const byte SKIP_IF = 0xC0; // skip next command if something
-const byte CALL = 0xD0; // call subroutine
-const byte CALL_RTR = 0xE0; // return from subroutine
+const byte PORT = 0x10;       // directly output to LEDs
+const byte DELAY = 0x20;      // wait just a little bit
+const byte JUMP_BACK = 0x30;  // jump back to address
+const byte SET_A = 0x40;      // directly set a value into the A register
+const byte IS_A = 0x50;       // put the value of A into another
+const byte A_IS = 0x60;       // put something into A
+const byte CALC = 0x70;       // calculations with A
+const byte PAGE = 0x80;       // Page register for direct jump
+const byte JUMP = 0x90;       // The jump Command
+const byte C_COUNT = 0xA0;    // counting C Register
+const byte D_COUNT = 0xB0;    // counting D Register
+const byte SKIP_IF = 0xC0;    // skip next command if something
+const byte CALL = 0xD0;       // call subroutine
+const byte CALL_RTR = 0xE0;   // return from subroutine
 
 // the registers
 byte a, b, c, d;
@@ -334,11 +334,11 @@ void doAIs(byte data) {
       break;
     case 9:
       tmpValue = analogRead(ADC_0);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      a = tmpValue / 64;  //(Umrechnen auf 4 bit)
       break;
     case 10:
       tmpValue = analogRead(ADC_1);
-      a = tmpValue / 64; //(Umrechnen auf 4 bit)
+      a = tmpValue / 64;  //(Umrechnen auf 4 bit)
       break;
     default:
       break;
@@ -384,7 +384,7 @@ void doCalc(byte data) {
       a = a % b;
       break;
     case 13:
-      a = b - a ;
+      a = b - a;
       break;
     case 14:
       a = a >> 1;
