@@ -32,7 +32,6 @@ void prgDemoPrg() {
 }
 
 void programMode() {
-  // checking if advance programmer board connected?
   doPort(0x08);
   while (digitalRead(SW_PRG) == 0) {
     // waiting for PRG to release
