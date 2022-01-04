@@ -985,7 +985,7 @@ void doByte(byte data) {
       if (tmpValue > 2000) {
         tmpValue = 2000;
       }
-      a = (tmpValue - 1000) / 4; //(Umrechnen auf 4 bit)
+      a = (tmpValue - 1000) / 4; //(Umrechnen auf 8 bit)
       dbgOut("RC1:");
       dbgOut(tmpValue);
       dbgOut("=");
