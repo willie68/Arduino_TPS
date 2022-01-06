@@ -6,6 +6,7 @@ sslport: 9543
 serviceURL: https://127.0.0.1:9543
 #sercret file for storing usernames and passwords
 secretfile: configs/secret.yaml
+apikey: false
 
 logging:
     gelf-url: 127.0.0.1

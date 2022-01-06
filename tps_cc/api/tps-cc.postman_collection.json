@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "8aaf5302-3a68-4e01-be38-8ae799a769f7",
-		"name": "go-micro",
+		"name": "tps_cc",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [

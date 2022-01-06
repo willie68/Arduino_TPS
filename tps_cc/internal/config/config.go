@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const Servicename = "go-micro"
+const Servicename = "tps-cc"
 
 // Config our service configuration
 type Config struct {

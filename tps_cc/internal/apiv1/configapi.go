@@ -11,8 +11,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/willie68/tps_cc/internal/serror"
 
+	"github.com/willie68/tps_cc/internal/api"
 	"github.com/willie68/tps_cc/internal/utils/httputils"
-	"github.com/willie68/tps_ccnternal/api"
 )
 
 //APIKey the apikey of this service

@@ -84,7 +84,7 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
 LABEL org.opencontainers.image.title="GoMicro" \
       org.opencontainers.image.description="MCS GoMicro Template" \
       org.opencontainers.image.version="${IMG_VERSION}" \
-      org.opencontainers.image.source="https://github.com/willie68/go-micro.git" \
+      org.opencontainers.image.source="https://github.com/willie68/Arduino_TPS" \
       org.opencontainers.image.vendor="MCS (www.rcarduino.de)" \
       org.opencontainers.image.authors="info@wk-music.de" \
       maintainer="MCS" \

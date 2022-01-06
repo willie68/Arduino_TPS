@@ -1,23 +1,19 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"math/rand"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	flag "github.com/spf13/pflag"
-	"github.com/willie68/tps_cc/pkg/model"
-	"github.com/willie68/tps_cc/pkg/tmpl"
+	"github.com/willie68/tps_cc/internal/utils"
 	"github.com/willie68/tps_cc/pkg/tpsfile"
 	"github.com/willie68/tps_cc/pkg/tpsgen"
 )
 
 var SrcFile string
-var TemplateCmds model.TemplateCmds
 var Debug bool
 var BuildZip bool
 var AutoCompile bool
@@ -32,16 +28,6 @@ func init() {
 	flag.BoolVarP(&BuildZip, "Zip", "z", false, "building a zip file from the gerenrated sources")
 	flag.BoolVarP(&AutoCompile, "Compile", "c", false, "compile the gerenrated sources")
 	flag.StringVarP(&Board, "board", "b", "arduino_uno", "board to use in compile task")
-
-	dat, err := tmpl.TemplateFS.ReadFile("files/template.json")
-	if err != nil {
-		log.Panicf("can't read template.json: %v", err)
-	}
-
-	err = json.Unmarshal(dat, &TemplateCmds)
-	if err != nil {
-		log.Panicf("can't unmarshall template.json: %v", err)
-	}
 }
 
 func main() {
@@ -57,7 +43,7 @@ func main() {
 	name := strings.TrimSuffix(SrcFile, ".tps")
 	name = filepath.Base(name)
 
-	path := generateRamdomPath(filepath.Dir(SrcFile))
+	path := utils.GenerateRamdomPath(filepath.Dir(SrcFile))
 
 	// generating structures
 	commandSrc, err := tpsfile.ParseFile(SrcFile)
@@ -71,7 +57,7 @@ func main() {
 	tpsgen := tpsgen.TPSGen{
 		Name:         name,
 		Path:         path,
-		TemplateCmds: TemplateCmds,
+		TemplateCmds: tpsgen.TemplateCmds,
 		Debug:        Debug,
 		Board:        Board,
 		BuildFlags:   flags,
@@ -102,29 +88,4 @@ func main() {
 		}
 		log.Printf("building Zip File: %s", zip)
 	}
-}
-
-func generateRamdomPath(base string) string {
-	path := base
-	exists := true
-	for exists {
-		path = base + "/" + randSeq(8)
-		exists = false
-		if _, err := os.Stat(path); err == nil {
-			exists = true
-		}
-	}
-
-	os.MkdirAll(path, os.ModePerm)
-	return path
-}
-
-var letters = []rune("abcdefghijklmnopqrstuvwxyz0123456789")
-
-func randSeq(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
 }

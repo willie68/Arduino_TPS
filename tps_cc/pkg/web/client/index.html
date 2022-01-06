@@ -15,6 +15,10 @@
 	<script src="assets/scripts/main.js"></script>
     <h1>GoMicro, the golang micro service template</h1>
     Written by Wilfried Klaas: <a href="https://github.com/willie68/tps_cc">GoMicro on github</a>
-    
+	<form enctype="multipart/form-data" action="https://127.0.0.1:9543/api/v1/generate" method="post">
+		<input type="file" name="uploadfile" />
+		<input type="hidden" name="token" value="{{.}}"/>
+		<input type="submit" value="upload" />
+	</form>
 </body>
 </html>

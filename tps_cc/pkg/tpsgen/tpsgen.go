@@ -3,6 +3,7 @@ package tpsgen
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -15,6 +16,20 @@ import (
 	"github.com/willie68/tps_cc/pkg/model"
 	"github.com/willie68/tps_cc/pkg/tmpl"
 )
+
+var TemplateCmds model.TemplateCmds
+
+func init() {
+	dat, err := tmpl.TemplateFS.ReadFile("files/template.json")
+	if err != nil {
+		log.Panicf("can't read template.json: %v", err)
+	}
+
+	err = json.Unmarshal(dat, &TemplateCmds)
+	if err != nil {
+		log.Panicf("can't unmarshall template.json: %v", err)
+	}
+}
 
 type TPSGen struct {
 	Name         string

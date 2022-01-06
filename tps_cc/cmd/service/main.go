@@ -32,7 +32,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/go-chi/httptracer"
 	"github.com/go-chi/render"
-	"github.com/willie68/tps/tps_ccnal/crypt"
+	"github.com/willie68/tps_cc/internal/crypt"
 	log "github.com/willie68/tps_cc/internal/logging"
 
 	flag "github.com/spf13/pflag"
@@ -42,7 +42,7 @@ import (
 apVersion implementing api version for this service
 */
 const apiVersion = "1"
-const servicename = "gomicro"
+const servicename = "tpscc"
 
 var port int
 var sslport int
@@ -147,7 +147,7 @@ func apiRoutes() (*chi.Mux, error) {
 
 	// building the routes
 	router.Route("/", func(r chi.Router) {
-		r.Mount(baseURL+"/config", apiv1.ConfigRoutes())
+		r.Mount(baseURL+"/generate", apiv1.GenerateRoutes())
 		r.Mount("/", health.Routes())
 		if serviceConfig.Metrics.Enable {
 			r.Mount("/metrics", promhttp.Handler())
