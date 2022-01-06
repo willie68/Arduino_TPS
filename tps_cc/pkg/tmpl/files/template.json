@@ -29,8 +29,8 @@
 		"a = digitalRead(Din_4)",
 		"tmpValue = analogRead(ADC_0); a = tmpValue / 64;  //(Umrechnen auf 4 bit)",
 		"tmpValue = analogRead(ADC_1); a = tmpValue / 64;  //(Umrechnen auf 4 bit)",
-		"#ifdef TPS_RCRECEIVER\r\n  tmpValue = pulseIn(RC_0, HIGH, 100000);\r\n  if (tmpValue < 1000) {\r\n    tmpValue = 1000;\r\n  }\r\n  if (tmpValue > 2000) {\r\n    tmpValue = 2000;\r\n  }\r\n  a = (tmpValue - 1000) / 64; //(Umrechnen auf 4 bit)\r\n#endif",		"",
-		"#ifdef TPS_RCRECEIVER\r\n  tmpValue = pulseIn(RC_1, HIGH, 100000);\r\n  if (tmpValue < 1000) {\r\n    tmpValue = 1000;\r\n  }\r\n  if (tmpValue > 2000) {\r\n    tmpValue = 2000;\r\n  }\r\n  a = (tmpValue - 1000) / 64; //(Umrechnen auf 4 bit)\r\n#endif",		"",
+		"#ifdef TPS_RCRECEIVER\r\n  tmpValue = pulseIn(RC_0, HIGH, 100000);\r\n  if (tmpValue < 1000) {\r\n    tmpValue = 1000;\r\n  }\r\n  if (tmpValue > 2000) {\r\n    tmpValue = 2000;\r\n  }\r\n  a = (tmpValue - 1000) / 64; //(Umrechnen auf 4 bit)\r\n#endif",
+		"#ifdef TPS_RCRECEIVER\r\n  tmpValue = pulseIn(RC_1, HIGH, 100000);\r\n  if (tmpValue < 1000) {\r\n    tmpValue = 1000;\r\n  }\r\n  if (tmpValue > 2000) {\r\n    tmpValue = 2000;\r\n  }\r\n  a = (tmpValue - 1000) / 64; //(Umrechnen auf 4 bit)\r\n#endif",
 		"a=e",
 		"a=f",
 		"pop()"
@@ -91,7 +91,7 @@
 	],
 	"debug" : "#define debug",
 	"boards": {
-		"arduino_uno": "arduino:avr:nano",
-		"arduino_nano": "arduino:avr:uno"
+		"arduino_uno": "arduino:avr:uno",
+		"arduino_nano": "arduino:avr:nano"
 	}
 }

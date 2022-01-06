@@ -13,6 +13,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/willie68/tps_cc/internal/config"
 	"github.com/willie68/tps_cc/pkg/model"
 	"github.com/willie68/tps_cc/pkg/tmpl"
 )
@@ -246,7 +247,7 @@ func (t *TPSGen) Compile() (string, error) {
 	}
 
 	cmd := exec.Command(
-		"./tools/arduino-cli.exe",
+		config.Get().ArduinoCli,
 		"compile",
 		"--clean",
 		"-e",
@@ -257,13 +258,7 @@ func (t *TPSGen) Compile() (string, error) {
 		"./"+t.Path+"/"+t.Name,
 		fmt.Sprintf("--build-property=\"build.extra_flags=%s\"", s.String()),
 	)
-	/*			"--build-property=\"build.extra_flags=-DTPS_ENHANCEMENT -DTPS_SERVO -DTPS_TONE\"",
-	">>log.log",
-	"2>&1",
-	">./"+t.Path+"/"+t.Name+"/log.log",
-	"2>&1",
-	)
-	*/
+	
 	log.Printf("compile: %s", cmd)
 
 	var stdout, stderr bytes.Buffer

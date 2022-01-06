@@ -197,3 +197,26 @@ void doDelay(byte data) {
       break;
   }
 }
+
+void push() {
+  if (stackCnt < SAVE_CNT) {
+    stack[stackCnt] = a;
+    stackCnt += 1;
+  } else {
+    for (int i = 1; i < SAVE_CNT; i++) {
+      stack[i - 1] = stack[i];
+    }
+    stack[SAVE_CNT-1] = a;
+  }
+}
+
+void pop() {
+  dbgOut("pop ");
+  dbgOutLn(stackCnt);
+  if (stackCnt > 0) {
+    stackCnt -= 1;
+    a = stack[stackCnt];
+  } else {
+    a = 0;
+  }
+}

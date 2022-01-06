@@ -299,9 +299,9 @@ func main() {
 		}
 		sslsrv = &http.Server{
 			Addr:         "0.0.0.0:" + strconv.Itoa(serviceConfig.Sslport),
-			WriteTimeout: time.Second * 15,
-			ReadTimeout:  time.Second * 15,
-			IdleTimeout:  time.Second * 60,
+			WriteTimeout: time.Second * 30,
+			ReadTimeout:  time.Second * 30,
+			IdleTimeout:  time.Second * 120,
 			Handler:      router,
 			TLSConfig:    tlsConfig,
 		}

@@ -14,9 +14,16 @@
 
 	<script src="assets/scripts/main.js"></script>
     <h1>GoMicro, the golang micro service template</h1>
-    Written by Wilfried Klaas: <a href="https://github.com/willie68/tps_cc">GoMicro on github</a>
-	<form enctype="multipart/form-data" action="https://127.0.0.1:9543/api/v1/generate" method="post">
-		<input type="file" name="uploadfile" />
+    Written by Wilfried Klaas: <a href="https://github.com/willie68/Arduino_TPS">GoMicro on github</a>
+	<form enctype="multipart/form-data" action="https://127.0.0.1:9543/api/v1/generate" method="post" target="_blank">
+		<label for="file">Choose a file:</label><input type="file" name="file" /><br/>
+		<label for="compile">compile:</label><input type="checkbox" id="compile" name="compile" value="true"><br/>
+		<label for="debug">with debug:</label><input type="checkbox" id="debug" name="debug" value="true"><br/>
+		<label for="board">Choose a target board:</label>
+		<select name="board" id="board">
+		  <option value="arduino_uno">Arduino Uno</option>
+		  <option value="arduino_nano">Arduino Nano</option>
+		</select> <br/>
 		<input type="hidden" name="token" value="{{.}}"/>
 		<input type="submit" value="upload" />
 	</form>

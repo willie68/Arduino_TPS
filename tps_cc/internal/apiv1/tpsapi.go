@@ -50,7 +50,9 @@ func GenerateRoutes() *chi.Mux {
 // @Router /config [post]
 func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 	mimeType := request.Header.Get("Content-Type")
-
+	AutoCompile := false
+	Debug := false
+	Board := "arduino_uno"
 	var cntLength int64
 	var filename string
 	var f io.Reader
@@ -69,6 +71,15 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 		mimeType = fileHeader.Header.Get("Content-type")
 		cntLength = fileHeader.Size
 		filename = fileHeader.Filename
+		if request.Form.Has("compile") {
+			comstr := request.Form.Get("compile")
+			AutoCompile = strings.ToLower(comstr) == "true"
+			Board = request.Form.Get("board")
+		}
+		if request.Form.Has("debug") {
+			dbgstr := request.Form.Get("debug")
+			Debug = strings.ToLower(dbgstr) == "true"
+		}
 		f = mpf
 		defer mpf.Close()
 	} else {
@@ -103,14 +114,13 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 	}
 
 	flags := tpsfile.GetBuildFlags(commandSrc)
-	Board := "arduino_uno"
 
 	// generating sources
 	tpsgen := tpsgen.TPSGen{
 		Name:         name,
 		Path:         path,
 		TemplateCmds: tpsgen.TemplateCmds,
-		Debug:        true,
+		Debug:        Debug,
 		Board:        Board,
 		BuildFlags:   flags,
 	}
@@ -123,7 +133,6 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 
 	// compiling sources
 
-	AutoCompile := true
 	if AutoCompile {
 		// arduino-cli compile --clean -e -b arduino:avr:uno --output-dir /home/arduinocli/Arduino_TPS/dest/ ./ --build-property="build.extra_flags=-DTPS_ENHANCEMENT -DTPS_SERVO -DTPS_SERIAL_PRG -DTPS_TONE" >>log.$TPS_VERSION.log 2>&1
 		// cp /home/arduinocli/Arduino_TPS/dest/TPS.ino.hex /home/arduinocli/Arduino_TPS/dest/TPS.$TPS_VERSION.UNO.ENHANCEMENT.SERVO.TONE.SERIAL_PRG.hex
@@ -155,6 +164,7 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 
 	response.Header().Set("Content-Type", "application/zip")
 	response.Header().Set("TPS-Content-Length", fmt.Sprintf("%d", cntLength))
+	response.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", name+".zip"))
 	response.WriteHeader(http.StatusCreated)
 	r, err := os.Open(zip)
 	if err != nil {
