@@ -1,5 +1,6 @@
 // Program im Debugmodus kompilieren, dann werden zus. Ausgaben auf die serielle Schnittstelle geschrieben.
-//#define debug
+{{.debug}}
+
 /*
    Here are the defines used in this software to control special parts of the implementation
    #define TPS_RCRECEIVER: using a RC receiver input
@@ -8,42 +9,10 @@
    #define TPS_TONE: using a tone output
 
 */
-// defining different hardware platforms
-#ifdef __AVR_ATmega328P__
-#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
-#define TPS_SERVO
-#define TPS_TONE
-#endif
-
-#ifdef ESP32
-//#define TPS_RCRECEIVER (not implementted yet)
-//#define TPS_ENHANCEMENT
-//#define TPS_SERVO
-//#define TPS_TONE
-#endif
-
-#ifdef __AVR_ATtiny84__
-//#define TPS_ENHANCEMENT
-//#define TPS_SERVO
-//#define TPS_TONE
-#endif
-
-#ifdef __AVR_ATtiny861__
-//#define TPS_RCRECEIVER
-//#define TPS_ENHANCEMENT
-//#define TPS_SERVO
-//#define TPS_TONE
-#endif
-
-#if defined(__AVR_ATtiny4313__) || defined(__AVR_ATtiny2313A__)
-// because of the limited memory only 2 of this three options are available. 
-#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
-//#define TPS_TONE
-#endif
+{{.flags}}
 
 // libraries
+#include "debug.h"
 #include "makros.h"
 
 #ifdef ESP32
@@ -95,6 +64,7 @@ Servo servo2;
 #endif
 
 void setup() {
+  initDebug();
   // put your setup code here, to run once:
   pinMode(Dout_1, OUTPUT);
   pinMode(Dout_2, OUTPUT);

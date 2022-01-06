@@ -1,0 +1,21 @@
+# port of the http server
+port: 8080 
+# port of the https server
+sslport: 8443
+# this is the servicURL from outside
+serviceURL: https://127.0.0.1:8443
+#sercret file for storing usernames and passwords
+secretfile: /config/secret.yaml
+
+logging:
+  level: debug
+  filename: ""
+  gelf-url: 127.0.0.1
+  gelf-port: 12201
+
+healthcheck:
+    period: 30
+
+# enable/disable metrics 
+metrics:
+  enable: false
