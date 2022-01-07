@@ -1,6 +1,6 @@
 ##### BUILDER #####
 
-FROM golang:1.17-alpine3.14 as builder
+FROM golang:1.17-alpine3.15 as builder
 
 ## Task: Install build deps
 
@@ -60,7 +60,7 @@ RUN set -eu +x; \
 
 ##### TARGET #####
 
-FROM ubuntu:21.04
+FROM ubuntu:21.10
 
 ARG RELEASE
 ENV IMG_VERSION="${RELEASE}"
@@ -122,7 +122,7 @@ CMD ["--config","/config/service.yaml"]
 EXPOSE 8080 8443
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
-  CMD wget -q -T 5 --spider http://localhost:8080/healthz
+  CMD wget -q -T 5 --spider http://localhost:8080/readyz
 
 LABEL org.opencontainers.image.title="TPS-CC" \
       org.opencontainers.image.description="MCS TPS Cross Compiler" \

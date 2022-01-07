@@ -17,7 +17,7 @@ logging:
   gelf-port: 
 
 healthcheck:
-    period: 30
+  period: 30
 
 # enable/disable metrics 
 metrics:

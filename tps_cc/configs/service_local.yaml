@@ -8,14 +8,16 @@ serviceURL: https://127.0.0.1:9543
 secretfile: configs/secret.yaml
 apikey: false
 arduinoCli: ./tools/arduino-cli.exe
-tempFolder: ./new/example
+tempFolder: ./example
 
 logging:
-    gelf-url: 
-    gelf-port:
+  level: debug
+  filename: ""
+  gelf-url: 
+  gelf-port:
 
 healthcheck:
-    period: 30
+  period: 30
 
 opentracing:
 #    host: "127.0.0.1:5776"
