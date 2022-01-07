@@ -23,6 +23,7 @@ type Config struct {
 	SecretFile string `yaml:"secretfile"`
 	Apikey     bool   `yaml:"apikey"`
 	ArduinoCli string `yaml:"arduinoCli"`
+	TempFolder string `yaml:"tempFolder"`
 
 	Logging LoggingConfig `yaml:"logging"`
 

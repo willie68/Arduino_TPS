@@ -254,11 +254,11 @@ func (t *TPSGen) Compile() (string, error) {
 		"-b",
 		t.TemplateCmds.Boards[t.Board],
 		"--output-dir",
-		"./"+t.Path+"/"+t.Name,
-		"./"+t.Path+"/"+t.Name,
+		t.Path+"/"+t.Name,
+		t.Path+"/"+t.Name,
 		fmt.Sprintf("--build-property=\"build.extra_flags=%s\"", s.String()),
 	)
-	
+
 	log.Printf("compile: %s", cmd)
 
 	var stdout, stderr bytes.Buffer

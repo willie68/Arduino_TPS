@@ -26,7 +26,7 @@ var (
 	})
 )
 
-var srcDir = "example"
+var SrcDir = "example"
 
 /*
 ConfigRoutes getting all routes for the config endpoint
@@ -93,7 +93,7 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 		f = mpf
 	}
 
-	SrcFile := srcDir + "/" + filename
+	SrcFile := SrcDir + "/" + filename
 	file, err := os.Create(SrcFile)
 	if err != nil {
 		httputils.Err(response, request, serror.InternalServerError(err))
@@ -103,7 +103,7 @@ func PostGenerateEndpoint(response http.ResponseWriter, request *http.Request) {
 	io.Copy(file, f)
 
 	name := strings.TrimSuffix(filename, ".tps")
-	path := utils.GenerateRamdomPath(srcDir)
+	path := utils.GenerateRamdomPath(SrcDir)
 
 	// generating structures
 	commandSrc, err := tpsfile.ParseFile(SrcFile)

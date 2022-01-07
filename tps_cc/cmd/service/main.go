@@ -381,6 +381,13 @@ func initConfig() {
 	if serviceURL != "" {
 		serviceConfig.ServiceURL = serviceURL
 	}
+
+	if serviceConfig.TempFolder != "" {
+		apiv1.SrcDir = serviceConfig.TempFolder
+		if _, err := os.Stat(apiv1.SrcDir); err != nil {
+			os.MkdirAll(apiv1.SrcDir, os.ModePerm)
+		}
+	}
 }
 
 func initJaeger(servicename string, config config.OpenTracing) (opentracing.Tracer, io.Closer) {
