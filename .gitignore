@@ -14,9 +14,6 @@
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
-
 # Compiled Static libraries
 *.lai
 *.la
@@ -31,3 +28,4 @@
 **/build
 /dest/**
 /dest_bck/**
+*.log

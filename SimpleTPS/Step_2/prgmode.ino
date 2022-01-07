@@ -6,32 +6,37 @@
 #define SHOW_DELAY 1000
 #define KEY_DELAY 250
 #define ADDR_LOOP 50
+#define DEBOUNCE 50
 
-const byte demoPrg[] = { 0x4F, 0x59, 0x1F, 0x29, 0x10, 0x29, 0x5A, 0x40,
-                         0x59, 0x64, 0x54, 0x29, 0x4F, 0x59, 0x10, 0xCD,
-                         0x11, 0x28, 0xCC, 0x18, 0x28, 0x4F, 0x59, 0x5A,
-                         0x72, 0x26, 0xC0, 0x35, 0x80, 0x90, 0xFF
-                       };
-
+// simple blink program
+const byte demoPrg[] = { 
+  0x11, // Dout=1
+  0x29, // 1000ms
+  0x18, // Dout=8
+  0x29, // 1000ms
+  0x34, // Addr = addr -4
+  0xFF  // EoP End of program
+};
 
 enum PROGRAMMING_MODE {ADDRESS, COMMAND, DATA};
 
+byte data = 0;
+byte com = 0;
+
 PROGRAMMING_MODE prgMode;
 
+// just putting this demo program into the eeprom
 void prgDemoPrg() {
+  // only need to program the demo program if there is nothing in the eeprom (value on address 0 is FF)
   byte value = EEPROM.read(0);
   if (value == 0xFF) {
-    value = EEPROM.read(1);
-    if (value == 0xFF) {
-      for (byte i = 0; i < sizeof(demoPrg); i++) {
-        EEPROM.write(i, demoPrg[i]);
-      }
+    for (byte i = 0; i < sizeof(demoPrg); i++) {
+      EEPROM.write(i, demoPrg[i]);
     }
   }
 }
 
 void programMode() {
-  // checking if advance programmer board connected?
   doPort(0x08);
   while (digitalRead(SW_PRG) == 0) {
     // waiting for PRG to release

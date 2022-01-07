@@ -1,80 +1,82 @@
 /*
-  Simple SPS System mit dem Arduino.
+  Simple SPS System with Arduino Uno.
 */
 
-// defining different hardware platforms
-#ifdef __AVR_ATmega328P__
-//#define SPS_USE_DISPLAY
-//#define SPS_RECEIVER
-//#define SPS_ENHANCEMENT
-//#define SPS_SERIAL_PRG
-//#define SPS_SERVO
-//#define SPS_TONE
-#endif
-
-// libraries
-#include <makros.h>
+// libraries for access to eeprom
 #include <EEPROM.h>
 #include <avr/eeprom.h>
 
-#include "hardware.h"
+// defining the hardware connections
+// Outputs
+const byte Dout_0 = 4;
+const byte Dout_1 = 5;
+const byte Dout_2 = 6;
+const byte Dout_3 = 7;
 
-// Commands
-const byte PORT = 0x10;
-const byte DELAY = 0x20;
-const byte JUMP_BACK = 0x30;
-const byte SET_A = 0x40;
-const byte IS_A = 0x50;
-const byte A_IS = 0x60;
-const byte CALC = 0x70;
-const byte PAGE = 0x80;
-const byte JUMP = 0x90;
-const byte C_COUNT = 0xA0;
-const byte D_COUNT = 0xB0;
-const byte SKIP_IF = 0xC0;
-const byte CALL = 0xD0;
-const byte CALL_SUB = 0xE0;
-const byte CMD_BYTE = 0xF0;
+// Inputs
+const byte Din_0 = 0;
+const byte Din_1 = 1;
+const byte Din_2 = 2;
+const byte Din_3 = 3;
 
-// debouncing with 100ms
+// Specials
+const byte ADC_0 = 0; 
+const byte ADC_1 = 1; 
+const byte PWM_1 = 9;
+const byte PWM_2 = 10;
+
+// Buttons
+const byte SW_PRG = 8;  // (S2)
+const byte SW_SEL = 11; // (S1)
+
+// the defined Commands
+const byte PORT = 0x10; // directly output to LEDs
+const byte DELAY = 0x20; // wait just a little bit
+const byte JUMP_BACK = 0x30; // jump back to address
+const byte SET_A = 0x40; // directly set a value into the A register
+const byte IS_A = 0x50; // put the value of A into another 
+const byte A_IS = 0x60; // put something into A
+const byte CALC = 0x70; // calculations with A
+const byte PAGE = 0x80; // Page register for direct jump
+const byte JUMP = 0x90; // The jump Command
+const byte C_COUNT = 0xA0; // counting C Register
+const byte D_COUNT = 0xB0; // counting D Register
+const byte SKIP_IF = 0xC0; // skip next command if something
+const byte CALL = 0xD0; // call subroutine
+const byte CALL_RTR = 0xE0; // return from subroutine
+
+// debouncing the butons with 100ms
 const byte DEBOUNCE = 100;
 
-// sub routines
-const byte subCnt = 7;
-word subs[subCnt];
-
-// the actual address of the program
-word addr;
-// page register
-word page;
-// defining register
+// the registers
 byte a, b, c, d;
+// the actual address pointer of the program
+word addr;
+// the page register
+word page;
 
-const byte SAVE_CNT = 1;
+// sub routine calls needs some memory for the address to jump back
+word saveaddr;
 
-word saveaddr[SAVE_CNT];
-byte saveCnt;
-
-unsigned long tmpValue;
-
-byte prog = 0;
-byte data = 0;
-byte com = 0;
-
+// this will be called only once after controller reset
 void setup() {
+  // set all TPS Outputs to output mode
   pinMode(Dout_0, OUTPUT);
   pinMode(Dout_1, OUTPUT);
   pinMode(Dout_2, OUTPUT);
   pinMode(Dout_3, OUTPUT);
 
+  // analog output
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
 
+  // digital input with pullup
   pinMode(Din_0, INPUT_PULLUP);
   pinMode(Din_1, INPUT_PULLUP);
   pinMode(Din_2, INPUT_PULLUP);
   pinMode(Din_3, INPUT_PULLUP);
 
+  // buttons inpout with pullup
   pinMode(SW_PRG, INPUT_PULLUP);
   pinMode(SW_SEL, INPUT_PULLUP);
 
@@ -83,81 +85,63 @@ void setup() {
   digitalWrite(Dout_0, 0);
 
   prgDemoPrg();
+  // reset the program
   doReset();
 
+  // starting the programming mode on startup, if SW_PRG is pressed
   if (digitalRead(SW_PRG) == 0) {
     programMode();
   }
 }
 
+// reset all
 void doReset() {
-
-  for (int i = 0; i < subCnt; i++) {
-    subs[i] = 0;
-  }
-
-  readProgram();
-
+  // reset address pointer
   addr = 0;
   page = 0;
-  saveCnt = 0;
   a = 0;
   b = 0;
   c = 0;
   d = 0;
-}
-
-/*
-  getting all addresses of sub programms
-*/
-void readProgram() {
-  word addr = 0;
-  for ( addr = 0; addr <= E2END; addr++) {
-    byte value = EEPROM.read(addr);
-
-    if (value == 0xFF) {
-      // ende des Programms
-      break;
-    }
-    byte cmd = (value & 0xF0);
-    byte data = (value & 0x0F);
-
-    if (cmd == CALL_SUB) {
-      if (data >= 8) {
-        data = data - 8;
-        subs[data] = addr + 1;
-      }
-    }
-  }
+  // all LED off
+  doPort(0);
+  analogWrite(PWM_1, 0);
+  analogWrite(PWM_2, 0);
 }
 
 /*
   main loop
 */
 void loop() {
+  // reading from address
   byte value = EEPROM.read(addr);
+  // splitting into command
   byte cmd = (value & 0xF0);
+  // and data
   byte data = (value & 0x0F);
 
-  addr = addr + 1;
+  // switch to the right method for the command
   switch (cmd) {
+    // the port command
     case PORT:
       doPort(data);
       break;
+    // the delay command
     case DELAY:
       doDelay(data);
       break;
+    // the jump command
     case JUMP_BACK:
       doJumpBack(data);
       break;
     case SET_A:
       doSetA(data);
       break;
-    case A_IS:
-      doAIs(data);
-      break;
     case IS_A:
       doIsA(data);
+      break;
+    case A_IS:
+      doAIs(data);
       break;
     case CALC:
       doCalc(data);
@@ -180,12 +164,17 @@ void loop() {
     case CALL:
       doCall(data);
       break;
-    case CALL_SUB:
-      doCallSub(data);
+    case CALL_RTR:
+      doRtr(data);
       break;
+    // if there is an unkown command, reset the tps
     default:
-      ;
+      doReset();
+      return;
   }
+  // increment address pointer
+  addr = addr + 1;
+  // if address is at the end of the eeprom, simply reset the program
   if (addr > E2END) {
     doReset();
   }
@@ -274,9 +263,58 @@ void doSetA(byte data) {
 }
 
 /*
+  somthing = a;
+*/
+void doIsA(byte data) {
+  byte tmpValue;
+  switch (data) {
+    case 0:
+      tmpValue = b;
+      b = a;
+      a = tmpValue;
+      break;
+    case 1:
+      b = a;
+      break;
+    case 2:
+      c = a;
+      break;
+    case 3:
+      d = a;
+      break;
+    case 4:
+      doPort(a);
+      break;
+    case 5:
+      digitalWrite(Dout_0, (a & 0x01) > 0);
+      break;
+    case 6:
+      digitalWrite(Dout_1, (a & 0x01) > 0);
+      break;
+    case 7:
+      digitalWrite(Dout_2, (a & 0x01) > 0);
+      break;
+    case 8:
+      digitalWrite(Dout_3, (a & 0x01) > 0);
+      break;
+    case 9:
+      tmpValue = a * 16;
+      analogWrite(PWM_1, tmpValue);
+      break;
+    case 10:
+      tmpValue = a * 16;
+      analogWrite(PWM_2, tmpValue);
+      break;
+    default:
+      break;
+  }
+}
+
+/*
   a = somthing;
 */
 void doAIs(byte data) {
+  word tmpValue;
   switch (data) {
     case 1:
       a = b;
@@ -309,48 +347,6 @@ void doAIs(byte data) {
     case 10:
       tmpValue = analogRead(ADC_1);
       a = tmpValue / 64; //(Umrechnen auf 4 bit)
-      break;
-    default:
-      break;
-  }
-}
-
-/*
-  somthing = a;
-*/
-void doIsA(byte data) {
-  switch (data) {
-    case 1:
-      b = a;
-      break;
-    case 2:
-      c = a;
-      break;
-    case 3:
-      d = a;
-      break;
-    case 4:
-      doPort(a);
-      break;
-    case 5:
-      digitalWrite(Dout_0, (a & 0x01) > 0);
-      break;
-    case 6:
-      digitalWrite(Dout_1, (a & 0x01) > 0);
-      break;
-    case 7:
-      digitalWrite(Dout_2, (a & 0x01) > 0);
-      break;
-    case 8:
-      digitalWrite(Dout_3, (a & 0x01) > 0);
-      break;
-    case 9:
-      tmpValue = a * 16;
-      analogWrite(PWM_1, tmpValue);
-      break;
-    case 10:
-      tmpValue = a * 16;
-      analogWrite(PWM_2, tmpValue);
       break;
     default:
       break;
@@ -392,6 +388,18 @@ void doCalc(byte data) {
     case 10:
       a = ~a;
       break;
+    case 11:
+      a = a % b;
+      break;
+    case 13:
+      a = b - a ;
+      break;
+    case 14:
+      a = a >> 1;
+      break;
+    case 15:
+      a = a << 1;
+      break;
     default:
       break;
   }
@@ -409,7 +417,7 @@ void doPage(byte data) {
   jump absolute
 */
 void doJump(byte data) {
-  addr = page + data;
+  addr = page + data - 1;
 }
 
 /*
@@ -440,6 +448,9 @@ void doDCount(byte data) {
 void doSkipIf(byte data) {
   bool skip = false;
   switch (data) {
+    case 0:
+      skip = (a == 0);
+      break;
     case 1:
       skip = (a > b);
       break;
@@ -497,22 +508,15 @@ void doSkipIf(byte data) {
   calling a subroutine
 */
 void doCall(byte data) {
-  saveaddr[saveCnt] = addr;
-  saveCnt++;
+  saveaddr = addr;
   addr = page + data;
 }
 
 /*
   calling a subroutine, calling return and restart
 */
-void doCallSub(byte data) {
+void doRtr(byte data) {
   if (data == 0) {
-    if (saveCnt < 0) {
-      doReset();
-      return;
-    }
-    saveCnt -= 1;
-    addr = saveaddr[saveCnt];
-    return;
+    addr = saveaddr + 1;
   }
 }

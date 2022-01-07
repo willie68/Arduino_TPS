@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+	<title></title>
+	
+	<link rel="stylesheet" href="assets/styles/main.css">
+	
+</head>
+<body>
+
+	<script src="assets/scripts/main.js"></script>
+    <h1>TPS_CC, the Arduino TPS Cross Compiler</h1>
+	<table>
+	<tr>
+		<td>
+			<h2>Beschreibung</h2>
+			Mit diesem kleinen Tool können Sie eine TPS-Datei in ein Arduino IDE-Projekt konvertieren. <br/>
+			Mit der compile-Option können Sie die Datei für das gewünschte Board automatisch kompilieren. (über Board wählbar)<br/>
+			Als Ergebnis erhalten Sie eine ZIP-Datei mit der Arduino-Ino-Datei und den direkten Abhängigkeiten. <br/>
+			Wenn Sie das Projekt selbst compilieren möchten, besuchen Sie bitte <a href="http://www.rcarduino.de/doku.php?id=arduino:arduinosps" target="_blank">http://www.rcarduino .de/</a> für das Arduino TPS-Projekt. <br/>
+			Das generierte Projekt hat keinen der verschiedenen Programmiermodi, es wird einfach nur die TPS-Datei ausgeführt.<br/>
+			Zum Generieren einer TPS-Datei können Sie meinen <a href="http://rcarduino.de/doku.php?id=arduino:arduinosps:spsemu" target="_blank">SPS-Emulator</a> verwenden.<br />
+			Wenn Sie Probleme mit diesem Tool haben, schreiben Sie mir einfach eine Nachricht oder verwenden Sie den Issue Tracker auf meiner <a href="https://github.com/willie68/Arduino_TPS/issues" target="_blank">github Arduino TPS-Projektseite </a><br/>
+		</td>
+		<td>
+			<h2>Description</h2>
+			With this little tool, you can convert an TPS File into a Arduino IDE project. <br/>
+			With compile option you can automatically compile the file for the desired Board. (Selectable via Board)<br/>
+			As result you will get a zip file with the Arduino ino File and the direct dependencies. <br/>
+			If you want to compile the project by yourself, please visit <a href="http://www.rcarduino.de/doku.php?id=arduino:arduinosps" target="_blank">http://www.rcarduino.de/</a> for the Arduino TPS project. <br/>
+			The generated project will have none of the different programming modes, it will simply only run the TPS file.<br/>
+			For generating a TPS file you can use my <a href="http://rcarduino.de/doku.php?id=arduino:arduinosps:spsemu" target="_blank">SPS-Emulator</a>.<br/>
+			If you have problems with this tool, simply drop me a notice or use the issue tracker on my <a href="https://github.com/willie68/Arduino_TPS/issues" target="_blank">github Arduino TPS Project page</a><br/>
+		</td>
+		</tr>
+	</table>
+	<h2>Send TPS file</h2> 
+	<form enctype="multipart/form-data" action="https://127.0.0.1:9543/api/v1/generate" method="post" target="_blank">
+		<input type="hidden" name="token" value="{{.}}"/>
+		<table>
+			<tr><td>
+				<label for="file">Choose a file:</label>
+			</td><td>	
+				<input type="file" name="file" /><br/>
+			</td>
+		</tr><tr><td>
+			<label for="compile">compile:</label>
+		</td><td>	
+			<input type="checkbox" id="compile" name="compile" value="true"><br/>
+		</td>
+	</tr><tr>
+		<td>
+			<label for="debug">with debug:</label>
+		</td><td>	
+			<input type="checkbox" id="debug" name="debug" value="true"><br/>
+		</td>
+	</tr><tr><td>
+		<label for="board">Choose a target board:</label>
+	</td><td>	
+		<select name="board" id="board">
+			<option value="arduino_uno">Arduino Uno</option>
+			<option value="arduino_nano">Arduino Nano</option>
+		</select> <br/>
+	</td>
+</tr><tr><td>
+	<input type="submit" value="upload" />
+</td><td>	
+</td>
+</tr>
+</table>
+</form>
+Written by Wilfried Klaas: <a href="https://github.com/willie68/Arduino_TPS" target="_blank">Arduino TPS on github</a>
+</body>
+</html>
