@@ -218,8 +218,7 @@ func (t *TPSGen) ZipFiles() (string, error) {
 		}
 		defer file.Close()
 
-		inZipPath := strings.ReplaceAll(path, "\\", "/")
-		inZipPath = strings.TrimPrefix(inZipPath, t.Path+"/")
+		inZipPath := t.Name + "/" + filepath.Base(path)
 
 		f, err := w.Create(inZipPath)
 		if err != nil {

@@ -1,32 +1,40 @@
 package health
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
+	"os/exec"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/opentracing/opentracing-go"
+	"github.com/willie68/tps_cc/internal/config"
 	log "github.com/willie68/tps_cc/internal/logging"
 )
 
 var myhealthy bool
 
 /*
-This is the healtchcheck you will have to provide.
+This is the readiness check you will have to provide.
 */
 func check(tracer opentracing.Tracer) (bool, string) {
-	// TODO implement here your healthcheck.
-	myhealthy = !myhealthy
-	message := ""
-	if myhealthy {
-		log.Logger.Info("healthy")
-	} else {
-		log.Logger.Info("not healthy")
-		message = "ungesund"
+	cmd := exec.Command(
+		config.Get().ArduinoCli,
+		"version",
+	)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	outStr, errStr := stdout.String(), stderr.String()
+	message := fmt.Sprintf("arduino-cli with exit code: %d, \r\n%s\r\n%s", cmd.ProcessState.ExitCode(), outStr, errStr)
+	log.Logger.Info(message)
+	if err != nil {
+		return false, message
 	}
-	return myhealthy, message
+	return true, message
 }
 
 //##### template internal functions for processing the healthchecks #####
