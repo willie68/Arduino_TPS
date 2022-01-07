@@ -66,10 +66,10 @@
 		"!digitalRead(Din_2)",
 		"!digitalRead(Din_3)",
 		"!digitalRead(Din_4)",
-		"!digitalRead(PRG)",
-		"!digitalRead(SEL)",
-		"digitalRead(PRG)",
-		"digitalRead(SEL)"
+		"!digitalRead(SW_PRG)",
+		"!digitalRead(SW_SEL)",
+		"digitalRead(SW_PRG)",
+		"digitalRead(SW_SEL)"
 	],
 	"aBytes": [
 		"a=getAnalog(ADC_0)",
