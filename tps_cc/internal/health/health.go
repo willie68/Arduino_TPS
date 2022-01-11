@@ -90,6 +90,8 @@ func Routes() *chi.Mux {
 	router := chi.NewRouter()
 	router.Get("/livez", GetHealthyEndpoint)
 	router.Get("/readyz", GetReadinessEndpoint)
+	router.Head("/livez", GetHealthyEndpoint)
+	router.Head("/readyz", GetReadinessEndpoint)
 	return router
 }
 
