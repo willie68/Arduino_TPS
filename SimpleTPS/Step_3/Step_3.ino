@@ -56,6 +56,10 @@ void setup() {
   pinMode(PWM_1, OUTPUT);
   pinMode(PWM_2, OUTPUT);
 
+  // buttons input with added pullup resistor
+  pinMode(SW_PRG, INPUT_PULLUP);
+  pinMode(SW_SEL, INPUT_PULLUP);
+
   // digital input with pullup
   pinMode(Din_0, INPUT_PULLUP);
   pinMode(Din_1, INPUT_PULLUP);
