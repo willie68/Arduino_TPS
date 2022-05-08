@@ -41,7 +41,6 @@ import (
 /*
 apVersion implementing api version for this service
 */
-const apiVersion = "1"
 const servicename = "tpscc"
 
 var port int
@@ -66,7 +65,6 @@ func init() {
 }
 
 func apiRoutes() (*chi.Mux, error) {
-	baseURL := fmt.Sprintf("/api/v%s", apiVersion)
 	router := chi.NewRouter()
 	router.Use(
 		render.SetContentType(render.ContentTypeJSON),
@@ -85,11 +83,11 @@ func apiRoutes() (*chi.Mux, error) {
 		}),
 		httptracer.Tracer(Tracer, httptracer.Config{
 			ServiceName:    servicename,
-			ServiceVersion: apiVersion,
+			ServiceVersion: "V" + apiv1.ApiVersion,
 			SampleRate:     1,
 			SkipFunc: func(r *http.Request) bool {
 				return false
-				//return r.URL.Path == "/healthz"
+				//return r.URL.Path == "/livez"
 			},
 			Tags: map[string]interface{}{
 				"_dd.measured": 1, // datadog, turn on metrics for http.request stats
@@ -147,7 +145,7 @@ func apiRoutes() (*chi.Mux, error) {
 
 	// building the routes
 	router.Route("/", func(r chi.Router) {
-		r.Mount(baseURL+"/generate", apiv1.GenerateRoutes())
+		r.Mount(apiv1.GenerateRoutes())
 		r.Mount("/", health.Routes())
 		if serviceConfig.Metrics.Enable {
 			r.Mount("/metrics", promhttp.Handler())
@@ -167,7 +165,7 @@ func healthRoutes() *chi.Mux {
 		middleware.Recoverer,
 		httptracer.Tracer(Tracer, httptracer.Config{
 			ServiceName:    servicename,
-			ServiceVersion: apiVersion,
+			ServiceVersion: "V" + apiv1.ApiVersion,
 			SampleRate:     1,
 			SkipFunc: func(r *http.Request) bool {
 				return false

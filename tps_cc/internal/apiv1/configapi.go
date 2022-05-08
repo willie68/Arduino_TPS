@@ -15,9 +15,6 @@ import (
 	"github.com/willie68/tps_cc/internal/utils/httputils"
 )
 
-//APIKey the apikey of this service
-var APIKey string
-
 var (
 	postConfigCounter = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "gomicro_post_config_total",
@@ -37,13 +34,13 @@ type ConfigDescription struct {
 /*
 ConfigRoutes getting all routes for the config endpoint
 */
-func ConfigRoutes() *chi.Mux {
+func ConfigRoutes() (string, *chi.Mux) {
 	router := chi.NewRouter()
 	router.Post("/", PostConfigEndpoint)
 	router.Get("/", GetConfigEndpoint)
 	router.Delete("/", DeleteConfigEndpoint)
 	router.Get("/size", GetConfigSizeEndpoint)
-	return router
+	return baseURL + "/config", router
 }
 
 // GetConfigEndpoint getting if a store for a tenant is initialised

@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
+	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v3"
 )
 
@@ -85,7 +87,7 @@ func GetDefaultConfigFolder() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	configFolder := fmt.Sprintf("%s/%s", home, Servicename)
+	configFolder := filepath.Join(home, Servicename)
 	err = os.MkdirAll(configFolder, os.ModePerm)
 	if err != nil {
 		return "", err
@@ -115,7 +117,11 @@ var config = Config{
 }
 
 // File the config file
-var File = "config/service.yaml"
+var File = "${configdir}/service.yaml"
+
+func init() {
+	config = DefaultConfig
+}
 
 // Get returns loaded config
 func Get() Config {
@@ -124,7 +130,12 @@ func Get() Config {
 
 // Load loads the config
 func Load() error {
-	_, err := os.Stat(File)
+	myFile, err := ReplaceConfigdir(File)
+	if err != nil {
+		return fmt.Errorf("can't get default config folder: %s", err.Error())
+	}
+	File = myFile
+	_, err = os.Stat(myFile)
 	if err != nil {
 		return err
 	}
@@ -132,7 +143,8 @@ func Load() error {
 	if err != nil {
 		return fmt.Errorf("can't load config file: %s", err.Error())
 	}
-	err = yaml.Unmarshal(data, &config)
+	dataStr := os.ExpandEnv(string(data))
+	err = yaml.Unmarshal([]byte(dataStr), &config)
 	if err != nil {
 		return fmt.Errorf("can't unmarshal config file: %s", err.Error())
 	}
@@ -146,17 +158,15 @@ func readSecret() error {
 		if err != nil {
 			return fmt.Errorf("can't load secret file: %s", err.Error())
 		}
-		var secretConfig Secret = Secret{}
+		var secretConfig Config
 		err = yaml.Unmarshal(data, &secretConfig)
 		if err != nil {
 			return fmt.Errorf("can't unmarshal secret file: %s", err.Error())
 		}
-		mergeSecret(secretConfig)
+		// merge secret
+		if err := mergo.Map(&config, secretConfig, mergo.WithOverride); err != nil {
+			return fmt.Errorf("can't merge secret file: %s", err.Error())
+		}
 	}
 	return nil
-}
-
-func mergeSecret(secret Secret) {
-	//	config.MongoDB.Username = secret.MongoDB.Username
-	//	config.MongoDB.Password = secret.MongoDB.Password
 }
