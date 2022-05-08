@@ -4,14 +4,21 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	flag "github.com/spf13/pflag"
 	log "github.com/willie68/tps_asm/internal/logging"
 )
 
+type label struct {
+	name       string
+	prgcounter int
+}
+
 var (
 	destination string
 	tpsfile     string
+	labels      map[string]label
 )
 
 func init() {
@@ -31,6 +38,7 @@ func main() {
 
 func parseOne() {
 	file, err := os.Open(tpsfile)
+	labels = make(map[string]label)
 	//handle errors while opening
 	if err != nil {
 		log.Fatalf("Error when opening file: %s", err)
@@ -40,7 +48,17 @@ func parseOne() {
 
 	// read line by line
 	for fileScanner.Scan() {
-		fmt.Println(fileScanner.Text())
+		line := fileScanner.Text()
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, ":") {
+			parts := strings.Split(line, " ")
+			labelName := strings.ToLower(parts[0])
+			labels[labelName] = label{
+				name:       labelName,
+				prgcounter: 0,
+			}
+		}
+		fmt.Println(line)
 	}
 	// handle first encountered error while reading
 	if err := fileScanner.Err(); err != nil {
