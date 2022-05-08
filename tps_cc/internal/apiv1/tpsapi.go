@@ -31,10 +31,10 @@ var SrcDir = "example"
 /*
 ConfigRoutes getting all routes for the config endpoint
 */
-func GenerateRoutes() *chi.Mux {
+func GenerateRoutes() (string, *chi.Mux) {
 	router := chi.NewRouter()
 	router.Post("/", PostGenerateEndpoint)
-	return router
+	return baseURL + "/generate", router
 }
 
 // PostGenerateEndpoint create a new store for a tenant

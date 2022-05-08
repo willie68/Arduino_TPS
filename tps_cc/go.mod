@@ -10,11 +10,12 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/google/uuid v1.3.0
+	github.com/imdario/mergo v0.3.12
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0
-	github.com/swaggo/swag v1.7.8
+	github.com/swaggo/swag v1.7.9
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b

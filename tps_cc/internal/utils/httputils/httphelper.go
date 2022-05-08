@@ -13,8 +13,8 @@ import (
 	"github.com/willie68/tps_cc/internal/serror"
 )
 
-// Validate validator
-var Validate *validator.Validate
+// val validator
+var val *validator.Validate
 
 // TenantID gets the tenant-id of the given request
 func TenantID(r *http.Request) (string, error) {
@@ -40,7 +40,7 @@ func Decode(r *http.Request, v interface{}) error {
 	if err != nil {
 		serror.BadRequest(err, "decode-body", "could not decode body")
 	}
-	if err := Validate.Struct(v); err != nil {
+	if err := val.Struct(v); err != nil {
 		serror.BadRequest(err, "validate-body", "body invalid")
 	}
 	return nil
@@ -72,7 +72,7 @@ func Err(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func init() {
-	Validate = validator.New()
+	val = validator.New()
 }
 
 // FileServer conveniently sets up a http.FileServer handler to serve

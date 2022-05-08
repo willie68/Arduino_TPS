@@ -14,10 +14,8 @@ import (
 	log "github.com/willie68/tps_cc/internal/logging"
 )
 
-var myhealthy bool
-
 /*
-This is the readiness check you will have to provide.
+This is the healtchcheck you will have to provide.
 */
 func check(tracer opentracing.Tracer) (bool, string) {
 	cmd := exec.Command(
@@ -38,8 +36,8 @@ func check(tracer opentracing.Tracer) (bool, string) {
 }
 
 //##### template internal functions for processing the healthchecks #####
-var healthmessage string
-var healthy bool
+var message string
+var readyz bool
 var lastChecked time.Time
 var period int
 
@@ -58,12 +56,12 @@ type Msg struct {
 func InitHealthSystem(config CheckConfig, tracer opentracing.Tracer) {
 	period = config.Period
 	log.Logger.Infof("healthcheck starting with period: %d seconds", period)
-	healthmessage = "service starting"
-	healthy = false
+	message = "service starting"
+	readyz = false
 	doCheck(tracer)
 	go func() {
 		background := time.NewTicker(time.Second * time.Duration(period))
-		for _ = range background.C {
+		for range background.C {
 			doCheck(tracer)
 		}
 	}()
@@ -74,11 +72,11 @@ internal function to process the health check
 */
 func doCheck(tracer opentracing.Tracer) {
 	var msg string
-	healthy, msg = check(tracer)
-	if !healthy {
-		healthmessage = msg
+	readyz, msg = check(tracer)
+	if !readyz {
+		message = msg
 	} else {
-		healthmessage = ""
+		message = ""
 	}
 	lastChecked = time.Now()
 }
@@ -88,33 +86,37 @@ Routes getting all routes for the health endpoint
 */
 func Routes() *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/livez", GetHealthyEndpoint)
+	router.Get("/livez", GetLivenessEndpoint)
 	router.Get("/readyz", GetReadinessEndpoint)
-	router.Head("/livez", GetHealthyEndpoint)
-	router.Head("/readyz", GetReadinessEndpoint)
+	router.Head("/livez", HeadLivenessEndpoint)
+	router.Head("/readyz", HeadReadinessEndpoint)
 	return router
 }
 
 /*
-GetHealthyEndpoint liveness probe
+GetLivenessEndpoint liveness probe
 */
-func GetHealthyEndpoint(response http.ResponseWriter, req *http.Request) {
+func GetLivenessEndpoint(response http.ResponseWriter, req *http.Request) {
 	render.Status(req, http.StatusOK)
 	render.JSON(response, req, Msg{
-		Message: fmt.Sprintf("service started"),
+		Message: "service started",
 	})
+}
+
+/*
+HeadLivenessEndpoint liveness probe
+*/
+func HeadLivenessEndpoint(response http.ResponseWriter, req *http.Request) {
+	render.Status(req, http.StatusOK)
+	render.NoContent(response, req)
 }
 
 /*
 GetReadinessEndpoint is this service ready for taking requests, e.g. formaly known as health checks
 */
 func GetReadinessEndpoint(response http.ResponseWriter, req *http.Request) {
-	t := time.Now()
-	if t.Sub(lastChecked) > (time.Second * time.Duration(2*period)) {
-		healthy = false
-		healthmessage = "Healthcheck not running"
-	}
-	if healthy {
+	checkHealthCheckTimer()
+	if readyz {
 		render.Status(req, http.StatusOK)
 		render.JSON(response, req, Msg{
 			Message:   "service up and running",
@@ -123,9 +125,35 @@ func GetReadinessEndpoint(response http.ResponseWriter, req *http.Request) {
 	} else {
 		render.Status(req, http.StatusServiceUnavailable)
 		render.JSON(response, req, Msg{
-			Message:   fmt.Sprintf("service is unavailable: %s", healthmessage),
+			Message:   fmt.Sprintf("service is unavailable: %s", message),
 			LastCheck: lastChecked.String(),
 		})
+	}
+}
+
+/*
+HeadReadinessEndpoint is this service ready for taking requests, e.g. formaly known as health checks
+*/
+func HeadReadinessEndpoint(response http.ResponseWriter, req *http.Request) {
+	checkHealthCheckTimer()
+	if readyz {
+		render.Status(req, http.StatusOK)
+	} else {
+		render.Status(req, http.StatusServiceUnavailable)
+	}
+	render.NoContent(response, req)
+}
+
+// checking if the health system (namly the timer task) is working or stopped
+func checkHealthCheckTimer() {
+	t := time.Now()
+	if t.Sub(lastChecked) > (time.Second * time.Duration(2*period)) {
+		readyz = false
+		message = "health check not running"
+		if t.Sub(lastChecked) > (time.Second * time.Duration(4*period)) {
+			log.Logger.Error("panic: health check is not running anymore")
+			panic("panic: health check is not running anymore")
+		}
 	}
 }
 
