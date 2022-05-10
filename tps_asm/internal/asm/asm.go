@@ -1,9 +1,7 @@
 package asm
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -23,148 +21,95 @@ type macro struct {
 
 type Assembler struct {
 	Hardware Hardware
-	Source   string
+	Source   []string
+	Includes string
 	Labels   map[string]label
 	Macros   map[string]macro
-	actMacro macro
-	Code     []string
+
+	lineNumber int
+	prgCounter int
+	actMacro   macro
+	Code       []string
+	inMacro    bool
+	inComment  bool
+	parts      []string
+	command    string
+	errs       []error
+	line       string
 }
 
-func (a *Assembler) Parse() (errs []error) {
-	now := time.Now()
-	errs = a.parseOne()
-	log.Infof("time to parse: %d", time.Until(now).Milliseconds())
-	return
+func (a *Assembler) Parse() []error {
+	start := time.Now()
+	a.parseOne()
+	log.Infof("time to parse: %d ms", -time.Until(start).Milliseconds())
+	return a.errs
 }
 
-func (a *Assembler) parseOne() (errs []error) {
+func (a *Assembler) parseOne() {
 	a.Labels = make(map[string]label)
 	a.Macros = make(map[string]macro)
 	a.Code = make([]string, 0)
 
-	inMacro := false
-	inComment := false
+	a.inMacro = false
+	a.inComment = false
 
-	file, err := os.Open(a.Source)
-	//handle errors while opening
-	if err != nil {
-		errs = append(errs, fmt.Errorf("error when opening file: %v", err))
-	}
-	defer file.Close()
-
-	fileScanner := bufio.NewScanner(file)
-	lineNumber := 0
-	prgCounter := 1
+	a.lineNumber = 0
+	a.prgCounter = 1
 	// read line by line
 	log.Info("----- start -----")
-	for fileScanner.Scan() {
-		line := fileScanner.Text()
-		lineNumber++
+	for x, line := range a.Source {
+		a.lineNumber = x
 		line = strings.TrimSpace(line)
+
 		// ignoring empty lines
 		if line == "" {
 			continue
 		}
 
+		a.line = line
+
 		// Commant processing
-		if strings.HasPrefix(line, "*/") {
-			if !inComment {
-				errs = append(errs, fmt.Errorf("line %d: missing starting /* comment directrive", lineNumber))
-			}
-			inComment = false
-			continue
-		}
-		if inComment {
-			continue
-		}
-		if strings.HasPrefix(line, "/*") {
-			if inComment {
-				errs = append(errs, fmt.Errorf("line %d: already in comment, nested comments are not supported", lineNumber))
-			}
-			inComment = true
+		if a.processComment() {
 			continue
 		}
 
+		a.line = a.removeLineComment(a.line)
+		a.parts = strings.Split(line, " ")
+		a.command = a.parts[0]
+
 		// label processing
-		line = a.removeComment(line)
-		if strings.HasPrefix(line, ":") {
-			parts := strings.Split(line, " ")
-			labelName := strings.ToLower(parts[0])
-			a.Labels[labelName] = label{
-				Name:       labelName,
-				PrgCounter: prgCounter,
-			}
-			log.Debugf("define label: %s", labelName)
+		if a.processLabelDefinition() {
 			continue
 		}
 
 		// Splitting into parts
-		parts := strings.Split(line, " ")
-		command := parts[0]
+
+		command := a.command
 
 		// include files
 		if command == ".include" {
-			errs = append(errs, fmt.Errorf("line %d: .include is not implemented, ignoring", lineNumber))
+			a.addErrorS(".include is not implemented, ignoring")
 			continue
 		}
 
 		// macro definition
-		if command == ".endmacro" {
-			if !inMacro {
-				errs = append(errs, fmt.Errorf("line %d: missing starting .macro directrive", lineNumber))
-			}
-			a.Macros[a.actMacro.Name] = a.actMacro
-			inMacro = false
-			continue
-		}
-		if inMacro {
-			a.actMacro.Code = append(a.actMacro.Code, line)
-			continue
-		}
-		if command == ".macro" {
-			if inMacro {
-				errs = append(errs, fmt.Errorf("line %d: already in macro definition, nested macros are not supported", lineNumber))
-			}
-			macroName := strings.ToLower(parts[1])
-			a.actMacro = macro{
-				Name:   macroName,
-				Params: parts[2:],
-			}
-			inMacro = true
+		if a.processMacroDefinition() {
 			continue
 		}
 
 		// macro processing
-		if strings.HasPrefix(command, ".") {
-			macroName := strings.ToLower(parts[0][1:])
-			macro, ok := a.Macros[macroName]
-			if !ok {
-				errs = append(errs, fmt.Errorf("can't find macro: %s", macroName))
-			} else {
-				log.Infof("use macro: %s", macro.Name)
-				for _, cmd := range macro.Code {
-					prgCounter++
-					a.Code = append(a.Code, cmd)
-					log.Debugf("line %d: %s", lineNumber, cmd)
-				}
-				continue
-			}
+		if a.processMacro() {
+			continue
 		}
 
-		prgCounter++
+		a.prgCounter++
 		a.Code = append(a.Code, line)
-		log.Debugf("line %d: %s", lineNumber, line)
+		log.Debugf("line %d: %s", a.lineNumber, line)
 	}
 	log.Info("----- stop -----")
-	// handle first encountered error while reading
-	if err := fileScanner.Err(); err != nil {
-		errs = append(errs, fmt.Errorf("line %d: error while reading file: %v", lineNumber, err))
-	}
-
-	return
 }
 
-func (a *Assembler) removeComment(line string) string {
+func (a *Assembler) removeLineComment(line string) string {
 	if strings.ContainsAny(line, ";") {
 		pos := strings.Index(line, ";")
 		return substr(line, 0, pos-1)
@@ -186,4 +131,96 @@ func substr(input string, start int, length int) string {
 	}
 
 	return string(asRunes[start : start+length])
+}
+
+func (a *Assembler) processMacroDefinition() bool {
+	if a.command == ".endmacro" {
+		if !a.inMacro {
+			a.addErrorS("missing starting .macro directrive")
+		}
+		a.Macros[a.actMacro.Name] = a.actMacro
+		a.inMacro = false
+		return true
+	}
+	if a.inMacro {
+		a.actMacro.Code = append(a.actMacro.Code, a.line)
+		return true
+	}
+	if a.command == ".macro" {
+		if a.inMacro {
+			a.addErrorS("already in macro definition, nested macros are not supported")
+		}
+		macroName := strings.ToLower(a.parts[1])
+		a.actMacro = macro{
+			Name:   macroName,
+			Params: a.parts[2:],
+		}
+		a.inMacro = true
+		return true
+	}
+	return false
+}
+
+func (a *Assembler) processLabelDefinition() bool {
+	if strings.HasPrefix(a.line, ":") {
+		labelName := strings.ToLower(a.parts[0])
+		a.Labels[labelName] = label{
+			Name:       labelName,
+			PrgCounter: a.prgCounter,
+		}
+		log.Debugf("define label: %s", labelName)
+		return true
+	}
+	return false
+}
+
+func (a *Assembler) processMacro() bool {
+	if strings.HasPrefix(a.command, ".") {
+		macroName := strings.ToLower(a.parts[0][1:])
+		macro, ok := a.Macros[macroName]
+		if !ok {
+			a.addErrorS(fmt.Sprintf("can't find macro: %s", macroName))
+		} else {
+			log.Infof("use macro: %s", macro.Name)
+			for _, cmd := range macro.Code {
+				a.prgCounter++
+				for x, mac := range macro.Params {
+					cmd = strings.ReplaceAll(cmd, mac, a.parts[x+1])
+				}
+				a.Code = append(a.Code, cmd)
+				log.Debugf("line %d: %s", a.lineNumber, cmd)
+			}
+			return true
+		}
+	}
+	return false
+}
+
+func (a *Assembler) processComment() bool {
+	if strings.HasPrefix(a.line, "*/") {
+		if !a.inComment {
+			a.addErrorS("missing starting /* comment directrive")
+		}
+		a.inComment = false
+		return true
+	}
+	if a.inComment {
+		return true
+	}
+	if strings.HasPrefix(a.line, "/*") {
+		if a.inComment {
+			a.addErrorS("already in comment, nested comments are not supported")
+		}
+		a.inComment = true
+		return true
+	}
+	return false
+}
+
+func (a *Assembler) addErrorS(msg string) {
+	a.errs = append(a.errs, fmt.Errorf("line %d: %s", a.lineNumber, msg))
+}
+
+func (a *Assembler) addError(err error) {
+	a.errs = append(a.errs, err)
 }

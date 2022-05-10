@@ -9,6 +9,7 @@ require (
 	github.com/go-chi/httptracer v0.3.0
 	github.com/go-chi/render v1.0.1
 	github.com/go-playground/validator/v10 v10.9.0
+	github.com/google/go-cmp v0.5.5
 	github.com/google/uuid v1.3.0
 	github.com/imdario/mergo v0.3.12
 	github.com/opentracing/opentracing-go v1.2.0

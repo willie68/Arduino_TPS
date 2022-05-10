@@ -22,7 +22,7 @@ WAIT time
 
 .include macro_blink
 :loop1
-.macro1 #0x0f 200ms
+.macro1 #0x0f 100ms
 
 PORT #0x0F ;Zeilenkommentar
 WAIT 200ms
