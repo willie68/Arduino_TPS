@@ -1,24 +1,16 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
+	"encoding/json"
 
 	flag "github.com/spf13/pflag"
+	"github.com/willie68/tps_asm/internal/asm"
 	log "github.com/willie68/tps_asm/internal/logging"
 )
-
-type label struct {
-	name       string
-	prgcounter int
-}
 
 var (
 	destination string
 	tpsfile     string
-	labels      map[string]label
 )
 
 func init() {
@@ -33,37 +25,20 @@ func main() {
 	log.Logger.Info("configuration")
 	log.Logger.Infof("hardware: %s", destination)
 	log.Logger.Infof("file    : %s", tpsfile)
-	parseOne()
-}
-
-func parseOne() {
-	file, err := os.Open(tpsfile)
-	labels = make(map[string]label)
-	//handle errors while opening
-	if err != nil {
-		log.Fatalf("Error when opening file: %s", err)
+	tpsasm := asm.Assembler{
+		Hardware: asm.ParseHardware(destination),
+		Source:   tpsfile,
 	}
-
-	fileScanner := bufio.NewScanner(file)
-
-	// read line by line
-	for fileScanner.Scan() {
-		line := fileScanner.Text()
-		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, ":") {
-			parts := strings.Split(line, " ")
-			labelName := strings.ToLower(parts[0])
-			labels[labelName] = label{
-				name:       labelName,
-				prgcounter: 0,
-			}
+	errs := tpsasm.Parse()
+	if errs != nil && len(errs) > 0 {
+		for _, err := range errs {
+			log.Errorf("%v", err)
 		}
-		fmt.Println(line)
-	}
-	// handle first encountered error while reading
-	if err := fileScanner.Err(); err != nil {
-		log.Fatalf("Error while reading file: %s", err)
 	}
 
-	file.Close()
+	jstr, err := json.MarshalIndent(tpsasm, "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	log.Infof("parse: \r\n%s", jstr)
 }

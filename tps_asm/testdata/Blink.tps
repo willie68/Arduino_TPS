@@ -10,6 +10,7 @@ WAIT 200ms
 RJMP :loop
 /* 
 Kommentar über mehrere Zeilen
+/*
 */
 
 .macro macro1 output time

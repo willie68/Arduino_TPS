@@ -4,7 +4,7 @@
 
 // libraries for access to eeprom
 #include <EEPROM.h>
-#include <avr/eeprom.h>
+//#include <avr/eeprom.h>
 
 // defining the hardware connections
 // Outputs
@@ -50,6 +50,7 @@ void setup() {
 void prgDemoPrg() {
   // only need to program the demo program if there is nothing in the eeprom (value on address 0 is FF)
   byte value = EEPROM.read(0);
+  value = 0xFF;
   if (value == 0xFF) {
     for (byte i = 0; i < sizeof(demoPrg); i++) {
       EEPROM.write(i, demoPrg[i]);

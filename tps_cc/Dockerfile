@@ -122,7 +122,7 @@ CMD ["--config","/config/service.yaml"]
 EXPOSE 8080 8443
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
-  CMD wget -q -T 5 http://localhost:8080/livez
+  CMD wget -q -T 5 --spider http://localhost:8080/livez
 
 LABEL org.opencontainers.image.title="TPS-CC" \
       org.opencontainers.image.description="MCS TPS Cross Compiler" \

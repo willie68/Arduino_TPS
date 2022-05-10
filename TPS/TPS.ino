@@ -123,11 +123,11 @@
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
 #define TPS_USE_DISPLAY
-//#define TPS_RCRECEIVER
-//#define TPS_ENHANCEMENT
-//#define TPS_SERIAL_PRG
-//#define TPS_SERVO
-//#define TPS_TONE
+#define TPS_RCRECEIVER
+#define TPS_ENHANCEMENT
+#define TPS_SERIAL_PRG
+#define TPS_SERVO
+#define TPS_TONE
 #endif
 
 #ifdef ESP32
