@@ -9,33 +9,39 @@ const (
 	ATMega8    Hardware = 1
 	ArduinoSPS Hardware = 2
 	TinySPS    Hardware = 3
+
+	// private parts
+	sHoltek     string = "HOLTEK"
+	sATMega8    string = "ATMEGA8"
+	sArduinoSPS string = "ARDUINOSPS"
+	sTinySPS    string = "TINYSPS"
 )
 
 func (h Hardware) String() string {
 	switch h {
 	case Holtek:
-		return "HOLTEK"
+		return sHoltek
 	case ATMega8:
-		return "ATMEGA8"
+		return sATMega8
 	case ArduinoSPS:
-		return "ARDUINOSPS"
+		return sArduinoSPS
 	case TinySPS:
-		return "TINYSPS"
+		return sTinySPS
 	default:
-		return "HOLTEK"
+		return sHoltek
 	}
 }
 
 func ParseHardware(dest string) Hardware {
 	dest = strings.ToUpper(dest)
 	switch dest {
-	case "HOLTEK":
+	case sHoltek:
 		return Holtek
-	case "ATMEGA8":
+	case sATMega8:
 		return ATMega8
-	case "ARDUINOSPS":
+	case sArduinoSPS:
 		return ArduinoSPS
-	case "TINYSPS":
+	case sTinySPS:
 		return TinySPS
 	}
 	return Holtek
