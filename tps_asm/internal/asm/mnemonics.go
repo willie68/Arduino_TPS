@@ -33,22 +33,19 @@ const (
 	int4 string = "int4"
 	lbl  string = "label"
 	enum string = "enum"
+	nme  string = "name"
 )
 
 var Mnos = []mnemonic{
+	// program control
 	{
 		Name:   "NOP",
-		Params: [][]string{}, // int4: full 4 bit variable, label : goto to label
+		Params: [][]string{},
 		Code:   0x00,
 	},
 	{
-		Name:   "PORT",
-		Params: [][]string{{int4}}, // int4: full 4 bit variable, label : goto to label
-		Code:   0x10,
-	},
-	{
 		Name:   "WAIT",
-		Params: [][]string{{int4, enum}}, // int4: full 4 bit variable, label : goto to label
+		Params: [][]string{{int4, enum}},
 		Enums: map[string]int{
 			"1ms":   0x00,
 			"2ms":   0x01,
@@ -71,13 +68,261 @@ var Mnos = []mnemonic{
 	},
 	{
 		Name:   "RJMP",
-		Params: [][]string{{int4, label}}, // int4: full 4 bit variable, label : goto to label
+		Params: [][]string{{int4, lbl}},
 		Code:   0x30,
 	},
 	{
+		Name:   "PAGE",
+		Params: [][]string{{int4, enum}},
+		Enums: map[string]int{
+			":?": 0x10,
+		},
+		Code: 0x80,
+	},
+	{
+		Name:   "JMP",
+		Params: [][]string{{int4, lbl}},
+		Code:   0x90,
+	},
+	{
+		Name:   "LOOPC",
+		Params: [][]string{{int4, lbl}},
+		Code:   0xA0,
+	},
+	{
+		Name:   "LOOPD",
+		Params: [][]string{{int4, lbl}},
+		Code:   0xB0,
+	},
+	{
+		Name:   "SKIP0",
+		Params: [][]string{},
+		Code:   0xC0,
+	},
+	{
+		Name:   "AGTB",
+		Params: [][]string{},
+		Code:   0xC1,
+	},
+	{
+		Name:   "ALTB",
+		Params: [][]string{},
+		Code:   0xC2,
+	},
+	{
+		Name:   "AEQB",
+		Params: [][]string{},
+		Code:   0xC3,
+	},
+	{
+		Name:   "DEQ0",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"1": 0x08,
+			"2": 0x09,
+			"3": 0x0A,
+			"4": 0x0B,
+		},
+		Code: 0xC0,
+	},
+	{
+		Name:   "DEQ1",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"1": 0x04,
+			"2": 0x05,
+			"3": 0x06,
+			"4": 0x07,
+		},
+		Code: 0xC0,
+	},
+	{
+		Name:   "PRG0",
+		Params: [][]string{},
+		Code:   0xCC,
+	},
+	{
+		Name:   "SEL0",
+		Params: [][]string{},
+		Code:   0xCD,
+	},
+	{
+		Name:   "PRG1",
+		Params: [][]string{},
+		Code:   0xCE,
+	},
+	{
+		Name:   "SEL1",
+		Params: [][]string{},
+		Code:   0xCF,
+	},
+	{
+		Name:   "CALL",
+		Params: [][]string{{int4, lbl}},
+		Code:   0xD0,
+	},
+	{
+		Name:   "RTR",
+		Params: [][]string{},
+		Code:   0xE0,
+	},
+	{
+		Name:   "CASB",
+		Params: [][]string{{int4, lbl}},
+		Code:   0xE0,
+	},
+	{
+		Name:   "DFSB",
+		Params: [][]string{{int4, lbl}},
+		Code:   0xE7,
+	},
+	{
+		Name:   "REST",
+		Params: [][]string{},
+		Code:   0xEF,
+	},
+	{
+		Name:   "PEND",
+		Params: [][]string{},
+		Code:   0xFF,
+	},
+
+	// Load and save
+	{
 		Name:   "LDA",
-		Params: [][]string{{int4}}, // int4: full 4 bit variable, label : goto to label
-		Code:   0x40,
+		Params: [][]string{{int4, enum}},
+		Enums: map[string]int{
+			"DIN":  0x64,
+			"DIN1": 0x65,
+			"DIN2": 0x66,
+			"DIN3": 0x67,
+			"DIN4": 0x68,
+			"ADC1": 0x69,
+			"ADC2": 0x6A,
+			"RC1":  0x6B,
+			"RC2":  0x6C,
+		},
+		Code: 0x40,
+	},
+	{
+		Name:   "SWAP",
+		Params: [][]string{},
+		Code:   0x50,
+	},
+	{
+		Name:   "MOV",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"B,A": 0x51,
+			"C,A": 0x52,
+			"D,A": 0x53,
+			"A,B": 0x61,
+			"A,C": 0x62,
+			"A,D": 0x63,
+			"E,A": 0x5D,
+			"F,A": 0x5E,
+			"A,E": 0x6D,
+			"A,F": 0x6E,
+		},
+		Code: 0x00,
+	},
+	{
+		Name:   "PUSH",
+		Params: [][]string{},
+		Code:   0x5F,
+	},
+	{
+		Name:   "POP",
+		Params: [][]string{},
+		Code:   0x6F,
+	},
+	// Math
+	{
+		Name:   "INC",
+		Params: [][]string{},
+		Code:   0x71,
+	},
+	{
+		Name:   "DEC",
+		Params: [][]string{},
+		Code:   0x72,
+	},
+	{
+		Name:   "ADD",
+		Params: [][]string{},
+		Code:   0x73,
+	},
+	{
+		Name:   "SUB",
+		Params: [][]string{},
+		Code:   0x74,
+	},
+	{
+		Name:   "MUL",
+		Params: [][]string{},
+		Code:   0x75,
+	},
+	{
+		Name:   "DIV",
+		Params: [][]string{},
+		Code:   0x76,
+	},
+	{
+		Name:   "AND",
+		Params: [][]string{},
+		Code:   0x77,
+	},
+	{
+		Name:   "OR",
+		Params: [][]string{},
+		Code:   0x78,
+	},
+	{
+		Name:   "XOR",
+		Params: [][]string{},
+		Code:   0x79,
+	},
+	{
+		Name:   "NOT",
+		Params: [][]string{},
+		Code:   0x7A,
+	},
+	{
+		Name:   "MOD",
+		Params: [][]string{},
+		Code:   0x7B,
+	},
+	{
+		Name:   "BYTE",
+		Params: [][]string{},
+		Code:   0x7C,
+	},
+	{
+		Name:   "BSUBA",
+		Params: [][]string{},
+		Code:   0x7D,
+	},
+	// Input/Output
+	{
+		Name:   "PORT",
+		Params: [][]string{{int4}},
+		Code:   0x10,
+	},
+	{
+		Name:   "STA",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"DOUT":  0x54,
+			"DOUT1": 0x55,
+			"DOUT2": 0x56,
+			"DOUT3": 0x57,
+			"DOUT4": 0x58,
+			"PWM1":  0x59,
+			"PWM2":  0x5A,
+			"SRV1":  0x5B,
+			"SRV2":  0x5C,
+		},
+		Code: 0x00,
 	},
 }
 
@@ -108,6 +353,11 @@ func (m mnemonic) CheckParameter(params []string) error {
 			case enum:
 				_, ok := m.Enums[p]
 				if ok {
+					found = true
+				}
+				break ptsloop
+			case lbl:
+				if strings.HasPrefix(p, ":") {
 					found = true
 				}
 				break ptsloop
