@@ -324,6 +324,34 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x00,
 	},
+	// Byte mnemonics
+	{
+		Name:   "BLDA",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"ADC1": 0xF0,
+			"ADC2": 0xF1,
+			"RC1":  0xF2,
+			"RC2":  0xF3,
+		},
+		Code: 0x00,
+	},
+	{
+		Name:   "BSTA",
+		Params: [][]string{{enum}},
+		Enums: map[string]int{
+			"PWM1": 0xF4,
+			"PWM2": 0xF5,
+			"SRV1": 0xF6,
+			"SRV2": 0xF7,
+		},
+		Code: 0x00,
+	},
+	{
+		Name:   "TONE",
+		Params: [][]string{},
+		Code:   0xF8,
+	},
 }
 
 func (m mnemonic) CheckParameter(params []string) error {

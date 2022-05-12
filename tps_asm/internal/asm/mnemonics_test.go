@@ -548,3 +548,73 @@ func TestMathMno(t *testing.T) {
 		ast.Equal(testdata.Code, mno.Code)
 	}
 }
+
+func TestBLDA(t *testing.T) {
+	ast := assert.New(t)
+	mno, err := GetMnemonic("BLDA")
+	ast.Nil(err)
+	ast.NotNil(mno)
+
+	name := mno.Name
+	name = strings.ToLower(name)
+	ast.Equal("blda", name)
+
+	ast.NotNil(mno.CheckParameter([]string{}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#12"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
+	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.Equal(uint8(0x00), mno.Code)
+
+	ast.Nil(mno.CheckParameter([]string{"ADC1"}))
+	ast.Nil(mno.CheckParameter([]string{"ADC2"}))
+	ast.Nil(mno.CheckParameter([]string{"RC1"}))
+	ast.Nil(mno.CheckParameter([]string{"RC2"}))
+}
+
+func TestBSTA(t *testing.T) {
+	ast := assert.New(t)
+	mno, err := GetMnemonic("BSTA")
+	ast.Nil(err)
+	ast.NotNil(mno)
+
+	name := mno.Name
+	name = strings.ToLower(name)
+	ast.Equal("bsta", name)
+
+	ast.NotNil(mno.CheckParameter([]string{}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#12"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
+	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.Equal(uint8(0x00), mno.Code)
+
+	ast.Nil(mno.CheckParameter([]string{"PWM1"}))
+	ast.Nil(mno.CheckParameter([]string{"PWM2"}))
+	ast.Nil(mno.CheckParameter([]string{"SRV1"}))
+	ast.Nil(mno.CheckParameter([]string{"SRV2"}))
+}
+
+func TestByte(t *testing.T) {
+	ast := assert.New(t)
+	mno, err := GetMnemonic("TONE")
+	ast.Nil(err)
+	ast.NotNil(mno)
+
+	name := mno.Name
+	name = strings.ToLower(name)
+	ast.Equal("tone", name)
+
+	ast.Nil(mno.CheckParameter([]string{}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#12"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
+	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
+	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.Equal(uint8(0xF8), mno.Code)
+}
