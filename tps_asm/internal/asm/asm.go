@@ -10,6 +10,7 @@ import (
 type label struct {
 	Name       string
 	PrgCounter int
+	Line       int
 }
 
 type macro struct {
@@ -23,6 +24,7 @@ type Assembler struct {
 	Source   []string
 	Includes string
 	Labels   map[string]label
+	Subs     []string
 	Macros   map[string]macro
 	Code     []string
 	Binary   []byte
@@ -54,4 +56,13 @@ func (a *Assembler) addErrorS(msg string) {
 
 func (a *Assembler) addError(err error) {
 	a.errs = append(a.errs, err)
+}
+
+func (a *Assembler) subNumber(subname string) int {
+	for x, v := range a.Subs {
+		if subname == v {
+			return x
+		}
+	}
+	return -1 //not found.
 }

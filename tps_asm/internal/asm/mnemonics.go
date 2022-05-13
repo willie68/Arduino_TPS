@@ -370,7 +370,7 @@ func (m mnemonic) CheckParameter(params []string) error {
 		for _, pt := range pts {
 			switch pt {
 			case int4:
-				found, err = convertNumber(p)
+				_, found, err = convertNumber(p)
 				if err != nil {
 					return err
 				}
@@ -398,27 +398,67 @@ func (m mnemonic) CheckParameter(params []string) error {
 	return nil
 }
 
-func convertNumber(p string) (bool, error) {
-	if strings.HasPrefix(p, "#0x") {
-		_, err := strconv.ParseUint(p[3:], 16, 4)
-		if err != nil {
-			return false, ErrIllegalValue
+func (m mnemonic) Generate(params []string, prgCounter int, a *Assembler) byte {
+	found := false
+	for x, pts := range m.Params {
+		p := params[x]
+	ptsloop:
+		for _, pt := range pts {
+			var v byte
+			switch pt {
+			case int4:
+				v, found, _ = convertNumber(p)
+				if !found {
+					continue
+				}
+				return byte(m.Code + v)
+			case enum:
+				v, ok := m.Enums[p]
+				if ok {
+					found = true
+				}
+				return byte(m.Code + byte(v))
+			case lbl:
+				switch m.Name {
+				case "RJMP":
+					p = strings.TrimPrefix(p, ":")
+					lbl, ok := a.Labels[p]
+					if ok {
+						df := prgCounter - lbl.PrgCounter
+						return byte(m.Code + byte(df))
+					}
+				case "CASB", "DFSB":
+					id := a.subNumber(p)
+					return byte(m.Code + byte(id+1))
+				}
+				break ptsloop
+			}
 		}
-		return true, nil
 	}
-	if strings.HasPrefix(p, "#0b") {
-		_, err := strconv.ParseUint(p[3:], 2, 4)
+	return m.Code
+}
+
+func convertNumber(p string) (byte, bool, error) {
+	if strings.HasPrefix(strings.ToLower(p), "#0x") {
+		v, err := strconv.ParseUint(p[3:], 16, 4)
 		if err != nil {
-			return false, ErrIllegalValue
+			return 0, false, ErrIllegalValue
 		}
-		return true, nil
+		return byte(v), true, nil
+	}
+	if strings.HasPrefix(strings.ToLower(p), "#0b") {
+		v, err := strconv.ParseUint(p[3:], 2, 4)
+		if err != nil {
+			return 0, false, ErrIllegalValue
+		}
+		return byte(v), true, nil
 	}
 	if strings.HasPrefix(p, "#") {
-		_, err := strconv.ParseUint(p[1:], 10, 4)
+		v, err := strconv.ParseUint(p[1:], 10, 4)
 		if err != nil {
-			return false, ErrIllegalValue
+			return 0, false, ErrIllegalValue
 		}
-		return true, nil
+		return byte(v), true, nil
 	}
-	return false, nil
+	return 0, false, nil
 }

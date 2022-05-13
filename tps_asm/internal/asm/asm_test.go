@@ -102,10 +102,12 @@ var testdatas = []struct {
 			"label1": label{
 				Name:       "label1",
 				PrgCounter: 1,
+				Line:       0,
 			},
 			"label2": label{
 				Name:       "label2",
 				PrgCounter: 1,
+				Line:       1,
 			},
 		},
 		Code: []string{},
@@ -119,10 +121,12 @@ var testdatas = []struct {
 			"label1": label{
 				Name:       "label1",
 				PrgCounter: 1,
+				Line:       0,
 			},
 			"label2": label{
 				Name:       "label2",
 				PrgCounter: 1,
+				Line:       1,
 			},
 		},
 		Macros: map[string]macro{
@@ -143,10 +147,12 @@ var testdatas = []struct {
 			"label1": label{
 				Name:       "label1",
 				PrgCounter: 1,
+				Line:       0,
 			},
 			"label2": label{
 				Name:       "label2",
 				PrgCounter: 1,
+				Line:       1,
 			},
 		},
 		Macros: map[string]macro{
@@ -167,10 +173,12 @@ var testdatas = []struct {
 			"label1": label{
 				Name:       "label1",
 				PrgCounter: 1,
+				Line:       0,
 			},
 			"label2": label{
 				Name:       "label2",
 				PrgCounter: 1,
+				Line:       1,
 			},
 		},
 		Code: []string{},
@@ -233,12 +241,136 @@ var testdatas = []struct {
 		Code: []string{},
 	},
 	errCount: 1,
+}, {
+	name: "testProgramm1",
+	asm: Assembler{
+		Source: []string{
+			".macro blink",
+			"PORT #0B0101",
+			"WAIT 200ms",
+			"PORT #0B1010",
+			"WAIT 200ms",
+			".endmacro",
+			" ",
+			":loop",
+			".blink",
+			"RJMP :loop",
+			"/*",
+			"Kommentar über mehrere Zeilen",
+			"*/",
+			" ",
+			".macro macro1 output time",
+			"PORT output",
+			"WAIT time",
+			"PORT #0x00",
+			"WAIT time",
+			".endmacro",
+			"",
+			":loop1",
+			".macro1 #0x0f 100ms",
+			" ",
+			"PORT #0x0F ;Zeilenkommentar",
+			"WAIT 200ms",
+			"PORT #0x00",
+			"WAIT 200ms",
+			"CASB :sub1",
+			"RJMP :loop1",
+			" ",
+			"DFSB :sub1",
+			"PORT #0x0F ;Zeilenkommentar",
+			"WAIT 200ms",
+			"PORT #0x00",
+			"WAIT 200ms",
+			"RTR",
+		},
+		Labels: map[string]label{
+			"loop": {
+				Name:       "loop",
+				PrgCounter: 0,
+				Line:       7,
+			},
+			"loop1": {
+				Name:       "loop1",
+				PrgCounter: 5,
+				Line:       21,
+			},
+		},
+		Macros: map[string]macro{
+			"blink": {
+				Name:   "blink",
+				Params: []string{},
+				Code: []string{
+					"PORT #0B0101",
+					"WAIT 200ms",
+					"PORT #0B1010",
+					"WAIT 200ms",
+				},
+			},
+			"macro1": {
+				Name:   "macro1",
+				Params: []string{"output", "time"},
+				Code: []string{
+					"PORT output",
+					"WAIT time",
+					"PORT #0x00",
+					"WAIT time",
+				},
+			},
+		},
+		Code: []string{
+			"PORT #0B0101",
+			"WAIT 200ms",
+			"PORT #0B1010",
+			"WAIT 200ms",
+			"RJMP :loop",
+			"PORT #0x0f",
+			"WAIT 100ms",
+			"PORT #0x00",
+			"WAIT 100ms",
+			"PORT #0x0F",
+			"WAIT 200ms",
+			"PORT #0x00",
+			"WAIT 200ms",
+			"CASB :sub1",
+			"RJMP :loop1",
+			"DFSB :sub1",
+			"PORT #0x0F",
+			"WAIT 200ms",
+			"PORT #0x00",
+			"WAIT 200ms",
+			"RTR",
+		},
+		Binary: []byte{
+			0x15,
+			0x27,
+			0x1A,
+			0x27,
+			0x34,
+			0x1F,
+			0x26,
+			0x10,
+			0x26,
+			0x1F,
+			0x27,
+			0x10,
+			0x27,
+			0xE1,
+			0x39,
+			0xE8,
+			0x1F,
+			0x27,
+			0x10,
+			0x27,
+			0xE0,
+		},
+	},
+	errCount: 0,
 },
 }
 
 func TestOne(t *testing.T) {
 	log.Logger.SetLevel(log.LvError)
-	oneTest(t, "testInlineComment1")
+	oneTest(t, "testProgramm1")
 }
 
 func TestAll(t *testing.T) {
@@ -260,6 +392,7 @@ func oneTest(t *testing.T, name string) {
 				Source:   test.asm.Source,
 			}
 			tasm.parse()
+			tasm.generate()
 			ast.Equal(test.errCount, len(tasm.errs), "error count not equal")
 			if len(tasm.errs) != test.errCount {
 				for _, err := range tasm.errs {
@@ -267,6 +400,7 @@ func oneTest(t *testing.T, name string) {
 				}
 				t.Fail()
 			}
+
 			checkAssembler(ast, test.asm, tasm)
 		}
 	}
@@ -283,4 +417,6 @@ func checkAssembler(ast *assert.Assertions, expected, actual Assembler) {
 	ast.Equal(fmt.Sprint(expected.Macros), fmt.Sprint(actual.Macros), "Macros are not equal")
 	// Testing code
 	ast.Equal(expected.Code, actual.Code, "Code is not equal")
+	// Testing code
+	ast.Equal(expected.Binary, actual.Binary, "Code is not equal")
 }

@@ -10,6 +10,7 @@ import (
 
 func (a *Assembler) parse() {
 	a.Labels = make(map[string]label)
+	a.Subs = make([]string, 0)
 	a.Macros = make(map[string]macro)
 	a.Code = make([]string, 0)
 
@@ -17,7 +18,7 @@ func (a *Assembler) parse() {
 	a.inComment = false
 
 	a.lineNumber = 0
-	a.prgCounter = 1
+	a.prgCounter = 0
 	// read line by line
 	log.Info("----- start -----")
 	for x, line := range a.Source {
@@ -67,6 +68,8 @@ func (a *Assembler) parse() {
 		if a.processMacro() {
 			continue
 		}
+
+		a.processSubroutines()
 
 		a.checkSyntax()
 
@@ -126,8 +129,19 @@ func (a *Assembler) processLabelDefinition() bool {
 		a.Labels[labelName] = label{
 			Name:       labelName,
 			PrgCounter: a.prgCounter,
+			Line:       a.lineNumber,
 		}
 		log.Debugf("define label: %s", labelName)
+		return true
+	}
+	return false
+}
+
+func (a *Assembler) processSubroutines() bool {
+	if strings.ToUpper(a.command) == "DFSB" {
+		subName := a.parts[1]
+		a.Subs = append(a.Subs, subName)
+		log.Debugf("define subroutine: %s", subName)
 		return true
 	}
 	return false
