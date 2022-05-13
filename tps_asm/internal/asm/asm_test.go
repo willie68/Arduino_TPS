@@ -20,6 +20,7 @@ var testdatas = []struct {
 		Labels: map[string]label{},
 		Macros: map[string]macro{},
 		Code:   []string{"LDA #12"},
+		Binary: []byte{0x4c},
 	},
 	errCount: 0,
 }, {
@@ -28,6 +29,7 @@ var testdatas = []struct {
 		Source: []string{"LDA #12", " LDA #12", "LDA #12 ", "\t LDA #12", "\t LDA #12  \t"},
 		Labels: map[string]label{},
 		Code:   []string{"LDA #12", "LDA #12", "LDA #12", "LDA #12", "LDA #12"},
+		Binary: []byte{0x4c, 0x4c, 0x4c, 0x4c, 0x4c},
 	},
 	errCount: 0,
 }, {
@@ -36,6 +38,7 @@ var testdatas = []struct {
 		Source: []string{"/* dies ist ein Test", "1", "2", "3", "4", "*/"},
 		Labels: map[string]label{},
 		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -44,6 +47,7 @@ var testdatas = []struct {
 		Source: []string{"/* dies ist ein Test", "1", "2", "*/", "LDA #12", "/*", "3", "4", "*/"},
 		Labels: map[string]label{},
 		Code:   []string{"LDA #12"},
+		Binary: []byte{0x4c},
 	},
 	errCount: 0,
 }, {
@@ -52,6 +56,7 @@ var testdatas = []struct {
 		Source: []string{"*/"},
 		Labels: map[string]label{},
 		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 1,
 }, {
@@ -60,6 +65,7 @@ var testdatas = []struct {
 		Source: []string{"/*", "/*", "*/"},
 		Labels: map[string]label{},
 		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 1,
 }, {
@@ -68,6 +74,7 @@ var testdatas = []struct {
 		Source: []string{"; dies ist ein Test"},
 		Labels: map[string]label{},
 		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -76,6 +83,7 @@ var testdatas = []struct {
 		Source: []string{" ; dies ist ein Test"},
 		Labels: map[string]label{},
 		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -84,6 +92,7 @@ var testdatas = []struct {
 		Source: []string{"LDA #12; dies ist ein Test"},
 		Labels: map[string]label{},
 		Code:   []string{"LDA #12"},
+		Binary: []byte{0x4C},
 	},
 	errCount: 0,
 }, {
@@ -92,6 +101,7 @@ var testdatas = []struct {
 		Source: []string{"LDA #12 ; dies ist ein Test"},
 		Labels: map[string]label{},
 		Code:   []string{"LDA #12"},
+		Binary: []byte{0x4c},
 	},
 	errCount: 0,
 }, {
@@ -99,18 +109,19 @@ var testdatas = []struct {
 	asm: Assembler{
 		Source: []string{":label1", ":label2"},
 		Labels: map[string]label{
-			"label1": label{
+			"label1": {
 				Name:       "label1",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       0,
 			},
-			"label2": label{
+			"label2": {
 				Name:       "label2",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       1,
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -118,14 +129,14 @@ var testdatas = []struct {
 	asm: Assembler{
 		Source: []string{":label1", ":label2", ".macro define", "LDA #12", ".endmacro"},
 		Labels: map[string]label{
-			"label1": label{
+			"label1": {
 				Name:       "label1",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       0,
 			},
-			"label2": label{
+			"label2": {
 				Name:       "label2",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       1,
 			},
 		},
@@ -136,7 +147,8 @@ var testdatas = []struct {
 				Code:   []string{"LDA #12"},
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -144,14 +156,14 @@ var testdatas = []struct {
 	asm: Assembler{
 		Source: []string{":label1", ":label2", ".macro define muck puck", "LDA #12", ".endmacro"},
 		Labels: map[string]label{
-			"label1": label{
+			"label1": {
 				Name:       "label1",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       0,
 			},
-			"label2": label{
+			"label2": {
 				Name:       "label2",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       1,
 			},
 		},
@@ -162,7 +174,8 @@ var testdatas = []struct {
 				Code:   []string{"LDA #12"},
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 0,
 }, {
@@ -170,18 +183,19 @@ var testdatas = []struct {
 	asm: Assembler{
 		Source: []string{":label1", ":label2", ".macro", ".endmacro"},
 		Labels: map[string]label{
-			"label1": label{
+			"label1": {
 				Name:       "label1",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       0,
 			},
-			"label2": label{
+			"label2": {
 				Name:       "label2",
-				PrgCounter: 1,
+				PrgCounter: 0,
 				Line:       1,
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 2,
 }, {
@@ -194,36 +208,39 @@ var testdatas = []struct {
 				Name: "define1",
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 1,
 }, {
 	name: "testMacroProcessing1",
 	asm: Assembler{
-		Source: []string{".macro define1", "LDA #12", "STA #12", ".endmacro", ".define1"},
+		Source: []string{".macro define1", "LDA #12", "PORT #12", ".endmacro", ".define1"},
 		Labels: map[string]label{},
 		Macros: map[string]macro{
 			"define1": {
 				Name: "define1",
-				Code: []string{"LDA #12", "STA #12"},
+				Code: []string{"LDA #12", "PORT #12"},
 			},
 		},
-		Code: []string{"LDA #12", "STA #12"},
+		Code:   []string{"LDA #12", "PORT #12"},
+		Binary: []byte{0x4c, 0x1c},
 	},
 	errCount: 0,
 }, {
 	name: "testMacroProcessing2",
 	asm: Assembler{
-		Source: []string{".macro define1 time name", "LDA time", "STA name", ".endmacro", ".define1 #12 #23"},
+		Source: []string{".macro define1 time name", "LDA time", "PORT name", ".endmacro", ".define1 #12 #13"},
 		Labels: map[string]label{},
 		Macros: map[string]macro{
 			"define1": {
 				Name:   "define1",
 				Params: []string{"time", "name"},
-				Code:   []string{"LDA time", "STA name"},
+				Code:   []string{"LDA time", "PORT name"},
 			},
 		},
-		Code: []string{"LDA #12", "STA #23"},
+		Code:   []string{"LDA #12", "PORT #13"},
+		Binary: []byte{0x4c, 0x1d},
 	},
 	errCount: 0,
 }, {
@@ -238,7 +255,8 @@ var testdatas = []struct {
 				Code:   []string{"LDA time", "STA name"},
 			},
 		},
-		Code: []string{},
+		Code:   []string{},
+		Binary: []byte{},
 	},
 	errCount: 1,
 }, {
@@ -446,7 +464,7 @@ var testdatas = []struct {
 
 func TestOne(t *testing.T) {
 	log.Logger.SetLevel(log.LvError)
-	oneTest(t, "testProgramm2")
+	oneTest(t, "testMacroProcessing2")
 }
 
 func TestAll(t *testing.T) {
@@ -467,8 +485,7 @@ func oneTest(t *testing.T, name string) {
 				Hardware: Holtek,
 				Source:   test.asm.Source,
 			}
-			tasm.parse()
-			tasm.generate()
+			tasm.Parse()
 			ast.Equal(test.errCount, len(tasm.errs), "error count not equal")
 			if len(tasm.errs) != test.errCount {
 				for _, err := range tasm.errs {
