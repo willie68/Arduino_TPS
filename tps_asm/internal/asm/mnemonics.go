@@ -302,6 +302,16 @@ var Mnos = []mnemonic{
 		Params: [][]string{},
 		Code:   0x7D,
 	},
+	{
+		Name:   "SHR",
+		Params: [][]string{},
+		Code:   0x7E,
+	},
+	{
+		Name:   "SHL",
+		Params: [][]string{},
+		Code:   0x7F,
+	},
 	// Input/Output
 	{
 		Name:   "PORT",
@@ -416,6 +426,9 @@ func (m mnemonic) Generate(params []string, prgCounter int, a *Assembler) byte {
 				v, ok := m.Enums[p]
 				if ok {
 					found = true
+				}
+				if v > 0x0f {
+					return byte(byte(v))
 				}
 				return byte(m.Code + byte(v))
 			case lbl:
