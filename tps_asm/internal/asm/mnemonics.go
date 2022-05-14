@@ -427,6 +427,11 @@ func (m mnemonic) Generate(params []string, prgCounter int, a *Assembler) byte {
 				if ok {
 					found = true
 				}
+				switch p {
+				case ":?":
+					a.pageLabel = a.prgCounter
+					return m.Code
+				}
 				if v > 0x0f {
 					return byte(byte(v))
 				}
@@ -443,6 +448,15 @@ func (m mnemonic) Generate(params []string, prgCounter int, a *Assembler) byte {
 				case "CASB", "DFSB":
 					id := a.subNumber(p)
 					return byte(m.Code + byte(id+1))
+				case "JMP":
+					p = strings.TrimPrefix(p, ":")
+					lbl, ok := a.Labels[p]
+					if ok {
+						c := lbl.PrgCounter % 16
+						p := lbl.PrgCounter / 16
+						a.SetPage(p)
+						return byte(m.Code + byte(c))
+					}
 				}
 				break ptsloop
 			}

@@ -38,16 +38,32 @@ type Assembler struct {
 	command    string
 	errs       []error
 	line       string
+	pageLabel  int
 }
 
 func (a *Assembler) Parse() []error {
 	start := time.Now()
+	a.init()
 	a.parse()
 	log.Infof("time to parse: %d ms", -time.Until(start).Milliseconds())
 	start = time.Now()
 	a.generate()
 	log.Infof("time to generate: %d ms", -time.Until(start).Milliseconds())
 	return a.errs
+}
+
+func (a *Assembler) init() {
+	a.Labels = make(map[string]label)
+	a.Subs = make([]string, 0)
+	a.Macros = make(map[string]macro)
+	a.Code = make([]string, 0)
+
+	a.inMacro = false
+	a.inComment = false
+
+	a.lineNumber = 0
+	a.prgCounter = 0
+	a.pageLabel = -1
 }
 
 func (a *Assembler) addErrorS(msg string) {

@@ -9,16 +9,6 @@ import (
 )
 
 func (a *Assembler) parse() {
-	a.Labels = make(map[string]label)
-	a.Subs = make([]string, 0)
-	a.Macros = make(map[string]macro)
-	a.Code = make([]string, 0)
-
-	a.inMacro = false
-	a.inComment = false
-
-	a.lineNumber = 0
-	a.prgCounter = 0
 	// read line by line
 	log.Info("----- start -----")
 	for x, line := range a.Source {

@@ -21,3 +21,11 @@ func (a *Assembler) generate() {
 		log.Infof("process command: %s", cmd)
 	}
 }
+
+func (a *Assembler) SetPage(p int) {
+	//TODO now every system has a 4 bit page register
+	if (a.pageLabel >= 0) && (p < 16) {
+		a.Binary[a.pageLabel] = a.Binary[a.pageLabel] + byte(p)
+		a.pageLabel = -1
+	}
+}
