@@ -20,7 +20,6 @@ PORT #0x00
 WAIT time
 .endmacro
 
-.include macro_blink
 :loop1
 .macro1 #0x0f 100ms
 

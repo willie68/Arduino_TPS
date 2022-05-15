@@ -124,6 +124,10 @@ github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63/go.mod h1:C1wdFJiN
 github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=
 github.com/mailru/easyjson v0.7.6 h1:8yTIVnZgCoiM1TgqoeTl+LfU5Jg6/xL3QhGQnimLYnA=
 github.com/mailru/easyjson v0.7.6/go.mod h1:xzfreul335JAWq5oZzymOObrkdz5UnU4kGfJJLY9Nlc=
+github.com/marcinbor85/gohex v0.0.0-20210308104911-55fb1c624d84 h1:hyAgCuG5nqTMDeUD8KZs7HSPs6KprPgPP8QmGV8nyvk=
+github.com/marcinbor85/gohex v0.0.0-20210308104911-55fb1c624d84/go.mod h1:Pb6XcsXyropB9LNHhnqaknG/vEwYztLkQzVCHv8sQ3M=
+github.com/mash/go-intelhex v0.0.0-20170727020429-c0594500343e h1:WEPd5lFuEOxGLF+lMTjcRPhHI1nLDW48ayPA/AGjXCw=
+github.com/mash/go-intelhex v0.0.0-20170727020429-c0594500343e/go.mod h1:yg572AZXpbvhlzUsqZVsEjwPOxUhV5R5dtsc0sjJs0Y=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
 github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcnceauSikq3lYCQ=
 github.com/mattn/go-isatty v0.0.5 h1:tHXDdz1cpzGaovsTB+TVB8q90WEokoVmfMqoVcrLUgw=

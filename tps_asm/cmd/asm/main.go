@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/marcinbor85/gohex"
 	flag "github.com/spf13/pflag"
 	"github.com/willie68/tps_asm/internal/asm"
 	log "github.com/willie68/tps_asm/internal/logging"
@@ -77,4 +78,9 @@ func main() {
 		panic(err)
 	}
 	log.Infof("parse: \r\n%s", jstr)
+
+	mem := gohex.NewMemory()
+	mem.AddBinary(0, tpsasm.Binary)
+
+	mem.DumpIntelHex(os.Stdout, 8)
 }
