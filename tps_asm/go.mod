@@ -9,9 +9,9 @@ require (
 	github.com/go-chi/httptracer v0.3.0
 	github.com/go-chi/render v1.0.1
 	github.com/go-playground/validator/v10 v10.9.0
-	github.com/google/go-cmp v0.5.5
 	github.com/google/uuid v1.3.0
 	github.com/imdario/mergo v0.3.12
+	github.com/marcinbor85/gohex v0.0.0-20210308104911-55fb1c624d84
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/pflag v1.0.5
@@ -42,8 +42,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
-	github.com/marcinbor85/gohex v0.0.0-20210308104911-55fb1c624d84 // indirect
-	github.com/mash/go-intelhex v0.0.0-20170727020429-c0594500343e // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/onsi/gomega v1.17.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
