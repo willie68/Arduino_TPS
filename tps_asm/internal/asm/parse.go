@@ -190,6 +190,11 @@ func (a *Assembler) checkSyntax() []string {
 		a.addError(err)
 		return a.parts
 	}
+	err = mno.CheckHardware(a.Hardware)
+	if err != nil {
+		a.addError(err)
+		return a.parts
+	}
 	var part string
 	for _, p := range a.parts[1:] {
 		part += p

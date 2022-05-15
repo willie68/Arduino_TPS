@@ -57,7 +57,6 @@ func TestPrgSize(t *testing.T) {
 		tasm.Parse()
 		ast.Equal(t.ec, len(tasm.errs), "error count not equal")
 	}
-
 }
 
 func generateSrc(d int) []string {

@@ -262,6 +262,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm1",
 	asm: Assembler{
+		Hardware: ArduinoSPS,
 		Source: []string{
 			".macro blink",
 			"PORT #0B0101",
@@ -386,6 +387,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm2",
 	asm: Assembler{
+		Hardware: ArduinoSPS,
 		Source: []string{
 			"NOP",
 			"PORT #0x0f",
@@ -462,6 +464,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm6",
 	asm: Assembler{
+		Hardware: ArduinoSPS,
 		Source: []string{
 			"MOV A,B",
 			"MOV A,C",
@@ -520,6 +523,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm7",
 	asm: Assembler{
+		Hardware: ArduinoSPS,
 		Source: []string{
 			"INC",
 			"DEC",
@@ -666,6 +670,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgrammCEF",
 	asm: Assembler{
+		Hardware: ArduinoSPS,
 		Source: []string{
 			"SKIP0",
 			"AGTB",
@@ -1167,7 +1172,7 @@ func oneTest(t *testing.T, name string) {
 			fmt.Printf("testing %s\r\n", test.name)
 
 			tasm := Assembler{
-				Hardware: Holtek,
+				Hardware: test.asm.Hardware,
 				Source:   test.asm.Source,
 			}
 			tasm.Parse()

@@ -35,7 +35,7 @@ func TestCtrl(t *testing.T) {
 		},
 	}
 
-	for _, td := range testDatas {
+	for x, td := range testDatas {
 		mno, err := GetMnemonic(td.name)
 		ast.Nil(err)
 		ast.NotNil(mno)
@@ -55,6 +55,18 @@ func TestCtrl(t *testing.T) {
 		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(td.code, mno.Code)
+
+		if x == 0 {
+			ast.Nil(mno.CheckHardware(Holtek))
+			ast.Nil(mno.CheckHardware(ATMega8))
+			ast.Nil(mno.CheckHardware(ArduinoSPS))
+			ast.Nil(mno.CheckHardware(TinySPS))
+		} else {
+			ast.NotNil(mno.CheckHardware(Holtek))
+			ast.NotNil(mno.CheckHardware(ATMega8))
+			ast.Nil(mno.CheckHardware(ArduinoSPS))
+			ast.Nil(mno.CheckHardware(TinySPS))
+		}
 	}
 }
 
@@ -75,6 +87,11 @@ func TestPort(t *testing.T) {
 	ast.NotNil(mno.CheckParameter("#0x3e"))
 	ast.NotNil(mno.CheckParameter("#0x3f"))
 	ast.NotNil(mno.CheckParameter(":loop"))
+
+	ast.Nil(mno.CheckHardware(Holtek))
+	ast.Nil(mno.CheckHardware(ATMega8))
+	ast.Nil(mno.CheckHardware(ArduinoSPS))
+	ast.Nil(mno.CheckHardware(TinySPS))
 }
 
 func TestWait(t *testing.T) {
@@ -91,6 +108,11 @@ func TestWait(t *testing.T) {
 	ast.Nil(mno.CheckParameter("#0x0e"))
 	ast.Nil(mno.CheckParameter("200ms"))
 	ast.NotNil(mno.CheckParameter(":loop"))
+
+	ast.Nil(mno.CheckHardware(Holtek))
+	ast.Nil(mno.CheckHardware(ATMega8))
+	ast.Nil(mno.CheckHardware(ArduinoSPS))
+	ast.Nil(mno.CheckHardware(TinySPS))
 }
 
 func TestPage(t *testing.T) {
@@ -104,9 +126,14 @@ func TestPage(t *testing.T) {
 	ast.Equal("page", name)
 
 	ast.NotNil(mno.CheckParameter(""))
-	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter("#0x07"))
 	ast.Nil(mno.CheckParameter(":?"))
 	ast.NotNil(mno.CheckParameter(":loop"))
+
+	ast.Nil(mno.CheckHardware(Holtek))
+	ast.Nil(mno.CheckHardware(ATMega8))
+	ast.Nil(mno.CheckHardware(ArduinoSPS))
+	ast.Nil(mno.CheckHardware(TinySPS))
 }
 
 func TestJump(t *testing.T) {

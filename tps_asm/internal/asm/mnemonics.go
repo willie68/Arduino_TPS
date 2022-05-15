@@ -17,6 +17,7 @@ type mnemonic struct {
 	Param []string
 	Enums map[string]int
 	Code  byte
+	H     []Hardware
 }
 
 func GetMnemonic(name string) (*mnemonic, error) {
@@ -78,6 +79,10 @@ var Mnos = []mnemonic{
 			":?": 0x10,
 		},
 		Code: 0x80,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "JMP",
@@ -98,6 +103,10 @@ var Mnos = []mnemonic{
 		Name:  "SKIP0",
 		Param: []string{},
 		Code:  0xC0,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "AGTB",
@@ -170,21 +179,37 @@ var Mnos = []mnemonic{
 		Name:  "CASB",
 		Param: []string{int4, lbl},
 		Code:  0xE0,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "DFSB",
 		Param: []string{int4, lbl},
 		Code:  0xE7,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "REST",
 		Param: []string{},
 		Code:  0xEF,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "PEND",
 		Param: []string{},
 		Code:  0xFF,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 
 	// Load and save
@@ -203,11 +228,19 @@ var Mnos = []mnemonic{
 			"RC2":  0x6C,
 		},
 		Code: 0x40,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "SWAP",
 		Param: []string{},
 		Code:  0x50,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "MOV",
@@ -225,16 +258,28 @@ var Mnos = []mnemonic{
 			"A,F": 0x6E,
 		},
 		Code: 0x00,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "PUSH",
 		Param: []string{},
 		Code:  0x5F,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "POP",
 		Param: []string{},
 		Code:  0x6F,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	// Math
 	{
@@ -291,26 +336,46 @@ var Mnos = []mnemonic{
 		Name:  "MOD",
 		Param: []string{},
 		Code:  0x7B,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "BYTE",
 		Param: []string{},
 		Code:  0x7C,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "BSUBA",
 		Param: []string{},
 		Code:  0x7D,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "SHR",
 		Param: []string{},
 		Code:  0x7E,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "SHL",
 		Param: []string{},
 		Code:  0x7F,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	// Input/Output
 	{
@@ -333,6 +398,10 @@ var Mnos = []mnemonic{
 			"SRV2":  0x5C,
 		},
 		Code: 0x00,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	// Byte mnemonics
 	{
@@ -345,6 +414,10 @@ var Mnos = []mnemonic{
 			"RC2":  0xF3,
 		},
 		Code: 0x00,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "BSTA",
@@ -356,12 +429,46 @@ var Mnos = []mnemonic{
 			"SRV2": 0xF7,
 		},
 		Code: 0x00,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
 	{
 		Name:  "TONE",
 		Param: []string{},
 		Code:  0xF8,
+		H: []Hardware{
+			ArduinoSPS,
+			TinySPS,
+		},
 	},
+}
+
+func (m mnemonic) CheckHardware(h Hardware) error {
+	if len(m.H) > 0 {
+		switch m.Name {
+		case "PAGE":
+			return nil
+		case "LDA":
+			return nil
+		case "MOV":
+			return nil
+		case "STA":
+			return nil
+		default:
+			f := false
+			for _, mh := range m.H {
+				if mh.String() == h.String() {
+					f = true
+				}
+			}
+			if !f {
+				return fmt.Errorf("%s Mnemonic isn't support on %s Hardware", m.Name, h.String())
+			}
+		}
+	}
+	return nil
 }
 
 func (m mnemonic) CheckParameter(param string) error {
