@@ -47,6 +47,7 @@ func (a *Assembler) Parse() []error {
 	a.parse()
 	log.Infof("time to parse: %d ms", -time.Until(start).Milliseconds())
 	start = time.Now()
+	a.checkHardware()
 	a.generate()
 	log.Infof("time to generate: %d ms", -time.Until(start).Milliseconds())
 	return a.errs
@@ -81,4 +82,11 @@ func (a *Assembler) subNumber(subname string) int {
 		}
 	}
 	return -1 //not found.
+}
+
+func (a *Assembler) checkHardware() {
+	err := checkSize(a.Hardware, len(a.Code))
+	if err != nil {
+		a.addError(err)
+	}
 }

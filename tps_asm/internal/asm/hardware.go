@@ -1,6 +1,9 @@
 package asm
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 type Hardware int64
 
@@ -45,4 +48,30 @@ func ParseHardware(dest string) Hardware {
 		return TinySPS
 	}
 	return Holtek
+}
+
+func checkSize(h Hardware, size int) error {
+	switch h {
+	case Holtek:
+		if size > 128 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 128)
+		}
+	case ATMega8:
+		if size > 256 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 256)
+		}
+	case ArduinoSPS:
+		if size > 1024 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 1024)
+		}
+	case TinySPS:
+		if size > 512 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 512)
+		}
+	default:
+		if size > 128 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", "Default", 128)
+		}
+	}
+	return nil
 }

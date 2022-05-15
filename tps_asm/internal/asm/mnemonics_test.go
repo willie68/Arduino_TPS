@@ -44,15 +44,15 @@ func TestCtrl(t *testing.T) {
 		name = strings.ToLower(name)
 		ast.Equal(td.name, name)
 
-		ast.Nil(mno.CheckParameter([]string{}))
+		ast.Nil(mno.CheckParameter(""))
 
-		ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.NotNil(mno.CheckParameter([]string{"#12"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-		ast.NotNil(mno.CheckParameter([]string{"#16"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-		ast.NotNil(mno.CheckParameter([]string{":loop"}))
+		ast.NotNil(mno.CheckParameter("#0x0e"))
+		ast.NotNil(mno.CheckParameter("#12"))
+		ast.NotNil(mno.CheckParameter("#0b0011"))
+		ast.NotNil(mno.CheckParameter("#0b0211"))
+		ast.NotNil(mno.CheckParameter("#16"))
+		ast.NotNil(mno.CheckParameter("#0x3e"))
+		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(td.code, mno.Code)
 	}
@@ -68,13 +68,13 @@ func TestPort(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("port", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{"#12"}))
-	ast.Nil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter("#12"))
+	ast.Nil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 }
 
 func TestWait(t *testing.T) {
@@ -87,10 +87,10 @@ func TestWait(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("wait", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{"200ms"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter("200ms"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 }
 
 func TestPage(t *testing.T) {
@@ -103,10 +103,10 @@ func TestPage(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("page", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{":?"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter(":?"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 }
 
 func TestJump(t *testing.T) {
@@ -119,11 +119,11 @@ func TestJump(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("jmp", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{":loop"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-	ast.NotNil(mno.CheckParameter([]string{"muck"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter(":loop"))
+	ast.NotNil(mno.CheckParameter("#0x1e"))
+	ast.NotNil(mno.CheckParameter("muck"))
 }
 
 func TestLoop(t *testing.T) {
@@ -150,11 +150,11 @@ func TestLoop(t *testing.T) {
 		name = strings.ToLower(name)
 		ast.Equal(td.name, name)
 
-		ast.NotNil(mno.CheckParameter([]string{}))
-		ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.Nil(mno.CheckParameter([]string{":loop"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-		ast.NotNil(mno.CheckParameter([]string{"muck"}))
+		ast.NotNil(mno.CheckParameter(""))
+		ast.Nil(mno.CheckParameter("#0x0e"))
+		ast.Nil(mno.CheckParameter(":loop"))
+		ast.NotNil(mno.CheckParameter("#0x1e"))
+		ast.NotNil(mno.CheckParameter("muck"))
 	}
 }
 
@@ -208,15 +208,15 @@ func TestSkip(t *testing.T) {
 		name = strings.ToLower(name)
 		ast.Equal(td.name, name)
 
-		ast.Nil(mno.CheckParameter([]string{}))
+		ast.Nil(mno.CheckParameter(""))
 
-		ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.NotNil(mno.CheckParameter([]string{"#12"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-		ast.NotNil(mno.CheckParameter([]string{"#16"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-		ast.NotNil(mno.CheckParameter([]string{":loop"}))
+		ast.NotNil(mno.CheckParameter("#0x0e"))
+		ast.NotNil(mno.CheckParameter("#12"))
+		ast.NotNil(mno.CheckParameter("#0b0011"))
+		ast.NotNil(mno.CheckParameter("#0b0211"))
+		ast.NotNil(mno.CheckParameter("#16"))
+		ast.NotNil(mno.CheckParameter("#0x3e"))
+		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(td.code, mno.Code)
 	}
@@ -248,20 +248,20 @@ func TestDEQ(t *testing.T) {
 		name = strings.ToLower(name)
 		ast.Equal(td.name, name)
 
-		ast.Nil(mno.CheckParameter([]string{"1"}))
-		ast.Nil(mno.CheckParameter([]string{"2"}))
-		ast.Nil(mno.CheckParameter([]string{"3"}))
-		ast.Nil(mno.CheckParameter([]string{"4"}))
+		ast.Nil(mno.CheckParameter("1"))
+		ast.Nil(mno.CheckParameter("2"))
+		ast.Nil(mno.CheckParameter("3"))
+		ast.Nil(mno.CheckParameter("4"))
 
-		ast.NotNil(mno.CheckParameter([]string{}))
+		ast.NotNil(mno.CheckParameter(""))
 
-		ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.NotNil(mno.CheckParameter([]string{"#12"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-		ast.NotNil(mno.CheckParameter([]string{"#16"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-		ast.NotNil(mno.CheckParameter([]string{":loop"}))
+		ast.NotNil(mno.CheckParameter("#0x0e"))
+		ast.NotNil(mno.CheckParameter("#12"))
+		ast.NotNil(mno.CheckParameter("#0b0011"))
+		ast.NotNil(mno.CheckParameter("#0b0211"))
+		ast.NotNil(mno.CheckParameter("#16"))
+		ast.NotNil(mno.CheckParameter("#0x3e"))
+		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(td.code, mno.Code)
 	}
@@ -277,11 +277,11 @@ func TestCall(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("call", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{":loop"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-	ast.NotNil(mno.CheckParameter([]string{"muck"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter(":loop"))
+	ast.NotNil(mno.CheckParameter("#0x1e"))
+	ast.NotNil(mno.CheckParameter("muck"))
 
 	mno, err = GetMnemonic("RTR")
 	ast.Nil(err)
@@ -291,11 +291,11 @@ func TestCall(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("rtr", name)
 
-	ast.Nil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-	ast.NotNil(mno.CheckParameter([]string{"muck"}))
+	ast.Nil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x0e"))
+	ast.NotNil(mno.CheckParameter(":loop"))
+	ast.NotNil(mno.CheckParameter("#0x1e"))
+	ast.NotNil(mno.CheckParameter("muck"))
 }
 
 func TestSub(t *testing.T) {
@@ -308,11 +308,11 @@ func TestSub(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("dfsb", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{":loop"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-	ast.NotNil(mno.CheckParameter([]string{"muck"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter(":loop"))
+	ast.NotNil(mno.CheckParameter("#0x1e"))
+	ast.NotNil(mno.CheckParameter("muck"))
 
 	mno, err = GetMnemonic("CASB")
 	ast.Nil(err)
@@ -322,11 +322,11 @@ func TestSub(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("casb", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{":loop"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x1e"}))
-	ast.NotNil(mno.CheckParameter([]string{"muck"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter(":loop"))
+	ast.NotNil(mno.CheckParameter("#0x1e"))
+	ast.NotNil(mno.CheckParameter("muck"))
 }
 
 func TestLDA(t *testing.T) {
@@ -339,24 +339,24 @@ func TestLDA(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("lda", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{"#12"}))
-	ast.Nil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter("#12"))
+	ast.Nil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 	ast.Equal(uint8(0x40), mno.Code)
 
-	ast.Nil(mno.CheckParameter([]string{"DIN"}))
-	ast.Nil(mno.CheckParameter([]string{"DIN1"}))
-	ast.Nil(mno.CheckParameter([]string{"DIN2"}))
-	ast.Nil(mno.CheckParameter([]string{"DIN3"}))
-	ast.Nil(mno.CheckParameter([]string{"DIN4"}))
-	ast.Nil(mno.CheckParameter([]string{"ADC1"}))
-	ast.Nil(mno.CheckParameter([]string{"ADC2"}))
-	ast.Nil(mno.CheckParameter([]string{"RC1"}))
-	ast.Nil(mno.CheckParameter([]string{"RC2"}))
+	ast.Nil(mno.CheckParameter("DIN"))
+	ast.Nil(mno.CheckParameter("DIN1"))
+	ast.Nil(mno.CheckParameter("DIN2"))
+	ast.Nil(mno.CheckParameter("DIN3"))
+	ast.Nil(mno.CheckParameter("DIN4"))
+	ast.Nil(mno.CheckParameter("ADC1"))
+	ast.Nil(mno.CheckParameter("ADC2"))
+	ast.Nil(mno.CheckParameter("RC1"))
+	ast.Nil(mno.CheckParameter("RC2"))
 }
 
 func TestSTA(t *testing.T) {
@@ -369,24 +369,24 @@ func TestSTA(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("sta", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#12"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x0e"))
+	ast.NotNil(mno.CheckParameter("#12"))
+	ast.NotNil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 	ast.Equal(uint8(0x00), mno.Code)
 
-	ast.Nil(mno.CheckParameter([]string{"DOUT"}))
-	ast.Nil(mno.CheckParameter([]string{"DOUT1"}))
-	ast.Nil(mno.CheckParameter([]string{"DOUT2"}))
-	ast.Nil(mno.CheckParameter([]string{"DOUT3"}))
-	ast.Nil(mno.CheckParameter([]string{"DOUT4"}))
-	ast.Nil(mno.CheckParameter([]string{"PWM1"}))
-	ast.Nil(mno.CheckParameter([]string{"PWM2"}))
-	ast.Nil(mno.CheckParameter([]string{"SRV1"}))
-	ast.Nil(mno.CheckParameter([]string{"SRV2"}))
+	ast.Nil(mno.CheckParameter("DOUT"))
+	ast.Nil(mno.CheckParameter("DOUT1"))
+	ast.Nil(mno.CheckParameter("DOUT2"))
+	ast.Nil(mno.CheckParameter("DOUT3"))
+	ast.Nil(mno.CheckParameter("DOUT4"))
+	ast.Nil(mno.CheckParameter("PWM1"))
+	ast.Nil(mno.CheckParameter("PWM2"))
+	ast.Nil(mno.CheckParameter("SRV1"))
+	ast.Nil(mno.CheckParameter("SRV2"))
 }
 
 func TestMov(t *testing.T) {
@@ -399,21 +399,21 @@ func TestMov(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("mov", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 
-	ast.Nil(mno.CheckParameter([]string{"A,B"}))
-	ast.Nil(mno.CheckParameter([]string{"A,C"}))
-	ast.Nil(mno.CheckParameter([]string{"A,D"}))
-	ast.Nil(mno.CheckParameter([]string{"A,E"}))
-	ast.Nil(mno.CheckParameter([]string{"A,F"}))
-	ast.Nil(mno.CheckParameter([]string{"B,A"}))
-	ast.Nil(mno.CheckParameter([]string{"C,A"}))
-	ast.Nil(mno.CheckParameter([]string{"D,A"}))
-	ast.Nil(mno.CheckParameter([]string{"E,A"}))
-	ast.Nil(mno.CheckParameter([]string{"F,A"}))
+	ast.Nil(mno.CheckParameter("A,B"))
+	ast.Nil(mno.CheckParameter("A,C"))
+	ast.Nil(mno.CheckParameter("A,D"))
+	ast.Nil(mno.CheckParameter("A,E"))
+	ast.Nil(mno.CheckParameter("A,F"))
+	ast.Nil(mno.CheckParameter("B,A"))
+	ast.Nil(mno.CheckParameter("C,A"))
+	ast.Nil(mno.CheckParameter("D,A"))
+	ast.Nil(mno.CheckParameter("E,A"))
+	ast.Nil(mno.CheckParameter("F,A"))
 }
 
 func TestLoadStore(t *testing.T) {
@@ -441,15 +441,15 @@ func TestLoadStore(t *testing.T) {
 		mno, err := GetMnemonic(testdata.Name)
 		ast.Nil(err)
 		ast.NotNil(mno)
-		ast.Nil(mno.CheckParameter([]string{}))
+		ast.Nil(mno.CheckParameter(""))
 
-		ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.NotNil(mno.CheckParameter([]string{"#12"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-		ast.NotNil(mno.CheckParameter([]string{"#16"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-		ast.NotNil(mno.CheckParameter([]string{":loop"}))
+		ast.NotNil(mno.CheckParameter("#0x0e"))
+		ast.NotNil(mno.CheckParameter("#12"))
+		ast.NotNil(mno.CheckParameter("#0b0011"))
+		ast.NotNil(mno.CheckParameter("#0b0211"))
+		ast.NotNil(mno.CheckParameter("#16"))
+		ast.NotNil(mno.CheckParameter("#0x3e"))
+		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(testdata.Code, mno.Code)
 	}
@@ -461,13 +461,13 @@ func TestNumberFormat(t *testing.T) {
 	ast.Nil(err)
 	ast.NotNil(mno)
 
-	ast.Nil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.Nil(mno.CheckParameter([]string{"#12"}))
-	ast.Nil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-	ast.NotNil(mno.CheckParameter([]string{"#16"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.Nil(mno.CheckParameter("#0x0e"))
+	ast.Nil(mno.CheckParameter("#12"))
+	ast.Nil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0b0211"))
+	ast.NotNil(mno.CheckParameter("#16"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 }
 
 func TestMathMno(t *testing.T) {
@@ -535,15 +535,15 @@ func TestMathMno(t *testing.T) {
 		mno, err := GetMnemonic(testdata.Name)
 		ast.Nil(err)
 		ast.NotNil(mno)
-		ast.Nil(mno.CheckParameter([]string{}))
+		ast.Nil(mno.CheckParameter(""))
 
-		ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-		ast.NotNil(mno.CheckParameter([]string{"#12"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0b0211"}))
-		ast.NotNil(mno.CheckParameter([]string{"#16"}))
-		ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-		ast.NotNil(mno.CheckParameter([]string{":loop"}))
+		ast.NotNil(mno.CheckParameter("#0x0e"))
+		ast.NotNil(mno.CheckParameter("#12"))
+		ast.NotNil(mno.CheckParameter("#0b0011"))
+		ast.NotNil(mno.CheckParameter("#0b0211"))
+		ast.NotNil(mno.CheckParameter("#16"))
+		ast.NotNil(mno.CheckParameter("#0x3e"))
+		ast.NotNil(mno.CheckParameter(":loop"))
 
 		ast.Equal(testdata.Code, mno.Code)
 	}
@@ -559,19 +559,19 @@ func TestBLDA(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("blda", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#12"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x0e"))
+	ast.NotNil(mno.CheckParameter("#12"))
+	ast.NotNil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 	ast.Equal(uint8(0x00), mno.Code)
 
-	ast.Nil(mno.CheckParameter([]string{"ADC1"}))
-	ast.Nil(mno.CheckParameter([]string{"ADC2"}))
-	ast.Nil(mno.CheckParameter([]string{"RC1"}))
-	ast.Nil(mno.CheckParameter([]string{"RC2"}))
+	ast.Nil(mno.CheckParameter("ADC1"))
+	ast.Nil(mno.CheckParameter("ADC2"))
+	ast.Nil(mno.CheckParameter("RC1"))
+	ast.Nil(mno.CheckParameter("RC2"))
 }
 
 func TestBSTA(t *testing.T) {
@@ -584,19 +584,19 @@ func TestBSTA(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("bsta", name)
 
-	ast.NotNil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#12"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.NotNil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x0e"))
+	ast.NotNil(mno.CheckParameter("#12"))
+	ast.NotNil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 	ast.Equal(uint8(0x00), mno.Code)
 
-	ast.Nil(mno.CheckParameter([]string{"PWM1"}))
-	ast.Nil(mno.CheckParameter([]string{"PWM2"}))
-	ast.Nil(mno.CheckParameter([]string{"SRV1"}))
-	ast.Nil(mno.CheckParameter([]string{"SRV2"}))
+	ast.Nil(mno.CheckParameter("PWM1"))
+	ast.Nil(mno.CheckParameter("PWM2"))
+	ast.Nil(mno.CheckParameter("SRV1"))
+	ast.Nil(mno.CheckParameter("SRV2"))
 }
 
 func TestByte(t *testing.T) {
@@ -609,12 +609,12 @@ func TestByte(t *testing.T) {
 	name = strings.ToLower(name)
 	ast.Equal("tone", name)
 
-	ast.Nil(mno.CheckParameter([]string{}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x0e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#12"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0b0011"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3e"}))
-	ast.NotNil(mno.CheckParameter([]string{"#0x3f", "#0xde"}))
-	ast.NotNil(mno.CheckParameter([]string{":loop"}))
+	ast.Nil(mno.CheckParameter(""))
+	ast.NotNil(mno.CheckParameter("#0x0e"))
+	ast.NotNil(mno.CheckParameter("#12"))
+	ast.NotNil(mno.CheckParameter("#0b0011"))
+	ast.NotNil(mno.CheckParameter("#0x3e"))
+	ast.NotNil(mno.CheckParameter("#0x3f"))
+	ast.NotNil(mno.CheckParameter(":loop"))
 	ast.Equal(uint8(0xF8), mno.Code)
 }

@@ -13,10 +13,10 @@ var (
 )
 
 type mnemonic struct {
-	Name   string
-	Params []([]string)
-	Enums  map[string]int
-	Code   byte
+	Name  string
+	Param []string
+	Enums map[string]int
+	Code  byte
 }
 
 func GetMnemonic(name string) (*mnemonic, error) {
@@ -39,13 +39,13 @@ const (
 var Mnos = []mnemonic{
 	// program control
 	{
-		Name:   "NOP",
-		Params: [][]string{},
-		Code:   0x00,
+		Name:  "NOP",
+		Param: []string{},
+		Code:  0x00,
 	},
 	{
-		Name:   "WAIT",
-		Params: [][]string{{int4, enum}},
+		Name:  "WAIT",
+		Param: []string{int4, enum},
 		Enums: map[string]int{
 			"1ms":   0x00,
 			"2ms":   0x01,
@@ -67,56 +67,56 @@ var Mnos = []mnemonic{
 		Code: 0x20,
 	},
 	{
-		Name:   "RJMP",
-		Params: [][]string{{int4, lbl}},
-		Code:   0x30,
+		Name:  "RJMP",
+		Param: []string{int4, lbl},
+		Code:  0x30,
 	},
 	{
-		Name:   "PAGE",
-		Params: [][]string{{int4, enum}},
+		Name:  "PAGE",
+		Param: []string{int4, enum},
 		Enums: map[string]int{
 			":?": 0x10,
 		},
 		Code: 0x80,
 	},
 	{
-		Name:   "JMP",
-		Params: [][]string{{int4, lbl}},
-		Code:   0x90,
+		Name:  "JMP",
+		Param: []string{int4, lbl},
+		Code:  0x90,
 	},
 	{
-		Name:   "LOOPC",
-		Params: [][]string{{int4, lbl}},
-		Code:   0xA0,
+		Name:  "LOOPC",
+		Param: []string{int4, lbl},
+		Code:  0xA0,
 	},
 	{
-		Name:   "LOOPD",
-		Params: [][]string{{int4, lbl}},
-		Code:   0xB0,
+		Name:  "LOOPD",
+		Param: []string{int4, lbl},
+		Code:  0xB0,
 	},
 	{
-		Name:   "SKIP0",
-		Params: [][]string{},
-		Code:   0xC0,
+		Name:  "SKIP0",
+		Param: []string{},
+		Code:  0xC0,
 	},
 	{
-		Name:   "AGTB",
-		Params: [][]string{},
-		Code:   0xC1,
+		Name:  "AGTB",
+		Param: []string{},
+		Code:  0xC1,
 	},
 	{
-		Name:   "ALTB",
-		Params: [][]string{},
-		Code:   0xC2,
+		Name:  "ALTB",
+		Param: []string{},
+		Code:  0xC2,
 	},
 	{
-		Name:   "AEQB",
-		Params: [][]string{},
-		Code:   0xC3,
+		Name:  "AEQB",
+		Param: []string{},
+		Code:  0xC3,
 	},
 	{
-		Name:   "DEQ0",
-		Params: [][]string{{enum}},
+		Name:  "DEQ0",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"1": 0x08,
 			"2": 0x09,
@@ -126,8 +126,8 @@ var Mnos = []mnemonic{
 		Code: 0xC0,
 	},
 	{
-		Name:   "DEQ1",
-		Params: [][]string{{enum}},
+		Name:  "DEQ1",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"1": 0x04,
 			"2": 0x05,
@@ -137,60 +137,60 @@ var Mnos = []mnemonic{
 		Code: 0xC0,
 	},
 	{
-		Name:   "PRG0",
-		Params: [][]string{},
-		Code:   0xCC,
+		Name:  "PRG0",
+		Param: []string{},
+		Code:  0xCC,
 	},
 	{
-		Name:   "SEL0",
-		Params: [][]string{},
-		Code:   0xCD,
+		Name:  "SEL0",
+		Param: []string{},
+		Code:  0xCD,
 	},
 	{
-		Name:   "PRG1",
-		Params: [][]string{},
-		Code:   0xCE,
+		Name:  "PRG1",
+		Param: []string{},
+		Code:  0xCE,
 	},
 	{
-		Name:   "SEL1",
-		Params: [][]string{},
-		Code:   0xCF,
+		Name:  "SEL1",
+		Param: []string{},
+		Code:  0xCF,
 	},
 	{
-		Name:   "CALL",
-		Params: [][]string{{int4, lbl}},
-		Code:   0xD0,
+		Name:  "CALL",
+		Param: []string{int4, lbl},
+		Code:  0xD0,
 	},
 	{
-		Name:   "RTR",
-		Params: [][]string{},
-		Code:   0xE0,
+		Name:  "RTR",
+		Param: []string{},
+		Code:  0xE0,
 	},
 	{
-		Name:   "CASB",
-		Params: [][]string{{int4, lbl}},
-		Code:   0xE0,
+		Name:  "CASB",
+		Param: []string{int4, lbl},
+		Code:  0xE0,
 	},
 	{
-		Name:   "DFSB",
-		Params: [][]string{{int4, lbl}},
-		Code:   0xE7,
+		Name:  "DFSB",
+		Param: []string{int4, lbl},
+		Code:  0xE7,
 	},
 	{
-		Name:   "REST",
-		Params: [][]string{},
-		Code:   0xEF,
+		Name:  "REST",
+		Param: []string{},
+		Code:  0xEF,
 	},
 	{
-		Name:   "PEND",
-		Params: [][]string{},
-		Code:   0xFF,
+		Name:  "PEND",
+		Param: []string{},
+		Code:  0xFF,
 	},
 
 	// Load and save
 	{
-		Name:   "LDA",
-		Params: [][]string{{int4, enum}},
+		Name:  "LDA",
+		Param: []string{int4, enum},
 		Enums: map[string]int{
 			"DIN":  0x64,
 			"DIN1": 0x65,
@@ -205,13 +205,13 @@ var Mnos = []mnemonic{
 		Code: 0x40,
 	},
 	{
-		Name:   "SWAP",
-		Params: [][]string{},
-		Code:   0x50,
+		Name:  "SWAP",
+		Param: []string{},
+		Code:  0x50,
 	},
 	{
-		Name:   "MOV",
-		Params: [][]string{{enum}},
+		Name:  "MOV",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"B,A": 0x51,
 			"C,A": 0x52,
@@ -227,100 +227,100 @@ var Mnos = []mnemonic{
 		Code: 0x00,
 	},
 	{
-		Name:   "PUSH",
-		Params: [][]string{},
-		Code:   0x5F,
+		Name:  "PUSH",
+		Param: []string{},
+		Code:  0x5F,
 	},
 	{
-		Name:   "POP",
-		Params: [][]string{},
-		Code:   0x6F,
+		Name:  "POP",
+		Param: []string{},
+		Code:  0x6F,
 	},
 	// Math
 	{
-		Name:   "INC",
-		Params: [][]string{},
-		Code:   0x71,
+		Name:  "INC",
+		Param: []string{},
+		Code:  0x71,
 	},
 	{
-		Name:   "DEC",
-		Params: [][]string{},
-		Code:   0x72,
+		Name:  "DEC",
+		Param: []string{},
+		Code:  0x72,
 	},
 	{
-		Name:   "ADD",
-		Params: [][]string{},
-		Code:   0x73,
+		Name:  "ADD",
+		Param: []string{},
+		Code:  0x73,
 	},
 	{
-		Name:   "SUB",
-		Params: [][]string{},
-		Code:   0x74,
+		Name:  "SUB",
+		Param: []string{},
+		Code:  0x74,
 	},
 	{
-		Name:   "MUL",
-		Params: [][]string{},
-		Code:   0x75,
+		Name:  "MUL",
+		Param: []string{},
+		Code:  0x75,
 	},
 	{
-		Name:   "DIV",
-		Params: [][]string{},
-		Code:   0x76,
+		Name:  "DIV",
+		Param: []string{},
+		Code:  0x76,
 	},
 	{
-		Name:   "AND",
-		Params: [][]string{},
-		Code:   0x77,
+		Name:  "AND",
+		Param: []string{},
+		Code:  0x77,
 	},
 	{
-		Name:   "OR",
-		Params: [][]string{},
-		Code:   0x78,
+		Name:  "OR",
+		Param: []string{},
+		Code:  0x78,
 	},
 	{
-		Name:   "XOR",
-		Params: [][]string{},
-		Code:   0x79,
+		Name:  "XOR",
+		Param: []string{},
+		Code:  0x79,
 	},
 	{
-		Name:   "NOT",
-		Params: [][]string{},
-		Code:   0x7A,
+		Name:  "NOT",
+		Param: []string{},
+		Code:  0x7A,
 	},
 	{
-		Name:   "MOD",
-		Params: [][]string{},
-		Code:   0x7B,
+		Name:  "MOD",
+		Param: []string{},
+		Code:  0x7B,
 	},
 	{
-		Name:   "BYTE",
-		Params: [][]string{},
-		Code:   0x7C,
+		Name:  "BYTE",
+		Param: []string{},
+		Code:  0x7C,
 	},
 	{
-		Name:   "BSUBA",
-		Params: [][]string{},
-		Code:   0x7D,
+		Name:  "BSUBA",
+		Param: []string{},
+		Code:  0x7D,
 	},
 	{
-		Name:   "SHR",
-		Params: [][]string{},
-		Code:   0x7E,
+		Name:  "SHR",
+		Param: []string{},
+		Code:  0x7E,
 	},
 	{
-		Name:   "SHL",
-		Params: [][]string{},
-		Code:   0x7F,
+		Name:  "SHL",
+		Param: []string{},
+		Code:  0x7F,
 	},
 	// Input/Output
 	{
-		Name:   "PORT",
-		Params: [][]string{{int4}},
-		Code:   0x10,
+		Name:  "PORT",
+		Param: []string{int4},
+		Code:  0x10,
 	},
 	{
-		Name:   "STA",
-		Params: [][]string{{enum}},
+		Name:  "STA",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"DOUT":  0x54,
 			"DOUT1": 0x55,
@@ -336,8 +336,8 @@ var Mnos = []mnemonic{
 	},
 	// Byte mnemonics
 	{
-		Name:   "BLDA",
-		Params: [][]string{{enum}},
+		Name:  "BLDA",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"ADC1": 0xF0,
 			"ADC2": 0xF1,
@@ -347,8 +347,8 @@ var Mnos = []mnemonic{
 		Code: 0x00,
 	},
 	{
-		Name:   "BSTA",
-		Params: [][]string{{enum}},
+		Name:  "BSTA",
+		Param: []string{enum},
 		Enums: map[string]int{
 			"PWM1": 0xF4,
 			"PWM2": 0xF5,
@@ -358,47 +358,42 @@ var Mnos = []mnemonic{
 		Code: 0x00,
 	},
 	{
-		Name:   "TONE",
-		Params: [][]string{},
-		Code:   0xF8,
+		Name:  "TONE",
+		Param: []string{},
+		Code:  0xF8,
 	},
 }
 
-func (m mnemonic) CheckParameter(params []string) error {
-	// Check parameter count
-	if len(params) != len(m.Params) {
+func (m mnemonic) CheckParameter(param string) error {
+	if (param == "") && (len(m.Param) > 0) {
 		return ErrParamCount
 	}
-	if len(m.Params) == 0 {
+	if (param != "") && (len(m.Param) == 0) {
+		return ErrParamCount
+	}
+	if len(m.Param) == 0 {
 		return nil
 	}
 	var err error
 	found := false
-	for x, pts := range m.Params {
-		p := params[x]
-	ptsloop:
-		for _, pt := range pts {
-			switch pt {
-			case int4:
-				_, found, err = convertNumber(p)
-				if err != nil {
-					return err
-				}
-				if !found {
-					continue
-				}
-				break ptsloop
-			case enum:
-				_, ok := m.Enums[p]
-				if ok {
-					found = true
-				}
-				break ptsloop
-			case lbl:
-				if strings.HasPrefix(p, ":") {
-					found = true
-				}
-				break ptsloop
+	for _, pt := range m.Param {
+		switch pt {
+		case int4:
+			_, found, err = convertNumber(param)
+			if err != nil {
+				return err
+			}
+			if !found {
+				continue
+			}
+		case enum:
+			_, ok := m.Enums[param]
+			if ok {
+				found = true
+			}
+		case lbl:
+			if strings.HasPrefix(param, ":") {
+				found = true
 			}
 		}
 	}
@@ -408,57 +403,52 @@ func (m mnemonic) CheckParameter(params []string) error {
 	return nil
 }
 
-func (m mnemonic) Generate(params []string, prgCounter int, a *Assembler) byte {
+func (m mnemonic) Generate(param string, prgCounter int, a *Assembler) byte {
 	found := false
-	for x, pts := range m.Params {
-		p := params[x]
-	ptsloop:
-		for _, pt := range pts {
-			var v byte
-			switch pt {
-			case int4:
-				v, found, _ = convertNumber(p)
-				if !found {
-					continue
-				}
-				return byte(m.Code + v)
-			case enum:
-				v, ok := m.Enums[p]
+	for _, pt := range m.Param {
+		var v byte
+		switch pt {
+		case int4:
+			v, found, _ = convertNumber(param)
+			if !found {
+				continue
+			}
+			return byte(m.Code + v)
+		case enum:
+			v, ok := m.Enums[param]
+			if ok {
+				found = true
+			}
+			switch param {
+			case ":?":
+				a.pageLabel = a.prgCounter
+				return m.Code
+			}
+			if v > 0x0f {
+				return byte(byte(v))
+			}
+			return byte(m.Code + byte(v))
+		case lbl:
+			switch m.Name {
+			case "RJMP":
+				param = strings.TrimPrefix(param, ":")
+				lbl, ok := a.Labels[param]
 				if ok {
-					found = true
+					df := prgCounter - lbl.PrgCounter
+					return byte(m.Code + byte(df))
 				}
-				switch p {
-				case ":?":
-					a.pageLabel = a.prgCounter
-					return m.Code
+			case "CASB", "DFSB":
+				id := a.subNumber(param)
+				return byte(m.Code + byte(id+1))
+			case "JMP", "LOOPC", "LOOPD", "CALL":
+				param = strings.TrimPrefix(param, ":")
+				lbl, ok := a.Labels[param]
+				if ok {
+					c := lbl.PrgCounter % 16
+					p := lbl.PrgCounter / 16
+					a.SetPage(p)
+					return byte(m.Code + byte(c))
 				}
-				if v > 0x0f {
-					return byte(byte(v))
-				}
-				return byte(m.Code + byte(v))
-			case lbl:
-				switch m.Name {
-				case "RJMP":
-					p = strings.TrimPrefix(p, ":")
-					lbl, ok := a.Labels[p]
-					if ok {
-						df := prgCounter - lbl.PrgCounter
-						return byte(m.Code + byte(df))
-					}
-				case "CASB", "DFSB":
-					id := a.subNumber(p)
-					return byte(m.Code + byte(id+1))
-				case "JMP":
-					p = strings.TrimPrefix(p, ":")
-					lbl, ok := a.Labels[p]
-					if ok {
-						c := lbl.PrgCounter % 16
-						p := lbl.PrgCounter / 16
-						a.SetPage(p)
-						return byte(m.Code + byte(c))
-					}
-				}
-				break ptsloop
 			}
 		}
 	}

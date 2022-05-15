@@ -12,12 +12,15 @@ func (a *Assembler) generate() {
 	for x, cmd := range a.Code {
 		a.prgCounter = x
 		a.parts = strings.Split(cmd, " ")
+		if len(a.parts) < 2 {
+			a.parts = append(a.parts, "")
+		}
 		a.command = a.parts[0]
 		mno, err := GetMnemonic(a.command)
 		if err != nil {
 			a.addError(err)
 		}
-		a.Binary = append(a.Binary, mno.Generate(a.parts[1:], x, a))
+		a.Binary = append(a.Binary, mno.Generate(a.parts[1], x, a))
 		log.Infof("process command: %s", cmd)
 	}
 }
