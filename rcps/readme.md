@@ -76,17 +76,17 @@ Der Programmspeicher ist min. 1kB groß.
 | RJMP #x  | 3x     | Jump back              | Sprung zurück um x Befehle, (bzw: zu :label  max 15 Befehle) |
 | PAGE #x  | 8x     | page #x                | Setzen des Page Registers 0 ⇐ x < 16                         |
 | JMP #x   | 9x     | jump to #x + 16 * page | Springe nach Adresse #x + (16 * page) 0 ⇐ x < 16 (max. 255 Zellen) |
-| LOOPC #x | Ax     | loop c                 | Ist C>0: C=C-1; Springe nach #x + (16*page), sonst gehe zum nächsten Befehl |
-| LOOPD #x | Bx     | loop d                 | Ist D>0: D=D-1; Springe nach #x + (16*page), sonst gehe zum nächsten Befehl |
+| LOOPX #x | Ax     | loop x                 | Ist X>0: X=X-1; Springe nach #x + (16*page), sonst gehe zum nächsten Befehl |
+| LOOPY #x | Bx     | loop y                 | Ist Y>0: Y=Y-1; Springe nach #x + (16*page), sonst gehe zum nächsten Befehl |
 | SKIP0    | C0     | Skip if A = 0          | Überspringe nächsten Befehl wenn A = 0                       |
 | AGTB     | C1     | Skip if A > B          | Überspringe nächsten Befehl wenn A > B                       |
 | ALTB     | C2     | Skip if A < B          | Überspringe nächsten Befehl wenn A < B                       |
 | AEQB     | C3     | Skip if A = B          | Überspringe nächsten Befehl wenn A = B                       |
-| DEQ#y #x | C4..CB | Skip if Din.X = Y      | Überspringe nächsten Befehl wenn der Eingang #y 0 oder 1 ist. x=0,1 |
-| PRG#x    | CC, CE | Skip if PRG = x        | Überspringe nächsten Befehl wenn der PRG TAster gedrückt(0) oder nicht gedrückt (1) ist. x=0,1 |
-| SEL#x    | CD, CF | Skip if SEL = x        | „ nur für SEL                                                |
+| DEQ#y #x | C4..CB | Skip if Din.X = Y      | Überspringe nächsten Befehl wenn der Eingang #y 0 oder 1 ist. x=1..6 |
 | CALL #x  | Dx     | Call #x + (16 * page)  |                                                              |
 | RTR      | E0     | Return                 | Zurück springen nach einem Call-Befehl oder am Ende einer Subroutine |
+|          |        |                        |                                                              |
+|          |        |                        |                                                              |
 | CASB #x  | E1..E6 | Call sub #x            | Aufruf der Subroutine x, 1 ⇐ x ⇐ 6                           |
 | DFSB #x  | E8..ED | Define sub #x          | Definierung der Subroutine x, 1 ⇐ x ⇐ 6                      |
 | REST     | EF     | Restart program        |                                                              |
@@ -104,27 +104,27 @@ Der Programmspeicher ist min. 1kB groß.
 
 ## Mathematik
 
-| Mnemonic | Code | short description | Beschreibung |
-| -------- | ---- | ----------------- | ------------ |
-| INC      | 71   | A = A + 1         | Increment A  |
-| DEC      | 72   | A = A - 1         | Decrement A  |
-| ADD      | 73   | A = A + B         |              |
-| SUB      | 74   | A = A - B         |              |
-| MUL      | 75   | A = A * B         |              |
-| DIV      | 76   | A = A / B         |              |
-| AND      | 77   | A = A and B       |              |
-| OR       | 78   | A = A or B        |              |
-| XOR      | 79   | A = A xor B       |              |
-| NOT      | 7A   | A = not A         |              |
-| MOD      | 7B   | A = A % B         |              |
-| BYTE     | 7C   | A = A + 16 * B    |              |
-| BSUBA    | 7D   | A = B - A         |              |
+| Mnemonic | Code | short description | Carry | Beschreibung |
+| -------- | ---- | ----------------- | ----- | ------------ |
+| INC      | 71   | A = A + 1         | x     | Increment A  |
+| DEC      | 72   | A = A - 1         | x     | Decrement A  |
+| ADD      | 73   | A = A + B         | x     |              |
+| SUB      | 74   | A = A - B         | x     |              |
+| MUL      | 75   | A = A * B         | x     |              |
+| DIV      | 76   | A = A / B         | x     |              |
+| AND      | 77   | A = A and B       |       |              |
+| OR       | 78   | A = A or B        |       |              |
+| XOR      | 79   | A = A xor B       |       |              |
+| NOT      | 7A   | A = not A         |       |              |
+| MOD      | 7B   | A = A % B         |       |              |
+| BYTE     | 7C   | A = A + 16 * B    |       |              |
+| BSUBA    | 7D   | A = B - A         | x     |              |
 
 ## Ein/Ausgabe
 
 | Mnemonic  | Code   | short description | Beschreibung                                                 |
 | --------- | ------ | ----------------- | ------------------------------------------------------------ |
-| LDA DIN   | 64     | A = Din           | Register A wird mit dem Wert vom digitalen Eingang geladen. Alle 4 Bit. |
+| LDA DIN   | 64     | A = Din           | Register A wird mit dem Wert vom digitalen Eingang geladen. Alle Bits. |
 | LDA DINx  | 65..68 | A = Din.x         | Register A wird mit dem Wert vom digitalen Eingang #x geladen. x = 1..4 |
 | LDA ADCx  | 69, 6A | A = ADC.x         | Register A wird mit dem Wert vom analogen Eingang #x geladen. x = 1..2 |
 | LDA RCx   | 6B, 6C | A = RC.x          | Register A wird mit dem Wert vom RC Empfängereingang #x geladen. x = 1..2 |
