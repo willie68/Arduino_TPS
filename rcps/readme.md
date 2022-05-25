@@ -85,40 +85,42 @@ Der Programmspeicher ist min. 1kB groß.
 | DEQ#y #x | C4..CB | Skip if Din.X = Y      | Überspringe nächsten Befehl wenn der Eingang #y 0 oder 1 ist. x=1..6 |
 | CALL #x  | Dx     | Call #x + (16 * page)  |                                                              |
 | RTR      | E0     | Return                 | Zurück springen nach einem Call-Befehl oder am Ende einer Subroutine |
+| REST     | EF     | Restart program        |                                                              |
+| PEND     | FF     | Program end            |                                                              |
 |          |        |                        |                                                              |
 |          |        |                        |                                                              |
 | CASB #x  | E1..E6 | Call sub #x            | Aufruf der Subroutine x, 1 ⇐ x ⇐ 6                           |
 | DFSB #x  | E8..ED | Define sub #x          | Definierung der Subroutine x, 1 ⇐ x ⇐ 6                      |
-| REST     | EF     | Restart program        |                                                              |
-| PEND     | FF     | Program end            |                                                              |
 
 ## Laden und Speichern
 
-| Mnemonic | Code                           | short description         | Beschreibung                                                 |
-| -------- | ------------------------------ | ------------------------- | ------------------------------------------------------------ |
-| LDA ##x  | 4x                             | A = #x                    | Register A wird mit dem festen Wert #x geladen               |
-| SWAP     | 50                             | Swap A & B                | Tauschen der Register A und B                                |
-| MOV X,Y  | 51..53, 61..63, 5D, 5E, 6D, 6E | X = Y                     | kopiert ein Register in ein anderes X und Y dürfen folgende Werte annehmen: A, B, C, D, X, Y, P |
-| PUSH     | 5F                             | push A on stack           | Das A Register wird auf dem Stack gelegt                     |
-| POP      | 6F                             | Pop value from stack to A | Wert aus dem Stack in das A Register übertragen              |
+| Mnemonic | Code | short description         | Beschreibung                                                 |
+| -------- | ---- | ------------------------- | ------------------------------------------------------------ |
+| MOV A,#x | 4x   | A = #x                    | Register A wird mit dem festen Wert #x geladen               |
+| SWAP     | 50   | Swap A & B                | Tauschen der Register A und B                                |
+| MOV X,Y  | 5x   |                           | Kopiert ein Register in ein anderes. Entweder Quelle oder Ziel muss das Register A sein. mögliche Werte: A, B, C, D, X, Y, P<br />Berechnung: <br /><br />Operant op: A=0, B=1, C=2, D=3, X=4, Y=5, P=6 <br />A ist Quelle: x = op, A ist Ziel: x = 8 + op<br />Beispiel MOV A,B: A ist Ziel, B ist Quelle -> mn = 59<br />Beispiel MOV X,A: A ist Quelle, X ist Ziel -> mn = 54<br /> |
+| PUSH     | 57   | push A on stack           | Das A Register wird auf dem Stack gelegt                     |
+| POP      | 58   | Pop value from stack to A | Wert aus dem Stack in das A Register übertragen              |
 
 ## Mathematik
 
-| Mnemonic | Code | short description | Carry | Beschreibung |
-| -------- | ---- | ----------------- | ----- | ------------ |
-| INC      | 71   | A = A + 1         | x     | Increment A  |
-| DEC      | 72   | A = A - 1         | x     | Decrement A  |
-| ADD      | 73   | A = A + B         | x     |              |
-| SUB      | 74   | A = A - B         | x     |              |
-| MUL      | 75   | A = A * B         | x     |              |
-| DIV      | 76   | A = A / B         | x     |              |
-| AND      | 77   | A = A and B       |       |              |
-| OR       | 78   | A = A or B        |       |              |
-| XOR      | 79   | A = A xor B       |       |              |
-| NOT      | 7A   | A = not A         |       |              |
-| MOD      | 7B   | A = A % B         |       |              |
-| BYTE     | 7C   | A = A + 16 * B    |       |              |
-| BSUBA    | 7D   | A = B - A         | x     |              |
+| Mnemonic | Code | short description | Carry | Beschreibung                                                 |
+| -------- | ---- | ----------------- | ----- | ------------------------------------------------------------ |
+| INC      | 71   | A = A + 1         | x     | Increment A                                                  |
+| DEC      | 72   | A = A - 1         | x     | Decrement A                                                  |
+| ADD      | 73   | A = A + B         | x     |                                                              |
+| SUB      | 74   | A = A - B         | x     |                                                              |
+| MUL      | 75   | A = A * B         | x     |                                                              |
+| DIV      | 76   | A = A / B         | x     |                                                              |
+| AND      | 77   | A = A and B       |       |                                                              |
+| OR       | 78   | A = A or B        |       |                                                              |
+| XOR      | 79   | A = A xor B       |       |                                                              |
+| NOT      | 7A   | A = not A         |       |                                                              |
+| MOD      | 7B   | A = A % B         |       |                                                              |
+| BYTE     | 7C   | A = A + 16 * B    |       |                                                              |
+| BSUBA    | 7D   | A = B - A         | x     |                                                              |
+| SHR      | 7E   | A = A >> 1        | x     | Shift right (/2), das Carry Register enthält das rausgeschobene Bit |
+| SHL      | 7F   | A = A << 1        | x     | Shift left (*2), das Carry Register enthält das rausgeschobene Bit |
 
 ## Ein/Ausgabe
 
@@ -143,3 +145,6 @@ Der Programmspeicher ist min. 1kB groß.
 | BSTA PWMx | F4, F5 | PWM.x = A         | Der Byte Wert aus dem A Register wird als PWM.x ausgegeben. x = 1,2 |
 | BSTA SRVx | F6, F7 | Servo.x = A       | Der Byte Wert aus dem A Register wird als Servo.x ausgegeben. x = 1,2 |
 | TONE      | F8     | Tone A            | Ausgabe eines Tones nach Midi 32 ⇐ A ⇐ 108                   |
+
+
+
