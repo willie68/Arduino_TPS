@@ -1,14 +1,16 @@
 # RCPC, Remote Controlled Programmable Controller
 
-Die RCPC ist eine Steuerungvon Modellbauer für Modellbauer. Sie soll einfache Steuerungsaufgaben ermöglichen, in einer einfachen Steuersprache, auch am Teich oder der Rennstrecke. 
+Die RCPC ist eine Steuerung von Modellbauern für Modellbauer. Sie soll einfache Steuerungsaufgaben ermöglichen, in einer einfachen Steuersprache, auch am Teich, der Rennstrecke oder dem Modellflughafen. 
 
 Die Sprache ist einfach und systematisch, reduziert auf das nötigste. 
 
 Als Hardware werden je nach Bedarf verschiedene Controller verwendet. Die Firmware beinhaltet den notwendigen Übersetzer. 
 
-Im Web gibt es eine entsprechende Seite, mit deren Hilfe man die Steuerprogramm in den Steuercode üebrsetzen kann. Der Steuercode kann dann über eine einfache Schnittstelle in den Controller geladen werden. 
+Im Web gibt es eine entsprechende Seite, mit deren Hilfe man die Steuerprogramm in den Steuercode übersetzen kann. Der Steuercode kann dann über eine einfache Schnittstelle in den Controller geladen werden. 
 
-Es gibt insgesamt 8 Eingänge und Ausgänge. Es können beim Programmstart verschiedene Konfigurationen aktiviert werden. 
+
+
+Es können verschiedene Konfigurationen aktiviert werden. Diese Konfigurationen werden im Programm festgelegt. 
 
 | Konfiguration | digitale Ausgänge<br />(Dout) | digitale Eingänge<br />(Din) | analoge Ausgänge (PWM)<br />(Aout) | analoge Eingänge (0-5V)<br />(Ain) | Servos<br />(Srv) | RC Eingänge<br />RC | Tone |
 | ------------- | ----------------------------- | ---------------------------- | ---------------------------------- | ---------------------------------- | ----------------- | ------------------- | ---- |
@@ -20,7 +22,7 @@ Es gibt insgesamt 8 Eingänge und Ausgänge. Es können beim Programmstart versc
 
 
 
-# RCPC Arduino Uno (Nano)
+# RCPC Arduino Uno (Nano) Mapping
 
 | Pin  | Funktion | K 1 | K 2 | K3 | K4 | K5 |
 | ---- | -------- | ---- | ---- | -------- | ---- | ---- |
@@ -47,7 +49,7 @@ Es gibt insgesamt 8 Eingänge und Ausgänge. Es können beim Programmstart versc
 
 # Register/Speicher
 
-All Register sind 8 Bit groß. 
+All Register sind 8 Bit groß und können Werte von 0..255 auf nehmen. Negative Werte werden derzeit nicht unterstützt.
 
 A, B sind die beiden Rechenregister.
 
