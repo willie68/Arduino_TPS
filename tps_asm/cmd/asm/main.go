@@ -17,6 +17,7 @@ var (
 	destination string
 	tpsfile     string
 	includes    string
+	outputfile  string
 	fs          *flag.FlagSet
 )
 
@@ -26,6 +27,7 @@ func init() {
 	fs.StringVarP(&tpsfile, "file", "f", "", "source file to compile")
 	fs.StringVarP(&destination, "destination", "d", "HOLTEK", "destination hardware to use. HOLTEK, ATMEGA8, ARDUINOSPS, TINYSPS")
 	fs.StringVarP(&includes, "includes", "i", "", "base folder for inclusion")
+	fs.StringVarP(&outputfile, "output", "o", "", "output file")
 	fs.SortFlags = false
 }
 
@@ -79,6 +81,12 @@ func main() {
 	}
 	log.Infof("parse: \r\n%s", jstr)
 
+	if outputfile != "" {
+		err = os.WriteFile(outputfile, tpsasm.Binary, 0644)
+		if err != nil {
+			panic(err)
+		}
+	}
 	mem := gohex.NewMemory()
 	mem.AddBinary(0, tpsasm.Binary)
 

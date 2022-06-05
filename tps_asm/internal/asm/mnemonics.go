@@ -48,22 +48,22 @@ var Mnos = []mnemonic{
 		Name:  "WAIT",
 		Param: []string{int4, enum},
 		Enums: map[string]int{
-			"1ms":   0x00,
-			"2ms":   0x01,
-			"5ms":   0x02,
-			"10ms":  0x03,
-			"20ms":  0x04,
-			"50ms":  0x05,
-			"100ms": 0x06,
-			"200ms": 0x07,
-			"500ms": 0x08,
-			"1s":    0x09,
-			"2s":    0x0A,
-			"5s":    0x0B,
-			"10s":   0x0C,
-			"20s":   0x0D,
-			"30s":   0x0E,
-			"60s":   0x0F,
+			"1MS":   0x00,
+			"2MS":   0x01,
+			"5MS":   0x02,
+			"10MS":  0x03,
+			"20MS":  0x04,
+			"50MS":  0x05,
+			"100MS": 0x06,
+			"200MS": 0x07,
+			"500MS": 0x08,
+			"1S":    0x09,
+			"2S":    0x0A,
+			"5S":    0x0B,
+			"10S":   0x0C,
+			"20S":   0x0D,
+			"30S":   0x0E,
+			"60S":   0x0F,
 		},
 		Code: 0x20,
 	},
@@ -494,6 +494,7 @@ func (m mnemonic) CheckParameter(param string) error {
 				continue
 			}
 		case enum:
+			param = strings.ToUpper(param)
 			_, ok := m.Enums[param]
 			if ok {
 				found = true
@@ -522,6 +523,7 @@ func (m mnemonic) Generate(param string, prgCounter int, a *Assembler) byte {
 			}
 			return byte(m.Code + v)
 		case enum:
+			param = strings.ToUpper(param)
 			v, ok := m.Enums[param]
 			if ok {
 				found = true
