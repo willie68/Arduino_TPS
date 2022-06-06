@@ -20,14 +20,16 @@ type macro struct {
 }
 
 type Assembler struct {
-	Hardware Hardware
-	Source   []string
-	Includes string
-	Labels   map[string]label
-	Subs     []string
-	Macros   map[string]macro
-	Code     []string
-	Binary   []byte
+	Hardware     Hardware
+	Filename     string
+	Outputformat string
+	Source       []string
+	Includes     string
+	Labels       map[string]label
+	Subs         []string
+	Macros       map[string]macro
+	Code         []string
+	Binary       []byte
 
 	lineNumber int
 	prgCounter int

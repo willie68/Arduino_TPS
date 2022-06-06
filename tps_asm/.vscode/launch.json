@@ -30,7 +30,7 @@
                 "-o",
                 "./tps.bin",
                 "-t",
-                "tps"
+                "intelhex"
             ]
         },
         {

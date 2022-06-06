@@ -2,13 +2,11 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/marcinbor85/gohex"
 	flag "github.com/spf13/pflag"
 	"github.com/willie68/tps_asm/internal/asm"
 	log "github.com/willie68/tps_asm/internal/logging"
@@ -67,49 +65,35 @@ func main() {
 	}
 
 	tpsasm := asm.Assembler{
-		Hardware: asm.ParseHardware(destination),
-		Source:   src,
-		Includes: includes,
+		Hardware:     asm.ParseHardware(destination),
+		Source:       src,
+		Includes:     includes,
+		Filename:     tpsfile,
+		Outputformat: strings.ToLower(outputformat),
 	}
 	errs := tpsasm.Parse()
-	if errs != nil && len(errs) > 0 {
+	if len(errs) > 0 {
 		for _, err := range errs {
 			log.Errorf("%v", err)
 		}
 	}
 
-	jstr, err := json.MarshalIndent(tpsasm, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	log.Infof("parse: \r\n%s", jstr)
-
+	/*
+		jstr, err := json.MarshalIndent(tpsasm, "", "  ")
+		if err != nil {
+			panic(err)
+		}
+		log.Infof("parse: \r\n%s", jstr)
+	*/
 	if outputfile != "" {
-		switch strings.ToLower(outputformat) {
-		case "bin":
-			err = os.WriteFile(outputfile, tpsasm.Binary, 0644)
-			if err != nil {
-				panic(err)
-			}
-		case "intelhex":
-			mem := gohex.NewMemory()
-			mem.AddBinary(0, tpsasm.Binary)
-			f, err := os.Create(outputfile)
-			if err != nil {
-				panic(err)
-			}
-			defer f.Close()
-			mem.DumpIntelHex(f, 8)
-		case "tps":
-			f, err := os.Create(outputfile)
-			if err != nil {
-				panic(err)
-			}
-			defer f.Close()
-			err = asm.TpsFile(f, tpsfile, tpsasm)
-			if err != nil {
-				panic(err)
-			}
+		f, err := os.Create(outputfile)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+		err = asm.TpsFile(f, tpsasm)
+		if err != nil {
+			panic(err)
 		}
 	}
 }
