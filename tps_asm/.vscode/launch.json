@@ -10,9 +10,28 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/asm/main.go",
-            "cwd" : "${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "output": "debug",
-            "args": [            ]
+            "args": []
+        },
+        {
+            "name": "TPS_ASM Laptop",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/asm/main.go",
+            "cwd": "${workspaceFolder}",
+            "output": "debug",
+            "args": [
+                "-f",
+                "./testdata/test.tps",
+                "-d",
+                "ArduinoTPS",
+                "-o",
+                "./tps.bin",
+                "-t",
+                "tps"
+            ]
         },
         {
             "name": "TPS_ASM file",
@@ -20,7 +39,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/asm/main.go",
-            "cwd" : "${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "output": "debug",
             "args": [
                 "-f",
@@ -37,9 +56,12 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/service/main.go",
-            "cwd" : "${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "output": "debug",
-            "env": {"GRAYLOGHOST":"127.0.0.1", "GRAYLOGPORT": "12201"},
+            "env": {
+                "GRAYLOGHOST": "127.0.0.1",
+                "GRAYLOGPORT": "12201"
+            },
             "args": [
                 "-c",
                 "configs/service_local.yaml"

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/marcinbor85/gohex"
 	flag "github.com/spf13/pflag"
@@ -14,11 +15,12 @@ import (
 )
 
 var (
-	destination string
-	tpsfile     string
-	includes    string
-	outputfile  string
-	fs          *flag.FlagSet
+	destination  string
+	tpsfile      string
+	includes     string
+	outputfile   string
+	outputformat string
+	fs           *flag.FlagSet
 )
 
 func init() {
@@ -28,6 +30,7 @@ func init() {
 	fs.StringVarP(&destination, "destination", "d", "HOLTEK", "destination hardware to use. HOLTEK, ATMEGA8, ARDUINOSPS, TINYSPS")
 	fs.StringVarP(&includes, "includes", "i", "", "base folder for inclusion")
 	fs.StringVarP(&outputfile, "output", "o", "", "output file")
+	fs.StringVarP(&outputformat, "format", "t", "", "output format: BIN, IntelHEX, TPS")
 	fs.SortFlags = false
 }
 
@@ -82,13 +85,31 @@ func main() {
 	log.Infof("parse: \r\n%s", jstr)
 
 	if outputfile != "" {
-		err = os.WriteFile(outputfile, tpsasm.Binary, 0644)
-		if err != nil {
-			panic(err)
+		switch strings.ToLower(outputformat) {
+		case "bin":
+			err = os.WriteFile(outputfile, tpsasm.Binary, 0644)
+			if err != nil {
+				panic(err)
+			}
+		case "intelhex":
+			mem := gohex.NewMemory()
+			mem.AddBinary(0, tpsasm.Binary)
+			f, err := os.Create(outputfile)
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+			mem.DumpIntelHex(f, 8)
+		case "tps":
+			f, err := os.Create(outputfile)
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+			err = asm.TpsFile(f, tpsfile, tpsasm)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
-	mem := gohex.NewMemory()
-	mem.AddBinary(0, tpsasm.Binary)
-
-	mem.DumpIntelHex(os.Stdout, 8)
 }
