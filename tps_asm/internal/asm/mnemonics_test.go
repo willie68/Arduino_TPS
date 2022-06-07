@@ -549,6 +549,14 @@ func TestMathMno(t *testing.T) {
 			Code: 0x7B,
 		},
 		{
+			Name: "SHR",
+			Code: 0x7E,
+		},
+		{
+			Name: "SHL",
+			Code: 0x7F,
+		},
+		{
 			Name: "BYTE",
 			Code: 0x7C,
 		},
