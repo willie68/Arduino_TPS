@@ -142,12 +142,16 @@ func (a *Assembler) processMacro() bool {
 		switch strings.ToLower(a.command) {
 		case ".arduinotps":
 			a.Hardware = ArduinoTPS
+			return true
 		case ".tinytps":
 			a.Hardware = TinyTPS
+			return true
 		case ".atmega8":
 			a.Hardware = ATMega8
+			return true
 		case ".holtek":
 			a.Hardware = Holtek
+			return true
 		default:
 			macroName := strings.ToLower(a.parts[0][1:])
 			macro, ok := a.Macros[macroName]
