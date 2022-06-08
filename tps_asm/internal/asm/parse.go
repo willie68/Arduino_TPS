@@ -139,22 +139,33 @@ func (a *Assembler) processSubroutines() bool {
 
 func (a *Assembler) processMacro() bool {
 	if strings.HasPrefix(a.command, ".") {
-		macroName := strings.ToLower(a.parts[0][1:])
-		macro, ok := a.Macros[macroName]
-		if !ok {
-			a.addErrorS(fmt.Sprintf("can't find macro: %s", macroName))
-			return true
-		} else {
-			log.Infof("use macro: %s", macro.Name)
-			for _, cmd := range macro.Code {
-				a.prgCounter++
-				for x, mac := range macro.Params {
-					cmd = strings.ReplaceAll(cmd, mac, a.parts[x+1])
+		switch strings.ToLower(a.command) {
+		case ".arduinotps":
+			a.Hardware = ArduinoTPS
+		case ".tinytps":
+			a.Hardware = TinyTPS
+		case ".atmega8":
+			a.Hardware = ATMega8
+		case ".holtek":
+			a.Hardware = Holtek
+		default:
+			macroName := strings.ToLower(a.parts[0][1:])
+			macro, ok := a.Macros[macroName]
+			if !ok {
+				a.addErrorS(fmt.Sprintf("can't find macro: %s", macroName))
+				return true
+			} else {
+				log.Infof("use macro: %s", macro.Name)
+				for _, cmd := range macro.Code {
+					a.prgCounter++
+					for x, mac := range macro.Params {
+						cmd = strings.ReplaceAll(cmd, mac, a.parts[x+1])
+					}
+					a.Code = append(a.Code, cmd)
+					log.Debugf("line %d: %s", a.lineNumber, cmd)
 				}
-				a.Code = append(a.Code, cmd)
-				log.Debugf("line %d: %s", a.lineNumber, cmd)
+				return true
 			}
-			return true
 		}
 	}
 	return false

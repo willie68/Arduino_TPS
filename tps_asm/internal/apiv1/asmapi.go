@@ -98,7 +98,12 @@ func PostAsm(response http.ResponseWriter, request *http.Request) {
 	}
 	var b bytes.Buffer
 	foo := bufio.NewWriter(&b)
-	asm.TpsFile(foo, tpsasm)
+	err = asm.TpsFile(foo, tpsasm)
+	if err != nil {
+		msg := fmt.Sprintf("error generating file: %v", err)
+		httputils.Err(response, request, serror.BadRequest(nil, "generating-file", msg))
+		return
+	}
 	foo.Flush()
 
 	asmresult := struct {

@@ -59,13 +59,13 @@ func TestCtrl(t *testing.T) {
 		if x == 0 {
 			ast.Nil(mno.CheckHardware(Holtek))
 			ast.Nil(mno.CheckHardware(ATMega8))
-			ast.Nil(mno.CheckHardware(ArduinoSPS))
-			ast.Nil(mno.CheckHardware(TinySPS))
+			ast.Nil(mno.CheckHardware(ArduinoTPS))
+			ast.Nil(mno.CheckHardware(TinyTPS))
 		} else {
 			ast.NotNil(mno.CheckHardware(Holtek))
 			ast.NotNil(mno.CheckHardware(ATMega8))
-			ast.Nil(mno.CheckHardware(ArduinoSPS))
-			ast.Nil(mno.CheckHardware(TinySPS))
+			ast.Nil(mno.CheckHardware(ArduinoTPS))
+			ast.Nil(mno.CheckHardware(TinyTPS))
 		}
 	}
 }
@@ -90,8 +90,8 @@ func TestPort(t *testing.T) {
 
 	ast.Nil(mno.CheckHardware(Holtek))
 	ast.Nil(mno.CheckHardware(ATMega8))
-	ast.Nil(mno.CheckHardware(ArduinoSPS))
-	ast.Nil(mno.CheckHardware(TinySPS))
+	ast.Nil(mno.CheckHardware(ArduinoTPS))
+	ast.Nil(mno.CheckHardware(TinyTPS))
 }
 
 func TestWait(t *testing.T) {
@@ -111,8 +111,8 @@ func TestWait(t *testing.T) {
 
 	ast.Nil(mno.CheckHardware(Holtek))
 	ast.Nil(mno.CheckHardware(ATMega8))
-	ast.Nil(mno.CheckHardware(ArduinoSPS))
-	ast.Nil(mno.CheckHardware(TinySPS))
+	ast.Nil(mno.CheckHardware(ArduinoTPS))
+	ast.Nil(mno.CheckHardware(TinyTPS))
 }
 
 func TestPage(t *testing.T) {
@@ -132,8 +132,8 @@ func TestPage(t *testing.T) {
 
 	ast.Nil(mno.CheckHardware(Holtek))
 	ast.Nil(mno.CheckHardware(ATMega8))
-	ast.Nil(mno.CheckHardware(ArduinoSPS))
-	ast.Nil(mno.CheckHardware(TinySPS))
+	ast.Nil(mno.CheckHardware(ArduinoTPS))
+	ast.Nil(mno.CheckHardware(TinyTPS))
 }
 
 func TestJump(t *testing.T) {

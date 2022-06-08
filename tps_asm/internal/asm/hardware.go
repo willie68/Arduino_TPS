@@ -10,14 +10,14 @@ type Hardware int64
 const (
 	Holtek     Hardware = 0
 	ATMega8    Hardware = 1
-	ArduinoSPS Hardware = 2
-	TinySPS    Hardware = 3
+	ArduinoTPS Hardware = 2
+	TinyTPS    Hardware = 3
 
 	// private parts
 	sHoltek     string = "HOLTEK"
 	sATMega8    string = "ATMEGA8"
-	sArduinoSPS string = "ARDUINOTPS"
-	sTinySPS    string = "TINYTPS"
+	sArduinoTPS string = "ARDUINOTPS"
+	sTinyTPS    string = "TINYTPS"
 )
 
 func (h Hardware) String() string {
@@ -26,10 +26,10 @@ func (h Hardware) String() string {
 		return sHoltek
 	case ATMega8:
 		return sATMega8
-	case ArduinoSPS:
-		return sArduinoSPS
-	case TinySPS:
-		return sTinySPS
+	case ArduinoTPS:
+		return sArduinoTPS
+	case TinyTPS:
+		return sTinyTPS
 	default:
 		return sHoltek
 	}
@@ -42,10 +42,10 @@ func ParseHardware(dest string) Hardware {
 		return Holtek
 	case sATMega8:
 		return ATMega8
-	case sArduinoSPS:
-		return ArduinoSPS
-	case sTinySPS:
-		return TinySPS
+	case sArduinoTPS:
+		return ArduinoTPS
+	case sTinyTPS:
+		return TinyTPS
 	}
 	return Holtek
 }
@@ -60,11 +60,11 @@ func checkSize(h Hardware, size int) error {
 		if size > 256 {
 			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 256)
 		}
-	case ArduinoSPS:
+	case ArduinoTPS:
 		if size > 1024 {
 			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 1024)
 		}
-	case TinySPS:
+	case TinyTPS:
 		if size > 512 {
 			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 512)
 		}

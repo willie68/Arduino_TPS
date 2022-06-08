@@ -80,8 +80,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x80,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -104,8 +104,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0xC0,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -180,8 +180,8 @@ var Mnos = []mnemonic{
 		Param: []string{int4, lbl},
 		Code:  0xE0,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -189,8 +189,8 @@ var Mnos = []mnemonic{
 		Param: []string{int4, lbl},
 		Code:  0xE7,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -198,8 +198,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0xEF,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -207,8 +207,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0xFF,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 
@@ -229,8 +229,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x40,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -238,8 +238,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x50,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -259,8 +259,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x00,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -268,8 +268,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x5F,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -277,8 +277,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x6F,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	// Math
@@ -337,8 +337,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x7B,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -346,8 +346,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x7C,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -355,8 +355,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x7D,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -364,8 +364,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x7E,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -373,8 +373,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0x7F,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	// Input/Output
@@ -399,8 +399,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x00,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	// Byte mnemonics
@@ -415,8 +415,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x00,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -430,8 +430,8 @@ var Mnos = []mnemonic{
 		},
 		Code: 0x00,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 	{
@@ -439,8 +439,8 @@ var Mnos = []mnemonic{
 		Param: []string{},
 		Code:  0xF8,
 		H: []Hardware{
-			ArduinoSPS,
-			TinySPS,
+			ArduinoTPS,
+			TinyTPS,
 		},
 	},
 }

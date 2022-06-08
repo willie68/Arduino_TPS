@@ -30,19 +30,19 @@ func TestPrgSize(t *testing.T) {
 			sc: 257,
 			ec: 1,
 		}, {
-			h:  ArduinoSPS,
+			h:  ArduinoTPS,
 			sc: 1024,
 			ec: 0,
 		}, {
-			h:  ArduinoSPS,
+			h:  ArduinoTPS,
 			sc: 1025,
 			ec: 1,
 		}, {
-			h:  TinySPS,
+			h:  TinyTPS,
 			sc: 512,
 			ec: 0,
 		}, {
-			h:  TinySPS,
+			h:  TinyTPS,
 			sc: 513,
 			ec: 1,
 		},

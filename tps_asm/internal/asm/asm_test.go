@@ -262,7 +262,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm1",
 	asm: Assembler{
-		Hardware: ArduinoSPS,
+		Hardware: ArduinoTPS,
 		Source: []string{
 			".macro blink",
 			"PORT #0B0101",
@@ -387,7 +387,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm2",
 	asm: Assembler{
-		Hardware: ArduinoSPS,
+		Hardware: ArduinoTPS,
 		Source: []string{
 			"NOP",
 			"PORT #0x0f",
@@ -464,7 +464,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm6",
 	asm: Assembler{
-		Hardware: ArduinoSPS,
+		Hardware: ArduinoTPS,
 		Source: []string{
 			"MOV A,B",
 			"MOV A,C",
@@ -523,7 +523,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgramm7",
 	asm: Assembler{
-		Hardware: ArduinoSPS,
+		Hardware: ArduinoTPS,
 		Source: []string{
 			"INC",
 			"DEC",
@@ -670,7 +670,7 @@ var testdatas = []struct {
 }, {
 	name: "testProgrammCEF",
 	asm: Assembler{
-		Hardware: ArduinoSPS,
+		Hardware: ArduinoTPS,
 		Source: []string{
 			"SKIP0",
 			"AGTB",

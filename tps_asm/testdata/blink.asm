@@ -1,3 +1,8 @@
+.arduinotps ;damit wird die Hardware auf Arduino_TPS festgelegt. Diese Directrive sollte vor dem eigentlichen Code erscheinen.
+;.tinytps ; legt die Hardware auf die Tiny_TPS fest.
+;.atmega8 ; legt die Hardware auf die ATMega8 fest.
+;.holtek ; legt die Hardware auf Holtek fest.
+
 .macro blink
 PORT #0B0101
 WAIT 200ms
