@@ -48,10 +48,12 @@ func (a *Assembler) Parse() []error {
 	a.init()
 	a.parse()
 	log.Infof("time to parse: %d ms", -time.Until(start).Milliseconds())
-	start = time.Now()
-	a.checkHardware()
-	a.generate()
-	log.Infof("time to generate: %d ms", -time.Until(start).Milliseconds())
+	if len(a.errs) == 0 {
+		start = time.Now()
+		a.checkHardware()
+		a.generate()
+		log.Infof("time to generate: %d ms", -time.Until(start).Milliseconds())
+	}
 	return a.errs
 }
 
@@ -75,6 +77,10 @@ func (a *Assembler) addErrorS(msg string) {
 
 func (a *Assembler) addError(err error) {
 	a.errs = append(a.errs, err)
+}
+
+func (a *Assembler) addErrorLine(line int, err error) {
+	a.errs = append(a.errs, fmt.Errorf("line %d, %+v", line, err))
 }
 
 func (a *Assembler) subNumber(subname string) int {

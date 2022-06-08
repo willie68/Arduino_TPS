@@ -25,7 +25,7 @@ func init() {
 	// variables for parameter override
 	fs = flag.NewFlagSet("main", flag.ContinueOnError)
 	fs.StringVarP(&tpsfile, "file", "f", "", "source file to compile")
-	fs.StringVarP(&destination, "destination", "d", "HOLTEK", "destination hardware to use. HOLTEK, ATMEGA8, ARDUINOSPS, TINYSPS")
+	fs.StringVarP(&destination, "destination", "d", "HOLTEK", "destination hardware to use. HOLTEK, ATMEGA8, ARDUINOTPS, TINYTPS")
 	fs.StringVarP(&includes, "includes", "i", "", "base folder for inclusion")
 	fs.StringVarP(&outputfile, "output", "o", "", "output file")
 	fs.StringVarP(&outputformat, "format", "t", "", "output format: BIN, IntelHEX, TPS")

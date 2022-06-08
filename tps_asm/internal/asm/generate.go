@@ -1,6 +1,7 @@
 package asm
 
 import (
+	"fmt"
 	"strings"
 
 	log "github.com/willie68/tps_asm/internal/logging"
@@ -19,6 +20,11 @@ func (a *Assembler) generate() {
 		mno, err := GetMnemonic(a.command)
 		if err != nil {
 			a.addError(err)
+			continue
+		}
+		if mno == nil {
+			a.addError(fmt.Errorf("unknown mnemonic: %s", cmd))
+			continue
 		}
 		a.Binary = append(a.Binary, mno.Generate(a.parts[1], x, a))
 		log.Infof("process command: %s", cmd)

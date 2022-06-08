@@ -145,6 +145,7 @@ func apiRoutes() (*chi.Mux, error) {
 
 	// building the routes
 	router.Route("/", func(r chi.Router) {
+		r.Mount(apiv1.AsmRoutes())
 		r.Mount(apiv1.ConfigRoutes())
 		r.Mount("/", health.Routes())
 		if serviceConfig.Metrics.Enable {

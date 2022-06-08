@@ -16,8 +16,8 @@ const (
 	// private parts
 	sHoltek     string = "HOLTEK"
 	sATMega8    string = "ATMEGA8"
-	sArduinoSPS string = "ARDUINOSPS"
-	sTinySPS    string = "TINYSPS"
+	sArduinoSPS string = "ARDUINOTPS"
+	sTinySPS    string = "TINYTPS"
 )
 
 func (h Hardware) String() string {

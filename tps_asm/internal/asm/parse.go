@@ -61,7 +61,7 @@ func (a *Assembler) parse() {
 
 		a.processSubroutines()
 
-		a.parts = a.checkSyntax()
+		a.parts = a.checkSyntax(x)
 
 		a.prgCounter++
 		a.Code = append(a.Code, strings.Join(a.parts, " "))
@@ -184,15 +184,15 @@ func (a *Assembler) processComment() bool {
 	return false
 }
 
-func (a *Assembler) checkSyntax() []string {
+func (a *Assembler) checkSyntax(line int) []string {
 	mno, err := GetMnemonic(a.command)
 	if err != nil {
-		a.addError(err)
+		a.addErrorLine(line, err)
 		return a.parts
 	}
 	err = mno.CheckHardware(a.Hardware)
 	if err != nil {
-		a.addError(err)
+		a.addErrorLine(line, err)
 		return a.parts
 	}
 	var part string
@@ -201,7 +201,7 @@ func (a *Assembler) checkSyntax() []string {
 	}
 	err = mno.CheckParameter(part)
 	if err != nil {
-		a.addError(err)
+		a.addErrorLine(line, fmt.Errorf("%s %s :%+v", mno.Name, part, err))
 		return a.parts
 	}
 	if len(mno.Param) == 0 {

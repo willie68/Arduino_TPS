@@ -17,16 +17,7 @@ var myhealthy bool
 This is the healtchcheck you will have to provide.
 */
 func check(tracer opentracing.Tracer) (bool, string) {
-	// TODO implement here your healthcheck.
-	myhealthy = !myhealthy
-	message := ""
-	if myhealthy {
-		log.Logger.Info("healthy")
-	} else {
-		log.Logger.Info("not healthy")
-		message = "ungesund"
-	}
-	return myhealthy, message
+	return myhealthy, ""
 }
 
 //##### template internal functions for processing the healthchecks #####

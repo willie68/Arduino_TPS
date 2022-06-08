@@ -4,7 +4,7 @@ serviceURL: https://127.0.0.1:8443
 secretfile: "./../../testdata/secret.yaml"
 apikey: false
 healthcheck:
-  period: 60
+  period: 120
 logging:
   level: debug
   filename: "${logfile}"
