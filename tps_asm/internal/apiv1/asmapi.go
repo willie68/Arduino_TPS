@@ -3,6 +3,7 @@ package apiv1
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -16,6 +17,14 @@ import (
 	"github.com/willie68/tps_asm/internal/serror"
 	"github.com/willie68/tps_asm/internal/utils/httputils"
 )
+
+type asmresult struct {
+	Binary      []byte `json:"binary"`
+	Name        string `json:"name"`
+	Format      string `json:"format"`
+	Destination string `json:"destination"`
+	Hardware    string `json:"hardware"`
+}
 
 var (
 	postAsmCounter = promauto.NewCounter(prometheus.CounterOpts{
@@ -49,41 +58,76 @@ func AsmRoutes() (string, *chi.Mux) {
 func PostAsm(response http.ResponseWriter, request *http.Request) {
 	log.Info("postasm")
 	postAsmCounter.Inc()
-	request.ParseMultipartForm(10 << 20)
-
-	file, handler, err := request.FormFile("file")
-	if err != nil {
-		msg := fmt.Sprintf("error retrieving file: %v", err)
-		httputils.Err(response, request, serror.BadRequest(nil, "retrieving-file", msg))
-		return
-	}
-	defer file.Close()
-
-	hardware := request.FormValue("board")
-	outputformat := request.FormValue("outputformat")
-	log.Infof("Uploaded File: %+v", handler.Filename)
-	log.Infof("File Size: %+v", handler.Size)
-	log.Infof("MIME Header: %+v", handler.Header)
-	log.Infof("Hardwareboard: %s", hardware)
-
-	fileScanner := bufio.NewScanner(file)
-	src := make([]string, 0)
-	for fileScanner.Scan() {
-		src = append(src, fileScanner.Text())
-		// handle first encountered error while reading
-		if err := fileScanner.Err(); err != nil {
+	err := request.ParseMultipartForm(10 << 20)
+	var tpsasm asm.Assembler
+	if err == nil {
+		file, handler, err := request.FormFile("file")
+		if err != nil {
 			msg := fmt.Sprintf("error retrieving file: %v", err)
 			httputils.Err(response, request, serror.BadRequest(nil, "retrieving-file", msg))
 			return
 		}
-	}
+		defer file.Close()
 
-	tpsasm := asm.Assembler{
-		Hardware:     asm.ParseHardware(hardware),
-		Source:       src,
-		Includes:     "",
-		Filename:     handler.Filename,
-		Outputformat: strings.ToLower(outputformat),
+		hardware := request.FormValue("board")
+		outputformat := request.FormValue("outputformat")
+		log.Infof("Uploaded File: %+v", handler.Filename)
+		log.Infof("File Size: %+v", handler.Size)
+		log.Infof("MIME Header: %+v", handler.Header)
+		log.Infof("Hardwareboard: %s", hardware)
+
+		fileScanner := bufio.NewScanner(file)
+		src := make([]string, 0)
+		for fileScanner.Scan() {
+			src = append(src, fileScanner.Text())
+			// handle first encountered error while reading
+			if err := fileScanner.Err(); err != nil {
+				msg := fmt.Sprintf("error retrieving file: %v", err)
+				httputils.Err(response, request, serror.BadRequest(nil, "retrieving-file", msg))
+				return
+			}
+		}
+
+		tpsasm = asm.Assembler{
+			Hardware:     asm.ParseHardware(hardware),
+			Source:       src,
+			Includes:     "",
+			Filename:     handler.Filename,
+			Outputformat: strings.ToLower(outputformat),
+		}
+	} else {
+		p := struct {
+			Asm          string `json:"asm"`
+			Name         string `json:"name"`
+			OutputFormat string `json:"outputformat"`
+			Hardware     string `json:"hardware"`
+		}{}
+		err := json.NewDecoder(request.Body).Decode(&p)
+		if err != nil {
+			msg := fmt.Sprintf("error retrieving json: %v", err)
+			httputils.Err(response, request, serror.BadRequest(nil, "json-request", msg))
+			return
+		}
+
+		scanner := bufio.NewScanner(strings.NewReader(p.Asm))
+		src := make([]string, 0)
+		for scanner.Scan() {
+			src = append(src, scanner.Text())
+			// handle first encountered error while reading
+			if err := scanner.Err(); err != nil {
+				msg := fmt.Sprintf("error scanning source: %v", err)
+				httputils.Err(response, request, serror.BadRequest(nil, "json-request", msg))
+				return
+			}
+		}
+
+		tpsasm = asm.Assembler{
+			Hardware:     asm.ParseHardware(p.Hardware),
+			Source:       src,
+			Includes:     "",
+			Filename:     p.Name,
+			Outputformat: strings.ToLower(p.OutputFormat),
+		}
 	}
 	errs := tpsasm.Parse()
 	if len(errs) > 0 {
@@ -106,17 +150,14 @@ func PostAsm(response http.ResponseWriter, request *http.Request) {
 	}
 	foo.Flush()
 
-	asmresult := struct {
-		Binary      []byte `json: binary`
-		Name        string `json: name`
-		Format      string `json: format`
-		Destination string `json: destination`
-	}{
+	asmr := asmresult{
 		Binary:      tpsasm.Binary,
 		Name:        tpsasm.Filename,
 		Format:      tpsasm.Outputformat,
 		Destination: b.String(),
+		Hardware:    tpsasm.Hardware.String(),
 	}
+
 	render.Status(request, http.StatusOK)
-	render.JSON(response, request, asmresult)
+	render.JSON(response, request, asmr)
 }
