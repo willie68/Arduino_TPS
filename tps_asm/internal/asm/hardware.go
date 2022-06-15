@@ -12,12 +12,14 @@ const (
 	ATMega8    Hardware = 1
 	ArduinoTPS Hardware = 2
 	TinyTPS    Hardware = 3
+	RPI2040    Hardware = 4
 
 	// private parts
 	sHoltek     string = "HOLTEK"
 	sATMega8    string = "ATMEGA8"
 	sArduinoTPS string = "ARDUINOTPS"
 	sTinyTPS    string = "TINYTPS"
+	sRPI2040    string = "RPI2040"
 )
 
 func (h Hardware) String() string {
@@ -30,6 +32,8 @@ func (h Hardware) String() string {
 		return sArduinoTPS
 	case TinyTPS:
 		return sTinyTPS
+	case RPI2040:
+		return sRPI2040
 	default:
 		return sHoltek
 	}
@@ -46,6 +50,8 @@ func ParseHardware(dest string) Hardware {
 		return ArduinoTPS
 	case sTinyTPS:
 		return TinyTPS
+	case sRPI2040:
+		return RPI2040
 	}
 	return Holtek
 }
@@ -61,6 +67,10 @@ func checkSize(h Hardware, size int) error {
 			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 256)
 		}
 	case ArduinoTPS:
+		if size > 1024 {
+			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 1024)
+		}
+	case RPI2040:
 		if size > 1024 {
 			return fmt.Errorf("program exceed size limit. Max size for %s is %d", h.String(), 1024)
 		}

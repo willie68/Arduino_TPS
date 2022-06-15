@@ -166,6 +166,24 @@ var Mnos = []mnemonic{
 		Code:  0xCF,
 	},
 	{
+		Name:  "LED0",
+		Param: []string{},
+		Code:  0xFE,
+		H: []Hardware{
+			ArduinoTPS,
+			RPI2040,
+		},
+	},
+	{
+		Name:  "LED1",
+		Param: []string{},
+		Code:  0xFD,
+		H: []Hardware{
+			ArduinoTPS,
+			RPI2040,
+		},
+	},
+	{
 		Name:  "CALL",
 		Param: []string{int4, lbl},
 		Code:  0xD0,
@@ -425,13 +443,18 @@ var Mnos = []mnemonic{
 		Enums: map[string]int{
 			"PWM1": 0xF4,
 			"PWM2": 0xF5,
+			"PWM3": 0xF9,
+			"PWM4": 0xFA,
 			"SRV1": 0xF6,
 			"SRV2": 0xF7,
+			"SRV3": 0xFB,
+			"SRV4": 0xFC,
 		},
 		Code: 0x00,
 		H: []Hardware{
 			ArduinoTPS,
 			TinyTPS,
+			RPI2040,
 		},
 	},
 	{
@@ -441,6 +464,7 @@ var Mnos = []mnemonic{
 		H: []Hardware{
 			ArduinoTPS,
 			TinyTPS,
+			RPI2040,
 		},
 	},
 }

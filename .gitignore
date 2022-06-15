@@ -29,3 +29,5 @@
 /dest/**
 /dest_bck/**
 *.log
+
+tps_asm/dist/

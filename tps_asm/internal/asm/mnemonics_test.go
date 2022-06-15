@@ -224,6 +224,14 @@ func TestSkip(t *testing.T) {
 			name: "sel1",
 			code: 0xCF,
 		},
+		{
+			name: "led1",
+			code: 0xFD,
+		},
+		{
+			name: "led0",
+			code: 0xFE,
+		},
 	}
 
 	for _, td := range testDatas {
@@ -630,8 +638,12 @@ func TestBSTA(t *testing.T) {
 
 	ast.Nil(mno.CheckParameter("PWM1"))
 	ast.Nil(mno.CheckParameter("PWM2"))
+	ast.Nil(mno.CheckParameter("PWM3"))
+	ast.Nil(mno.CheckParameter("PWM4"))
 	ast.Nil(mno.CheckParameter("SRV1"))
 	ast.Nil(mno.CheckParameter("SRV2"))
+	ast.Nil(mno.CheckParameter("SRV3"))
+	ast.Nil(mno.CheckParameter("SRV4"))
 }
 
 func TestByte(t *testing.T) {

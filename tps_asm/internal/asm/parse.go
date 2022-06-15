@@ -152,6 +152,9 @@ func (a *Assembler) processMacro() bool {
 		case ".holtek":
 			a.Hardware = Holtek
 			return true
+		case ".rpi2040":
+			a.Hardware = RPI2040
+			return true
 		default:
 			macroName := strings.ToLower(a.parts[0][1:])
 			macro, ok := a.Macros[macroName]
