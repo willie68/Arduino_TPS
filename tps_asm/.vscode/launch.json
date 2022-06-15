@@ -24,13 +24,13 @@
             "output": "debug",
             "args": [
                 "-f",
-                "./testdata/test.tps",
+                "./testdata/test.asm",
                 "-d",
                 "ArduinoTPS",
                 "-o",
-                "./tps.bin",
+                "E:/DATEN/Git-box/PythonTPS_SPS/picoTPS/tps.bin",
                 "-t",
-                "tps"
+                "bin"
             ]
         },
         {
