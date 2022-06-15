@@ -366,6 +366,7 @@ var Mnos = []mnemonic{
 		H: []Hardware{
 			ArduinoTPS,
 			TinyTPS,
+			RPI2040,
 		},
 	},
 	{
