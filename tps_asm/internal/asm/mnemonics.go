@@ -20,14 +20,14 @@ type mnemonic struct {
 	H     []Hardware
 }
 
-func GetMnemonic(name string) (*mnemonic, error) {
+func GetMnemonic(name string) (*mnemonic, bool) {
 	name = strings.ToUpper(name)
 	for _, mno := range Mnos {
 		if name == mno.Name {
-			return &mno, nil
+			return &mno, true
 		}
 	}
-	return nil, fmt.Errorf("unknown mnemonics: %s ", name)
+	return nil, false
 }
 
 const (
@@ -496,7 +496,7 @@ func (m mnemonic) CheckHardware(h Hardware) error {
 	return nil
 }
 
-func (m mnemonic) CheckParameter(param string) error {
+func (m mnemonic) CheckParameter(param string, a *Assembler) error {
 	if (param == "") && (len(m.Param) > 0) {
 		return ErrParamCount
 	}
@@ -507,6 +507,12 @@ func (m mnemonic) CheckParameter(param string) error {
 		return nil
 	}
 	var err error
+	// hier muss zuerst der Parameter erzeugt werden
+	np, ok := a.Defines[param]
+	if ok {
+		param = np
+	}
+
 	found := false
 	for _, pt := range m.Param {
 		switch pt {
@@ -538,6 +544,11 @@ func (m mnemonic) CheckParameter(param string) error {
 
 func (m mnemonic) Generate(param string, prgCounter int, a *Assembler) byte {
 	found := false
+	// hier muss zuerst der Parameter erzeugt werden
+	np, ok := a.Defines[param]
+	if ok {
+		param = np
+	}
 	for _, pt := range m.Param {
 		var v byte
 		switch pt {
@@ -612,4 +623,18 @@ func convertNumber(p string) (byte, bool, error) {
 		return byte(v), true, nil
 	}
 	return 0, false, nil
+}
+
+func IsReservedWord(n string) bool {
+	for _, mn := range Mnos {
+		if mn.Name == n {
+			return true
+		}
+		for k := range mn.Enums {
+			if k == n {
+				return true
+			}
+		}
+	}
+	return false
 }

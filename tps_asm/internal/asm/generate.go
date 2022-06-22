@@ -17,9 +17,9 @@ func (a *Assembler) generate() {
 			a.parts = append(a.parts, "")
 		}
 		a.command = a.parts[0]
-		mno, err := GetMnemonic(a.command)
-		if err != nil {
-			a.addError(err)
+		mno, ok := GetMnemonic(a.command)
+		if !ok {
+			a.addError(fmt.Errorf("unknown mnemonics: %s ", cmd))
 			continue
 		}
 		if mno == nil {

@@ -28,6 +28,7 @@ type Assembler struct {
 	Labels       map[string]label
 	Subs         []string
 	Macros       map[string]macro
+	Defines      map[string]string
 	Code         []string
 	Binary       []byte
 
@@ -46,9 +47,11 @@ type Assembler struct {
 func (a *Assembler) Parse() []error {
 	start := time.Now()
 	a.init()
+	log.Info("parse")
 	a.parse()
 	log.Infof("time to parse: %d ms", -time.Until(start).Milliseconds())
 	if len(a.errs) == 0 {
+		log.Info("generate")
 		start = time.Now()
 		a.checkHardware()
 		a.generate()
@@ -61,6 +64,7 @@ func (a *Assembler) init() {
 	a.Labels = make(map[string]label)
 	a.Subs = make([]string, 0)
 	a.Macros = make(map[string]macro)
+	a.Defines = make(map[string]string)
 	a.Code = make([]string, 0)
 
 	a.inMacro = false

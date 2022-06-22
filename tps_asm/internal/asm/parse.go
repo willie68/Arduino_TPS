@@ -80,7 +80,8 @@ func (a *Assembler) removeInlineComment(line string) string {
 }
 
 func (a *Assembler) processMacroDefinition() bool {
-	if a.command == ".endmacro" {
+	switch strings.ToLower(a.command) {
+	case ".endmacro":
 		if !a.inMacro {
 			a.addErrorS("missing starting .macro directrive")
 			return true
@@ -88,8 +89,7 @@ func (a *Assembler) processMacroDefinition() bool {
 		a.Macros[a.actMacro.Name] = a.actMacro
 		a.inMacro = false
 		return true
-	}
-	if a.command == ".macro" {
+	case ".macro":
 		if a.inMacro {
 			a.addErrorS("already in macro definition, nested macros are not supported")
 			return true
@@ -155,6 +155,14 @@ func (a *Assembler) processMacro() bool {
 		case ".rpi2040":
 			a.Hardware = RPI2040
 			return true
+		case ".define":
+			dn := a.parts[1]
+			if !IsReservedWord(dn) {
+				dv := strings.Join(a.parts[2:], " ")
+				a.Defines[dn] = dv
+				return true
+			}
+			a.addErrorS(fmt.Sprintf("%s is reserved", dn))
 		default:
 			macroName := strings.ToLower(a.parts[0][1:])
 			macro, ok := a.Macros[macroName]
@@ -203,12 +211,12 @@ func (a *Assembler) processComment() bool {
 }
 
 func (a *Assembler) checkSyntax(line int) []string {
-	mno, err := GetMnemonic(a.command)
-	if err != nil {
-		a.addErrorLine(line, err)
+	mno, ok := GetMnemonic(a.command)
+	if !ok {
+		a.addErrorLine(line, fmt.Errorf("unknown mnemonics: %s ", a.command))
 		return a.parts
 	}
-	err = mno.CheckHardware(a.Hardware)
+	err := mno.CheckHardware(a.Hardware)
 	if err != nil {
 		a.addErrorLine(line, err)
 		return a.parts
@@ -217,7 +225,7 @@ func (a *Assembler) checkSyntax(line int) []string {
 	for _, p := range a.parts[1:] {
 		part += p
 	}
-	err = mno.CheckParameter(part)
+	err = mno.CheckParameter(part, a)
 	if err != nil {
 		a.addErrorLine(line, fmt.Errorf("%s %s :%+v", mno.Name, part, err))
 		return a.parts
