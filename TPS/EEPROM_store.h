@@ -82,7 +82,7 @@ void store() {
 }
 #endif
 
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__)
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny461__) || defined(__AVR_ATtiny4313__)
 
 #include <EEPROM.h>
 #include <avr/eeprom.h>

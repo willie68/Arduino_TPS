@@ -122,12 +122,12 @@
 
 // defining different hardware platforms
 #ifdef __AVR_ATmega328P__
-#define TPS_USE_DISPLAY
-#define TPS_RCRECEIVER
-#define TPS_ENHANCEMENT
-#define TPS_SERIAL_PRG
-#define TPS_SERVO
-#define TPS_TONE
+//#define TPS_USE_DISPLAY
+//#define TPS_RCRECEIVER
+//#define TPS_ENHANCEMENT
+//#define TPS_SERIAL_PRG
+//#define TPS_SERVO
+//#define TPS_TONE
 #endif
 
 #ifdef ESP32
@@ -145,12 +145,20 @@
 //#define TPS_TONE
 #endif
 
-#ifdef __AVR_ATtiny861__
+#ifdef __AVR_ATtiny861__ 
+// Servo and tone together will not work.
+// Serial_prg will only work without servo, rcreceiver, tone
 //#define TPS_RCRECEIVER
 //#define TPS_ENHANCEMENT
 //#define TPS_SERIAL_PRG
 //#define TPS_SERVO
 //#define TPS_TONE
+#endif
+
+#ifdef __AVR_ATtiny461__ 
+// because of the limited memory, no other options are possible
+//#define TPS_RCRECEIVER
+//#define TPS_ENHANCEMENT
 #endif
 
 #ifdef __AVR_ATtiny4313__
@@ -173,7 +181,7 @@
 #endif
 
 #ifdef TPS_SERVO
-#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny4313__)
+#if defined(__AVR_ATmega328P__) || defined(__AVR_ATtiny84__) || defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny461__) || defined(__AVR_ATtiny4313__)
 #include <Servo.h>
 #endif
 #endif

@@ -1,4 +1,4 @@
 #ifndef TPS_VERSIN_H
 #define TPS_VERSION_H
-#define TPS_VERSION "0.13.40"
+#define TPS_VERSION "0.13.42"
 #endif
