@@ -125,8 +125,7 @@ const byte SW_SEL = 8;
 
 #endif
 
-#ifdef __AVR_ATtiny861__
-// ATTiny4313 Hardware
+#if defined(__AVR_ATtiny861__) || defined(__AVR_ATtiny461__)
 const byte Dout_1 = 0;
 const byte Dout_2 = 1;
 const byte Dout_3 = 2;
